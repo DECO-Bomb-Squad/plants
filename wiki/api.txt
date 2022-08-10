@@ -1,0 +1,88 @@
+
+Endpoints
+------------------------
+/** Plants **/
+(POST) Add PERSONAL Plant     (User)
+    - Params: 
+        - personalName:  string      -> 
+        - desc:          string
+        - userId:        int
+        - photoUrl:      string 
+        - plantTypeId:   int
+        - plantTags:     [string]
+        // if friends are happening
+        - private:       boolean
+
+(GET) Get PERSONAL Plant     (User)
+    - Params:
+        - plantId: int and/or username: string
+    - Returns:
+        - all plant information
+
+(DELETE) Delete PERSONAL Plant     (User)
+    - Params:
+        - plantId: int
+
+(POST) Add Plant Type               (Admin)
+    - Params:
+        - commonName:     string
+        - fullName:       string
+        - type:           string
+    - Process:
+        - Create new requirement/s for plant type
+        - Create new plant type w/ requirement
+
+(DELETE) Delete Plant Type             (Admin)
+    - Params:
+        - plantId: int
+----------------------------------------------------------------
+/** Users **/
+(POST) Add User     (User)
+    - Params:
+        - username:  string
+        - email:     string
+        - startDate: date
+
+(POST) Set Bio     (User)
+    - Params:
+        - userId:   int
+        - bio:      string
+
+(POST) Get User     (User)
+    - Params:
+        - userId: int
+    - Returns:
+        - all user info
+-----------------------
+/** Activities **/
+
+(POST) Add Activity     (User)
+    - Params:
+        - plantId:      int
+        - activityType: int
+        - time:         date
+
+-----------------------
+
+/** TO LOOK AT LATER **/
+
+-----------------------
+/** Friends **/
+(POST) Add Friend     (User)
+    - Params:
+        - userId: int
+
+We need some sort of "friend requests"
+Needs to be fleshed out more.
+
+(POST) Confirm Friend     (User)
+    - Params:
+        - fromUserId:  int
+        - toUserId:    int
+        - startDate:   date
+
+(DELETE) Remove Friend
+    - Params:
+        - 
+
+-----------------------
