@@ -1,4 +1,6 @@
-# Managing All Plant Data
+from flask import Blueprint
+
+app = Blueprint('plant_endpoints', __name__)
 
 # ===== Personal Plant Management Endpoints ====
 

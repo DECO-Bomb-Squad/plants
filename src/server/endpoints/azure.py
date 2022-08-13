@@ -1,4 +1,6 @@
-# endpoints to do with connecting to azure and uploading files
+from flask import Blueprint
+
+app = Blueprint('azure_endpoints', __name__)
 
 '''
 Uploads a Photo to Azure (POST)
