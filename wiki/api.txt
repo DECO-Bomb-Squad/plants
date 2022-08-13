@@ -54,7 +54,7 @@ Endpoints
     - Returns:
         - all user info
 -----------------------
-/** Activities **/
+/** Activities **/ plant ep
 
 (POST) Add Activity     (User)
     - Params:
@@ -62,9 +62,15 @@ Endpoints
         - activityType: int
         - time:         date
 
+get plant activity (see plants.py)
+
 -----------------------
 
 /** TO LOOK AT LATER **/
+
+
+-----------------------
+azure upload photo ep
 
 -----------------------
 /** Friends **/
