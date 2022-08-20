@@ -15,18 +15,16 @@ class Plant(DB.BASE):
     desc = Column('desc', String(255), nullable=False)
 
     plantTypeId = Column("plantTypeId", Integer, ForeignKey(f"{TBL_PLANT_TYPES}.id", name=f"fk_plant_type_id_{__tablename__}"), nullable=False)
-    plantType = relationship("PlantType", back_populates='plant_types')
+    plantType = relationship("PlantType", back_populates='plants')
 
     userId = Column(Integer, ForeignKey(f"{TBL_USERS}.id", name=f"fk_user_id_{__tablename__}"), nullable=False)
-    user = relationship("User", back_populates='users')
+    user = relationship("User", back_populates='plants')
 
-    privacy = Column("privacy", Enum(Privacy))
 
-    def __init__(self, name, desc, plantTypeId, userId, privacy):
+    def __init__(self, name, desc, plantTypeId, userId):
         self.name = name
         self.desc = desc
         self.plantTypeId = plantTypeId
         self.userId = userId
-        self.privacy = privacy
 
     # will need to add more methods here for getting info and setting info of the user

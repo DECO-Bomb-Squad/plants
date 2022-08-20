@@ -1,4 +1,5 @@
 from data.constants import TBL_USERS
+from data.plants import Plant, PlantType
 from sqlalchemy import Column, Integer, String, DateTime, UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -15,14 +16,16 @@ class User(DB.BASE):
     UniqueConstraint(username, name='UNQIUE-username')
     email = Column('email', String(64), nullable=False)
     bio = Column('bio', String(255), nullable=True)
-    startDate = Column('startDate', DateTime(timezone=True), server_default=func.now())
+    startDate = Column('startDate', DateTime(timezone=True), default = func.now())
+    reputation = Column('reputation', Integer, nullable=False)
 
     # relationships
-    plants = relationship("Plant", back_populates="plants")
+    plants = relationship("Plant", back_populates="user")
 
-    def __init__(self, username, email, bio=None) -> None:
+    def __init__(self, username, email, bio=None, reputation=0) -> None:
         self.username = username
         self.email = email
         self.bio = bio
+        self.reputation = 0
 
     # will need to add more methods here for getting info and setting info of the user
