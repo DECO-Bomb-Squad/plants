@@ -1,5 +1,6 @@
-from flask import Blueprint
-from data import DB
+from typing import List
+from flask import Blueprint, request
+from data import DB, Plant, User, PlantType
 
 app = Blueprint('plant_endpoints', __name__)
 session = DB.SESSION()
@@ -15,11 +16,49 @@ Adds a PERSONAL plant. (POST)
         - photoUrl:      string 
         - plantTypeId:   int
         - plantTags:     [string]
-        // if friends are happening
-        - private:       boolean
 '''
+@app.route("/plant", methods = ["POST"])
+# TODO:
+#  - Photo saving to Azure
+#  - Plant Tags
 def add_personal_plant():
-    pass
+    try:
+        personalName: str = request.form['personalName']
+        description:  str = request.form['desc']
+        userId:       int = request.form['userId']
+        # photoUrl:     str = request.form['photoUrl']
+        plantTypeId:  int = request.form['plantTypeId']
+        # plantTags:    List[str] = request.form['plantTags']
+
+        # verify all information is present
+        if (not userId or
+            not personalName or
+            not description or
+            # not photoUrl or
+            not plantTypeId):
+            # not plantTags):
+            raise KeyError
+
+        # foreign key check
+        userCount: int = session.query(User).filter(User.id == userId).count()
+        typeCount: int = session.query(PlantType).filter(PlantType.id == plantTypeId).count()
+        if (userCount == 0 or typeCount == 0):
+            return "Invalid user or plant type information", 400
+
+    except KeyError as e:
+        return "To add a plant, you must provide: personalName: str, description: str, userId: str, photoUrl: str, plantTypeId: str, plantTags: [str]", 400
+    except Exception as e:
+        return "An unknown error occurred:", e, 400
+
+    # add to DB
+    try:
+        plant = Plant(name=personalName, desc=description, plantTypeId=plantTypeId, userId=userId)
+        session.add(plant)
+        session.commit()
+    except Exception as e:
+        return "A database error occurred:", e, 400
+
+    return "The plant was added successfully", 200
 
 '''
 Gets a PERSONAL Plant (GET)
@@ -28,6 +67,7 @@ Gets a PERSONAL Plant (GET)
     - Returns:
         - all plant information
 '''
+@app.route("/plant/<id>", methods = ["GET"])
 def get_personal_plant():
     pass
 

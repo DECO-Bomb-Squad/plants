@@ -1,6 +1,7 @@
 from flask import Blueprint,request
 from sqlalchemy import update
 from data import DB, User
+import json
 from data.constants import TBL_USERS
 
 app = Blueprint('user_endpoints', __name__)
@@ -46,6 +47,17 @@ def add_user():
     return 'The user was added successfully', 200
 
 '''
+Gets ALL Users (GET)
+    - Returns:
+        List of usernames and their ids
+'''
+@app.route("/users/", methods = ['GET', 'POST'])
+def get_all_users():
+    users = session.query(User).all()
+    res = json.dumps(list(map(lambda user : {"username": user.username, "id": user.id}, users)))
+    return res, 200
+
+'''
 Gets a User (GET)
     - Params:
         - userId: int
@@ -57,6 +69,7 @@ def get_user(username: str):
     user: User = session.query(User).filter(User.username == username).first()
     if user:
         return {
+            "userId": user.id,
             "username": user.username,
             "email": user.email,
             "startDate": user.startDate,
