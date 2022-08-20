@@ -22,10 +22,11 @@ class User(DB.BASE):
     # relationships
     plants = relationship("Plant", back_populates="user")
 
-    def __init__(self, username, email, bio=None, reputation=0) -> None:
+    def __init__(self, username, email, bio=None, reputation=0, startDate=func.now()) -> None:
         self.username = username
         self.email = email
         self.bio = bio
-        self.reputation = 0
+        self.reputation = reputation
+        self.startDate = startDate
 
     # will need to add more methods here for getting info and setting info of the user

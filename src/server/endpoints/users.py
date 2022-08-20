@@ -6,10 +6,6 @@ session = DB.SESSION()
 
 # ===== Major User Endpoints ====
 
-@app.route("/")
-def root():
-    return "Welcome to our friendly Plants API. Check the Docs."
-
 '''
 Adds a User (POST)
     - Params:
@@ -56,7 +52,17 @@ Gets a User (GET)
 '''
 @app.route("/users/<username>", methods = ['GET', 'POST'])
 def get_user(username: str):
-    pass
+    user: User = session.query(User).filter(User.username == username).first()
+    if user:
+        return {
+            "username": user.username,
+            "email": user.email,
+            "startDate": user.startDate,
+            "reputation": user.reputation,
+            "bio": user.bio if user.bio else ""
+        }, 200
+    else:
+        return "The user was not found", 400
 
 # === Minor User Endpoints ====
 
