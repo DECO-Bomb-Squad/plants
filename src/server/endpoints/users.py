@@ -74,7 +74,7 @@ Set User Bio
         - username: string
         - bio:      string
 '''
-@app.route("/users/setbio")
+@app.route("/users/setbio", methods = ['POST'])
 def set_user_bio():
     try:
         username: str = request.form['username']
