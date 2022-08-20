@@ -39,4 +39,4 @@ if __name__ == "__main__":
     # session.add_all([plantType, plant])
     # session.commit()
 
-    app.run(debug=False, port=5000)
+    app.run(debug=False, port=3000)

@@ -1,6 +1,8 @@
 from flask import Blueprint
+from data import DB
 
 app = Blueprint('plant_endpoints', __name__)
+session = DB.SESSION()
 
 # ===== Personal Plant Management Endpoints ====
 
