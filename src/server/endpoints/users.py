@@ -1,5 +1,7 @@
 from flask import Blueprint,request
+from sqlalchemy import update
 from data import DB, User
+from data.constants import TBL_USERS
 
 app = Blueprint('user_endpoints', __name__)
 session = DB.SESSION()
@@ -69,9 +71,33 @@ def get_user(username: str):
 '''
 Set User Bio
     - Params:
-        - userId:   int
+        - username: string
         - bio:      string
 '''
 @app.route("/users/setbio")
 def set_user_bio():
-    pass
+    try:
+        username: str = request.form['username']
+        bio:      str = request.form['bio']
+
+        # verify information
+        if (not username or not bio):
+            raise KeyError
+
+        # check if user exists
+        numUsers  = session.query(User).filter(User.username == username).count()
+        if numUsers == 0:
+            return "This user could not be found.", 400
+
+    except KeyError as e:
+        return "To set a user's bio, you must provide: username: str, bio: str", 400
+    except Exception as e:
+        return "An unknown error occurred:", e, 400
+
+    try:
+        session.query(User).filter(User.username == username).update({'bio': bio})
+        session.commit()
+    except Exception as e:
+        return "There was an error updating the entry:", e, 400
+
+    return "The bio was updated successfully", 200
