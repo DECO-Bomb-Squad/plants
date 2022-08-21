@@ -2,6 +2,8 @@ from data.constants import TBL_PLANTS, TBL_USERS, TBL_PLANT_TYPES
 from data.plants.privacy import Privacy
 from sqlalchemy import Column, Integer, String, ForeignKey, Enum
 from sqlalchemy.orm import relationship
+from flask import jsonify
+import json
 
 import data.DB as DB
 
@@ -26,5 +28,14 @@ class Plant(DB.BASE):
         self.desc = desc
         self.plantTypeId = plantTypeId
         self.userId = userId
+
+    def serialize(self):
+        return {
+            "id":   self.id,
+            "name": self.name,
+            "desc": self.desc,
+            "plantTypeId": self.plantTypeId,
+            "userId":      self.userId
+        }
 
     # will need to add more methods here for getting info and setting info of the user

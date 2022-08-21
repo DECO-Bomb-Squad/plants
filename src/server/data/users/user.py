@@ -1,3 +1,5 @@
+from typing import List
+from flask import jsonify
 from data.constants import TBL_USERS
 from data.plants import Plant, PlantType
 from sqlalchemy import Column, Integer, String, DateTime, UniqueConstraint
@@ -28,5 +30,21 @@ class User(DB.BASE):
         self.bio = bio
         self.reputation = reputation
         self.startDate = startDate
+
+    def get_plants(self, session):
+        plants: List[Plant] = session.query(Plant).join(User).filter(User.username == self.username).all()
+        allPlants = [plant.serialize() for plant in plants]
+        return jsonify(userPlants=allPlants)
+
+    def serialize(self):
+        return {
+            "userId": self.id,
+            "username": self.username,
+            "email": self.email,
+            "startDate": self.startDate,
+            "reputation": self.reputation,
+            "bio": self.bio if self.bio else ""
+        }
+        
 
     # will need to add more methods here for getting info and setting info of the user

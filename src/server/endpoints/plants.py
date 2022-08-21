@@ -75,13 +75,7 @@ def get_personal_plant(id: str):
         return "The requested plant does not exist", 400
 
     # return information about the plant
-    return json.dumps({
-        "id":   plant.id,
-        "name": plant.name,
-        "desc": plant.desc,
-        "plantTypeId": plant.plantTypeId,
-        "userId":      plant.userId 
-    }), 200
+    return plant.serialize(), 200
 
 '''
 Deletes a PERSONAL Plant (DELETE)

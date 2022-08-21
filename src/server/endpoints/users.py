@@ -68,16 +68,32 @@ Gets a User (GET)
 def get_user(username: str):
     user: User = session.query(User).filter(User.username == username).first()
     if user:
-        return {
-            "userId": user.id,
-            "username": user.username,
-            "email": user.email,
-            "startDate": user.startDate,
-            "reputation": user.reputation,
-            "bio": user.bio if user.bio else ""
-        }, 200
+        return user.serialize(), 200
     else:
         return "The user was not found", 400
+
+'''
+Gets a Users Plants (GET)
+    - Params:
+        - userId: int
+    - Returns:
+        - all user plant information
+'''
+@app.route("/users/<username>/plants", methods = ["GET", "POST"])
+def get_user_plants(username: str):
+    user: User = session.query(User).filter(User.username == username).first()
+
+    if not user:
+        return "User not found. This requires username: str", 400
+
+    try:
+        userPlants = user.get_plants(session)
+    except Exception as e:
+        return "An error occured whilst retrieving user plant information", e, 500
+    
+    return userPlants, 200
+
+    
 
 # === Minor User Endpoints ====
 
