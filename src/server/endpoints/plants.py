@@ -1,9 +1,11 @@
 from flask import Blueprint, request
-from data import DB, Plant, User, PlantType
+from data import Plant, User, PlantType
+from utils.api import APICall
+
 import json
 
+
 app = Blueprint('plant_endpoints', __name__)
-session = DB.SESSION()
 
 # ===== Personal Plant Management Endpoints ====
 
@@ -21,7 +23,8 @@ Adds a PERSONAL plant. (POST)
 # TODO:
 #  - Photo saving to Azure
 #  - Plant Tags
-def add_personal_plant():
+@APICall
+def add_personal_plant(session):
     try:
         personalName: str = request.form['personalName']
         description:  str = request.form['desc']
@@ -68,7 +71,8 @@ Gets a PERSONAL Plant (GET)
         - all plant information
 '''
 @app.route("/plant/<id>", methods = ["GET"])
-def get_personal_plant(id: str):
+@APICall
+def get_personal_plant(session, id: str):
     # verify the id
     plant: Plant = session.query(Plant).filter(Plant.id == id).first()
     if not plant:
@@ -85,7 +89,8 @@ Deletes a PERSONAL Plant (DELETE)
     ASSUME THE USER IS DELETING THEIR AND NOT SOMEONE ELSES PLANT
 '''
 @app.route('/plants/delete', methods = ['DELETE'])
-def delete_personal_plant():
+@APICall
+def delete_personal_plant(session):
     try:
         plantId: str = request.form['plantId']
     except KeyError:

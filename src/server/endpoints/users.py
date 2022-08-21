@@ -1,11 +1,12 @@
 from flask import Blueprint,request
 from sqlalchemy import update
-from data import DB, User
+from data import User
 import json
 from data.constants import TBL_USERS
+from utils.api import APICall
 
 app = Blueprint('user_endpoints', __name__)
-session = DB.SESSION()
+# session = DB.SESSION()
 
 # ===== Major User Endpoints ====
 
@@ -16,7 +17,8 @@ Adds a User (POST)
         - email:     string
 '''
 @app.route("/user", methods = ['POST'])
-def add_user():
+@APICall
+def add_user(session):
     try:
         username: str = request.form['username']
         email:    str = request.form['email']
@@ -52,8 +54,9 @@ Gets ALL Users (GET)
         List of usernames and their ids
 '''
 @app.route("/users/", methods = ['GET', 'POST'])
-def get_all_users():
-    users = session.query(User).all()
+@APICall
+def get_all_users(sesh):
+    users = sesh.query(User).all()
     res = json.dumps(list(map(lambda user : {"username": user.username, "id": user.id}, users)))
     return res, 200
 
@@ -65,7 +68,8 @@ Gets a User (GET)
         - all user info
 '''
 @app.route("/users/<username>", methods = ['GET', 'POST'])
-def get_user(username: str):
+@APICall
+def get_user(session, username: str):
     user: User = session.query(User).filter(User.username == username).first()
     if user:
         return user.serialize(), 200
@@ -80,14 +84,15 @@ Gets a Users Plants (GET)
         - all user plant information
 '''
 @app.route("/users/<username>/plants", methods = ["GET", "POST"])
-def get_user_plants(username: str):
+@APICall
+def get_user_plants(session, username: str):
     user: User = session.query(User).filter(User.username == username).first()
 
     if not user:
         return "User not found. This requires username: str", 400
 
     try:
-        userPlants = user.get_plants(session)
+        userPlants = user.get_plants()
     except Exception as e:
         return "An error occured whilst retrieving user plant information", e, 500
     
@@ -104,7 +109,8 @@ Set User Bio
         - bio:      string
 '''
 @app.route("/users/setbio", methods = ['POST'])
-def set_user_bio():
+@APICall
+def set_user_bio(session):
     try:
         username: str = request.form['username']
         bio:      str = request.form['bio']

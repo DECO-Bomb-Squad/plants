@@ -1,4 +1,3 @@
-from typing import List
 from flask import jsonify
 from data.constants import TBL_USERS
 from data.plants import Plant, PlantType
@@ -31,9 +30,8 @@ class User(DB.BASE):
         self.reputation = reputation
         self.startDate = startDate
 
-    def get_plants(self, session):
-        plants: List[Plant] = session.query(Plant).join(User).filter(User.username == self.username).all()
-        allPlants = [plant.serialize() for plant in plants]
+    def get_plants(self):
+        allPlants = [plant.serialize() for plant in self.plants]
         return jsonify(userPlants=allPlants)
 
     def serialize(self):
