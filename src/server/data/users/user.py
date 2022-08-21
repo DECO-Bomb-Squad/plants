@@ -1,3 +1,4 @@
+from flask import jsonify
 from data.constants import TBL_USERS
 from data.plants import Plant, PlantType
 from sqlalchemy import Column, Integer, String, DateTime, UniqueConstraint
@@ -22,10 +23,26 @@ class User(DB.BASE):
     # relationships
     plants = relationship("Plant", back_populates="user")
 
-    def __init__(self, username, email, bio=None, reputation=0) -> None:
+    def __init__(self, username, email, bio=None, reputation=0, startDate=func.now()) -> None:
         self.username = username
         self.email = email
         self.bio = bio
-        self.reputation = 0
+        self.reputation = reputation
+        self.startDate = startDate
+
+    def get_serialized_plants(self):
+        allPlants = [plant.serialize() for plant in self.plants]
+        return jsonify(userPlants=allPlants)
+
+    def serialize(self):
+        return {
+            "userId": self.id,
+            "username": self.username,
+            "email": self.email,
+            "startDate": self.startDate,
+            "reputation": self.reputation,
+            "bio": self.bio if self.bio else ""
+        }
+        
 
     # will need to add more methods here for getting info and setting info of the user

@@ -27,6 +27,10 @@ app: Flask = create_app()
 db: SQLAlchemy = SQLAlchemy(app)
 db.init_app(app)
 
+@app.route("/")
+def root():
+    return "Welcome to our friendly Plants API. Check the Docs."
+
 if __name__ == "__main__":
     # session = SESSION()
     # admin = User(username='bobbithy', email='bob@example.com')
@@ -39,4 +43,4 @@ if __name__ == "__main__":
     # session.add_all([plantType, plant])
     # session.commit()
 
-    app.run(debug=False, port=5000)
+    app.run(debug=False, port=3000)
