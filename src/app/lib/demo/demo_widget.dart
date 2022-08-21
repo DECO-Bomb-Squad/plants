@@ -9,7 +9,7 @@ class DemoWidget extends StatefulWidget {
   // arguments
   // use 'this.varname' in the constructor to automatically assign the arg to a class parameter :)
   // https://dart.dev/guides/language/language-tour#constructors
-  DemoWidget(this.demoTitle, {Key? key}) : super(key: key);
+  const DemoWidget(this.demoTitle, {Key? key}) : super(key: key);
 
   // Any StatefulWidget must override createState by calling the constructor for the state you define
   // You can use this arrow => to quickly return something instead of doing {return _DemoWidgetState();}
@@ -23,43 +23,35 @@ class _DemoWidgetState extends State<DemoWidget> {
   _DemoWidgetState() : counter = 0;
 
   @override
-  Widget build(BuildContext context) => Expanded(
-        child: Scaffold(
-          body: Center(
-            child: Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      color: Colors.amber,
-                      // this is how you can format strings :)
-                      // access data from the parent widget like widget.demoTitle!
-                      child: Text("${widget.demoTitle} : ${counter.toString()}"),
-                    ),
-                  ),
-                  spacer,
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                      color: Colors.pink,
-                      child: IconButton(
-                        icon: const Icon(Icons.add),
-                        // when this button is pressed, it increments a counter which will display in the container above it
-                        // setState triggers a rebuild of the widget (will cause "build" to be called again)
-                        // In general, wrap any changes that might change how the widget is displayed, in the setState.
-                        onPressed: () => setState(() {
-                          counter++;
-                        }),
-                      ),
-                    ),
-                  ),
-                ],
+  Widget build(BuildContext context) => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            flex: 2,
+            child: Container(
+              color: Colors.amber,
+              // this is how you can format strings :)
+              // access data from the parent widget like widget.demoTitle!
+              child: Text("${widget.demoTitle} : ${counter.toString()}"),
+            ),
+          ),
+          spacer,
+          Expanded(
+            flex: 3,
+            child: Container(
+              color: Colors.pink,
+              child: IconButton(
+                icon: const Icon(Icons.add),
+                // when this button is pressed, it increments a counter which will display in the container above it
+                // setState triggers a rebuild of the widget (will cause "build" to be called again)
+                // In general, wrap any changes that might change how the widget is displayed, in the setState.
+                onPressed: () => setState(() {
+                  counter++;
+                }),
               ),
             ),
           ),
-        ),
+        ],
       );
 
   // Can use getters like these to potentially do pretty complex operations, but still call it like its a class param!
