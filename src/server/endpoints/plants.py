@@ -1,6 +1,6 @@
-from typing import List
 from flask import Blueprint, request
 from data import DB, Plant, User, PlantType
+import json
 
 app = Blueprint('plant_endpoints', __name__)
 session = DB.SESSION()
@@ -68,19 +68,48 @@ Gets a PERSONAL Plant (GET)
         - all plant information
 '''
 @app.route("/plant/<id>", methods = ["GET"])
-def get_personal_plant():
-    pass
+def get_personal_plant(id: str):
+    # verify the id
+    plant: Plant = session.query(Plant).filter(Plant.id == id).first()
+    if not plant:
+        return "The requested plant does not exist", 400
+
+    # return information about the plant
+    return json.dumps({
+        "id":   plant.id,
+        "name": plant.name,
+        "desc": plant.desc,
+        "plantTypeId": plant.plantTypeId,
+        "userId":      plant.userId 
+    }), 200
 
 '''
 Deletes a PERSONAL Plant (DELETE)
     - Params:
         - plantId: int
-        - userId:  int
-    - Notes:
-        - plant must belong to user
+    
+    ASSUME THE USER IS DELETING THEIR AND NOT SOMEONE ELSES PLANT
 '''
+@app.route('/plants/delete', methods = ['DELETE'])
 def delete_personal_plant():
-    pass
+    try:
+        plantId: str = request.form['plantId']
+    except KeyError:
+        return "Invalid request parameters. Must include plantId: str", 400
+
+    # check it's in the DB
+    plant: Plant = session.query(Plant).filter(Plant.id == plantId).first()
+    if not plant:
+        return "Plant was not found", 400
+
+    # attempt a deletion
+    try:
+        session.delete(plant)
+        session.commit()
+    except Exception as e:
+        return "Error deleting plant:", e, 500
+
+    return "Plant was successfully deleted", 200
 
 # ==== Miscellaneous Plant Endpoints ====
 
