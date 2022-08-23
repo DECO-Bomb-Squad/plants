@@ -161,5 +161,7 @@ Deletes a Plant Type (ADMIN)
 def test_plant(session):
     return {
         "plant_name": "Rose",
-        "scientific_name": "Scientific"
+        "scientific_name": "Scientific",
+        "tags": [],
+        "imageUrls": []
     }, 200
