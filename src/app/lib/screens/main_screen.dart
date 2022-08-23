@@ -33,30 +33,14 @@ class _MainScreenState extends State<MainScreen> {
                   thumbVisibility: true,
                   radius: const Radius.circular(10),
                   child: GridView(
-                    scrollDirection: Axis.horizontal,
-                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 200, childAspectRatio: 1, crossAxisSpacing: 20, mainAxisSpacing: 20),
-                    children: <Widget>[
-                      DecoratedBox(
-                          decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10))),
-                      DecoratedBox(
-                          decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10))),
-                      DecoratedBox(
-                          decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10))),
-                      DecoratedBox(
-                          decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10))),
-                      DecoratedBox(
-                          decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10))),
-                      DecoratedBox(
-                          decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10))),
-                      DecoratedBox(
-                          decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10))),
-                      DecoratedBox(
-                          decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10))),
-                      DecoratedBox(
-                          decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10))),
-                    ],
-                  ))),
+                      scrollDirection: Axis.horizontal,
+                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 200, childAspectRatio: 1, crossAxisSpacing: 20, mainAxisSpacing: 20),
+                      children: List<Widget>.generate(
+                          10,
+                          (int idx) => DecoratedBox(
+                              decoration:
+                                  BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10))))))),
           spacer,
           spacer,
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -68,25 +52,17 @@ class _MainScreenState extends State<MainScreen> {
           ]),
           Flexible(
               child: GridView(
-            padding: EdgeInsets.zero,
-            scrollDirection: Axis.vertical,
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.9,
-                childAspectRatio: 3 / 1,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20),
-            children: <Widget>[
-              DecoratedBox(decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10))),
-              DecoratedBox(decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10))),
-              DecoratedBox(decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10))),
-              DecoratedBox(decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10))),
-              DecoratedBox(decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10))),
-              DecoratedBox(decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10))),
-              DecoratedBox(decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10))),
-              DecoratedBox(decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10))),
-              DecoratedBox(decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10))),
-            ],
-          )),
+                  padding: EdgeInsets.zero,
+                  scrollDirection: Axis.vertical,
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.9,
+                      childAspectRatio: 3 / 1,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20),
+                  children: List<Widget>.generate(
+                      10,
+                      (int idx) => DecoratedBox(
+                          decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10)))))),
         ],
       ));
 
