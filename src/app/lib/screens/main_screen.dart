@@ -2,8 +2,7 @@ import 'package:app/utils/colour_scheme.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {
-  final String demoTitle;
-  const MainScreen(this.demoTitle, {Key? key}) : super(key: key);
+  const MainScreen({Key? key}) : super(key: key);
 
   @override
   State<MainScreen> createState() => _MainScreenState();
