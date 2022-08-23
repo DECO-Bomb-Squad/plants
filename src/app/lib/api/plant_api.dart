@@ -3,13 +3,13 @@ import 'dart:io';
 
 import 'package:app/api/storage.dart';
 import 'package:app/base/user.dart';
-import 'package:flutter/foundation.dart';
+import 'package:app/interfaces/plant_type_info/plant_type_info_model.dart';
 import 'package:http/http.dart' as http;
 
 //final AsyncCache<T> _getXCache = AsyncCache(const Duration(days: 1));
 
 // Must refer to 10.0.2.2 within emulator - 127.0.0.1 refers to the emulator itself!
-const BACKEND_URL_LOCAL = "http://10.0.2.2:5000";
+const BACKEND_URL_LOCAL = "10.0.2.2:5000";
 const BACKEND_URL_PROD = "TODO_fill_in_later";
 
 class PlantAPI {
@@ -19,7 +19,9 @@ class PlantAPI {
 
   factory PlantAPI() => _instance;
 
-  final _baseAddress = kReleaseMode ? BACKEND_URL_PROD : BACKEND_URL_LOCAL;
+  final _baseAddress = "demo0328727.mockable.io";
+  // final _baseAddress = BACKEND_URL_LOCAL;
+  //final _baseAddress = kReleaseMode ? BACKEND_URL_PROD : BACKEND_URL_LOCAL;
 
   PlantAppStorage store = PlantAppStorage();
   PlantAppCache cache = PlantAppCache();
@@ -86,21 +88,18 @@ class PlantAPI {
     cache.clear();
   }
 
-  // Use this when you're querying the back end for a model to display on front end.
-  // Constructor is generally going to be a model.fromJSON() constructor that creates
-  // a model from the response body.
-  // Not useful if you need to POST something or do something complex with the response
-  Future<T?> getGeneric<T>(String path, T Function(dynamic) constructor, {String? key}) async {
-    if (!await initUserIfRequired()) return null;
+  Future<T> getGeneric<T>(String path, T Function(dynamic) constructor, {Map<String, dynamic>? queryParams}) async {
+    if (!await initUserIfRequired()) throw Exception("User not initialised!");
 
-    http.Response response;
-    try {
-      response = await http.get(makePath(path), headers: header);
-    } on Exception catch (e, st) {
-      print(e);
-      print(st);
-      return null;
+    http.Response response = await http.get(makePath(path, queryParams: queryParams), headers: header);
+    if (response.statusCode != 200) {
+      throw Exception(response.statusCode.toString());
     }
-    return response.statusCode == 200 ? (json.decode(response.body)) : null;
+    return constructor(json.decode(response.body));
+  }
+
+  Future<PlantTypeInfoModel> getPlantTypeInfo(String plantTypeName) {
+    Map<String, String> queryParams = {"plant_type_name": plantTypeName};
+    return getGeneric('test_plant', (j) => PlantTypeInfoModel.fromJSON(j));
   }
 }

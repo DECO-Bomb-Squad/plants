@@ -1,5 +1,6 @@
 import 'package:app/base/nav_bar.dart';
 import 'package:app/demo/demo_widget.dart';
+import 'package:app/interfaces/plant_type_info/plant_type_info_model.dart';
 import 'package:flutter/material.dart';
 
 class RootWidget extends StatefulWidget {
@@ -9,8 +10,7 @@ class RootWidget extends StatefulWidget {
   State<RootWidget> createState() => _RootWidgetState();
 }
 
-class _RootWidgetState extends State<RootWidget>
-    with SingleTickerProviderStateMixin {
+class _RootWidgetState extends State<RootWidget> with SingleTickerProviderStateMixin {
   _RootWidgetState();
 
   @override
@@ -27,6 +27,7 @@ class _RootWidgetState extends State<RootWidget>
         iconData: Icons.two_k,
         childFunc: () => const Text("boo"),
       ),
+      NavBarItem(text: "Test", iconData: Icons.abc, childFunc: () => PlantTypeInfoDemo()),
     ];
     controller = TabController(length: navItems!.length, vsync: this);
   }

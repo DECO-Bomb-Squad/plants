@@ -1,7 +1,11 @@
 # Plants: Bomb Squad
 
 ## Setting Up Front End
-TBD
+### Starting the Front End
+1. Navigate to `src/app`
+2. Run `flutter pub get` to retrieve dependencies
+3. Start up android emulator via VSCode
+4. Navigate to the "Run and debug" menu, select the launch option called "Plant app"
 ## Setting Up Back end
 ### Virtual Environment
 1. Navigate to `src/server`
@@ -19,9 +23,3 @@ all you will need to do is start the virtual environment.
 2. Access the virtual environment. See above for more information.
 3. Run `python3 app.py`
 4. Navigate to `http://127.0.0.1:5000`
-
-### Starting the Front End
-1. Navigate to `src/app`
-2. Run `flutter pub get` to retrieve dependencies
-3. Start up android emulator via VSCode
-4. Navigate to the "Run and debug" menu, select the launch option called "Plant app"

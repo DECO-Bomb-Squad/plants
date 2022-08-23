@@ -37,6 +37,7 @@ dependencies:
   flutter_secure_storage: ^5.0.2
   shared_preferences: ^2.0.13
   async: ^2.8.2
+  loading_gifs: ^0.3.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
