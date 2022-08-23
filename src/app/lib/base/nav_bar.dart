@@ -10,17 +10,13 @@ class NavBarItem {
   Widget? _child;
   Widget get child {
     _child ??= childFunc();
-    return _child ??
-        childFunc(); // dart complains about nullness unless i do this also
+    return _child ?? childFunc(); // dart complains about nullness unless i do this also
   }
 
-  NavBarItem(
-      {required this.text, required this.iconData, required this.childFunc});
+  NavBarItem({required this.text, required this.iconData, required this.childFunc});
 
-  Widget getTab(bool isSelected) => Tab(
-      text: text,
-      icon: Icon(iconData,
-          color: isSelected ? selectedIconColour : unselectedIconColour));
+  Widget getTab(bool isSelected) =>
+      Tab(text: text, icon: Icon(iconData, color: isSelected ? lightColour : lightHighlight));
 }
 
 class NavBar extends StatefulWidget {
@@ -42,17 +38,13 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) => Container(
-        decoration: const BoxDecoration(color: navBarColour),
+        decoration: const BoxDecoration(color: darkHighlight),
         child: TabBar(
-          indicatorColor: selectedIconColour,
+          indicatorColor: lightColour,
           controller: widget.controller,
-          labelColor: selectedIconColour,
-          unselectedLabelColor: unselectedIconColour,
-          tabs: widget.items
-              .asMap()
-              .entries
-              .map((e) => e.value.getTab(widget.controller.index == e.key))
-              .toList(),
+          labelColor: lightColour,
+          unselectedLabelColor: lightHighlight,
+          tabs: widget.items.asMap().entries.map((e) => e.value.getTab(widget.controller.index == e.key)).toList(),
         ),
       );
 }

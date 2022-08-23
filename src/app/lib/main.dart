@@ -2,8 +2,10 @@ import 'package:app/api/plant_api.dart';
 import 'package:app/api/storage.dart';
 import 'package:app/base/root_widget.dart';
 import 'package:app/base/user.dart';
+import 'package:app/constants/colour_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runPlantApp();
@@ -11,13 +13,12 @@ void main() {
 
 void runPlantApp() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // TEMP: until we begin properly initialising users w/ login, etc
   PlantAPI api = PlantAPI();
   api.user = User.fromJSON({"id": 1, "name": "Jay Son"});
   GetIt.I.registerSingleton<PlantAppStorage>(PlantAppStorage());
   GetIt.I.registerSingleton<PlantAppCache>(PlantAppCache());
   GetIt.I.registerSingleton<PlantAPI>(api);
-
-  // TEMP: until we begin properly initialising users
 
   runApp(const PlantApp());
 }
@@ -28,6 +29,10 @@ class PlantApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+          statusBarColor: lightColour, statusBarBrightness: Brightness.light, statusBarIconBrightness: Brightness.dark),
+    ); // This ensures that the phones status bar is the same colour as the app background and the icons are visible
     return MaterialApp(
       title: 'Plant App',
       theme: ThemeData(
@@ -41,6 +46,7 @@ class PlantApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: lightColour, // This sets the default background colour of the app
       ),
       home: const RootWidget(),
     );

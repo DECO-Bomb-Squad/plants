@@ -1,6 +1,7 @@
 import 'package:app/base/nav_bar.dart';
-import 'package:app/demo/demo_widget.dart';
+import 'package:app/constants/colour_scheme.dart';
 import 'package:app/interfaces/plant_type_info/plant_type_info_model.dart';
+import 'package:app/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 
 class RootWidget extends StatefulWidget {
@@ -18,13 +19,23 @@ class _RootWidgetState extends State<RootWidget> with SingleTickerProviderStateM
     super.initState();
     navItems = [
       NavBarItem(
-        text: "Demo",
-        iconData: Icons.question_answer,
-        childFunc: () => DemoWidget("Demo! Hello"),
+        text: "Home",
+        iconData: Icons.home,
+        childFunc: () => const MainScreen(),
       ),
       NavBarItem(
-        text: "Second Thing",
-        iconData: Icons.two_k,
+        text: "My Plants",
+        iconData: Icons.yard,
+        childFunc: () => const Text("boo"),
+      ),
+      NavBarItem(
+        text: "Trending",
+        iconData: Icons.trending_up,
+        childFunc: () => const Text("boo"),
+      ),
+      NavBarItem(
+        text: "Ask\nQuestion",
+        iconData: Icons.question_answer,
         childFunc: () => const Text("boo"),
       ),
       NavBarItem(text: "Test", iconData: Icons.abc, childFunc: () => PlantTypeInfoDemo()),
@@ -38,15 +49,40 @@ class _RootWidgetState extends State<RootWidget> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) => Scaffold(
+        body: NestedScrollView(
+            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                SliverAppBar(
+                  backgroundColor: lightColour,
+                  shadowColor: lightColour,
+                  pinned: false,
+                  floating: true,
+                  forceElevated: innerBoxIsScrolled,
+                  iconTheme: const IconThemeData(color: darkHighlight, size: 35),
+                  actions: [
+                    IconButton(
+                      icon: const Icon(Icons.person),
+                      tooltip: 'Add new entry',
+                      onPressed: () {/* ... */},
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.notifications),
+                      tooltip: 'Add new entry',
+                      onPressed: () {/* ... */},
+                    ),
+                  ],
+                ),
+              ];
+            },
+            body: TabBarView(
+              controller: controller!,
+              children: navItems!.map((e) => e.child).toList(),
+            )),
         bottomNavigationBar: BottomAppBar(
           child: NavBar(
             controller: controller!,
             items: navItems!,
           ),
-        ),
-        body: TabBarView(
-          controller: controller!,
-          children: navItems!.map((e) => e.child).toList(),
         ),
       );
 }
