@@ -1,7 +1,8 @@
 import 'package:app/base/nav_bar.dart';
-import 'package:app/constants/colour_scheme.dart';
+import 'package:app/utils/colour_scheme.dart';
 import 'package:app/interfaces/plant_type_info/plant_type_info_model.dart';
 import 'package:app/screens/main_screen.dart';
+import 'package:app/screens/layout_test_screen.dart';
 import 'package:flutter/material.dart';
 
 class RootWidget extends StatefulWidget {
@@ -26,7 +27,7 @@ class _RootWidgetState extends State<RootWidget> with SingleTickerProviderStateM
       NavBarItem(
         text: "My Plants",
         iconData: Icons.yard,
-        childFunc: () => const Text("boo"),
+        childFunc: () => const LayoutScreen("Demo time!"),
       ),
       NavBarItem(
         text: "Trending",
