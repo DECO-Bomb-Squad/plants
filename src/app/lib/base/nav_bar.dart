@@ -1,6 +1,10 @@
 import 'package:app/utils/colour_scheme.dart';
 import 'package:flutter/material.dart';
 
+// Placed here to easily allow changing of multiple instances of each at once
+Color selected = lightColour;
+Color unselected = darkHighlight;
+
 class NavBarItem {
   final String text;
   final IconData iconData;
@@ -16,7 +20,7 @@ class NavBarItem {
   NavBarItem({required this.text, required this.iconData, required this.childFunc});
 
   Widget getTab(bool isSelected) =>
-      Tab(text: text, icon: Icon(iconData, color: isSelected ? lightColour : lightHighlight));
+      Tab(text: text, icon: Icon(iconData, color: isSelected ? selected : unselected));
 }
 
 class NavBar extends StatefulWidget {
@@ -38,12 +42,18 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) => Container(
-        decoration: const BoxDecoration(color: darkHighlight),
+        decoration: const BoxDecoration(
+          color: lightHighlight,
+          boxShadow: [BoxShadow(
+            color: Color.fromARGB(61, 48, 39, 33),
+            blurRadius: 3,
+            spreadRadius: 1
+          )]),
         child: TabBar(
-          indicatorColor: lightColour,
+          indicatorColor: selected,
           controller: widget.controller,
-          labelColor: lightColour,
-          unselectedLabelColor: lightHighlight,
+          labelColor: selected,
+          unselectedLabelColor: unselected,
           tabs: widget.items.asMap().entries.map((e) => e.value.getTab(widget.controller.index == e.key)).toList(),
         ),
       );

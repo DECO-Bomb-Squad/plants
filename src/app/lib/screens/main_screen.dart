@@ -1,4 +1,4 @@
-import 'package:app/utils/colour_scheme.dart';
+import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {
@@ -23,7 +23,7 @@ class _MainScreenState extends State<MainScreen> {
               alignment: Alignment.centerLeft,
               child: const Text(
                 "MY PLANTS",
-                style: TextStyle(fontSize: 24, color: darkColour),
+                style: mainHeaderStyle,
               )),
           spacer,
           SizedBox(
@@ -39,12 +39,11 @@ class _MainScreenState extends State<MainScreen> {
                       children: List<Widget>.generate(
                           10,
                           (int idx) => DecoratedBox(
-                              decoration:
-                                  BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10))))))),
+                              decoration: smallPlantComponent))))),
           spacer,
           spacer,
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Text("HOT QUESTIONS", style: TextStyle(fontSize: 24, color: darkColour)),
+            const Text("HOT QUESTIONS", style: mainHeaderStyle),
             IconButton(
               icon: const Icon(Icons.add),
               onPressed: () => null,
@@ -62,7 +61,7 @@ class _MainScreenState extends State<MainScreen> {
                   children: List<Widget>.generate(
                       10,
                       (int idx) => DecoratedBox(
-                          decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(10)))))),
+                          decoration: smallPostComponent)))),
         ],
       ));
 
