@@ -1,4 +1,4 @@
-azure-core==1.25.0
+azure-core==1.24.1
 azure-storage-blob==12.13.1
 certifi==2022.6.15
 cffi==1.15.1
