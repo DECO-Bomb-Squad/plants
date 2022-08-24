@@ -2,7 +2,7 @@ import 'package:app/api/plant_api.dart';
 import 'package:app/api/storage.dart';
 import 'package:app/base/root_widget.dart';
 import 'package:app/base/user.dart';
-import 'package:app/constants/colour_scheme.dart';
+import 'package:app/utils/colour_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter/services.dart';

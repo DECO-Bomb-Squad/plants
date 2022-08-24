@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 //final AsyncCache<T> _getXCache = AsyncCache(const Duration(days: 1));
 
 // Must refer to 10.0.2.2 within emulator - 127.0.0.1 refers to the emulator itself!
-const BACKEND_URL_LOCAL = "10.0.2.2:5000";
+const BACKEND_URL_LOCAL = "10.0.2.2:3000";
 const BACKEND_URL_PROD = "TODO_fill_in_later";
 
 class PlantAPI {
@@ -19,7 +19,7 @@ class PlantAPI {
 
   factory PlantAPI() => _instance;
 
-  final _baseAddress = "demo0328727.mockable.io";
+  final _baseAddress = BACKEND_URL_LOCAL;
   // final _baseAddress = BACKEND_URL_LOCAL;
   //final _baseAddress = kReleaseMode ? BACKEND_URL_PROD : BACKEND_URL_LOCAL;
 
@@ -27,7 +27,7 @@ class PlantAPI {
   PlantAppCache cache = PlantAppCache();
 
   Uri makePath(String subPath, {Map<String, dynamic>? queryParams}) =>
-      Uri.https(_baseAddress, subPath, queryParams ?? {});
+      Uri.http(_baseAddress, subPath, queryParams ?? {});
 
   User? user;
 
