@@ -19,6 +19,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: const [
           Text(
                 "HEADER 1\nExample text in mainHeaderStyle\n",
