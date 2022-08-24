@@ -22,7 +22,7 @@ class _RootWidgetState extends State<RootWidget> with SingleTickerProviderStateM
       NavBarItem(
         text: "Home",
         iconData: Icons.home,
-        childFunc: () => const MainScreen("Demo! Hello"),
+        childFunc: () => const MainScreen(),
       ),
       NavBarItem(
         text: "My Plants",

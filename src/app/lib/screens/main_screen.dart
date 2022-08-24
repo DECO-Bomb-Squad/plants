@@ -2,8 +2,7 @@ import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {
-  final String demoTitle;
-  const MainScreen(this.demoTitle, {Key? key}) : super(key: key);
+  const MainScreen({Key? key}) : super(key: key);
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -34,28 +33,13 @@ class _MainScreenState extends State<MainScreen> {
                   thumbVisibility: true,
                   radius: const Radius.circular(10),
                   child: GridView(
-                    scrollDirection: Axis.horizontal,
-                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 200, childAspectRatio: 1, crossAxisSpacing: 20, mainAxisSpacing: 20),
-                    children: <Widget>[
-                      DecoratedBox(
-                          decoration: smallPlantComponent),
-                      DecoratedBox(
-                          decoration: smallPlantComponent),
-                      DecoratedBox(
-                          decoration: smallPlantComponent),
-                      DecoratedBox(
-                          decoration: smallPlantComponent),
-                      DecoratedBox(
-                          decoration: smallPlantComponent),
-                      DecoratedBox(
-                          decoration: smallPlantComponent),
-                      DecoratedBox(
-                          decoration: smallPlantComponent),
-                      DecoratedBox(
-                          decoration: smallPlantComponent)
-                    ],
-                  ))),
+                      scrollDirection: Axis.horizontal,
+                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 200, childAspectRatio: 1, crossAxisSpacing: 20, mainAxisSpacing: 20),
+                      children: List<Widget>.generate(
+                          10,
+                          (int idx) => DecoratedBox(
+                              decoration: smallPlantComponent))))),
           spacer,
           spacer,
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -67,23 +51,17 @@ class _MainScreenState extends State<MainScreen> {
           ]),
           Flexible(
               child: GridView(
-            padding: EdgeInsets.zero,
-            scrollDirection: Axis.vertical,
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.9,
-                childAspectRatio: 3 / 1,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20),
-            children: <Widget>[
-              DecoratedBox(decoration: smallPostComponent),
-              DecoratedBox(decoration: smallPostComponent),
-              DecoratedBox(decoration: smallPostComponent),
-              DecoratedBox(decoration: smallPostComponent),
-              DecoratedBox(decoration: smallPostComponent),
-              DecoratedBox(decoration: smallPostComponent),
-              DecoratedBox(decoration: smallPostComponent)
-            ],
-          )),
+                  padding: EdgeInsets.zero,
+                  scrollDirection: Axis.vertical,
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.9,
+                      childAspectRatio: 3 / 1,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20),
+                  children: List<Widget>.generate(
+                      10,
+                      (int idx) => DecoratedBox(
+                          decoration: smallPostComponent)))),
         ],
       ));
 
