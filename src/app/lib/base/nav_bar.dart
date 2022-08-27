@@ -19,8 +19,7 @@ class NavBarItem {
 
   NavBarItem({required this.text, required this.iconData, required this.childFunc});
 
-  Widget getTab(bool isSelected) =>
-      Tab(text: text, icon: Icon(iconData, color: isSelected ? selected : unselected));
+  Widget getTab(bool isSelected) => Tab(text: text, icon: Icon(iconData, color: isSelected ? selected : unselected));
 }
 
 class NavBar extends StatefulWidget {
@@ -43,12 +42,8 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) => Container(
         decoration: const BoxDecoration(
-          color: lightHighlight,
-          boxShadow: [BoxShadow(
-            color: Color.fromARGB(61, 48, 39, 33),
-            blurRadius: 3,
-            spreadRadius: 1
-          )]),
+            color: lightHighlight,
+            boxShadow: [BoxShadow(color: Color.fromARGB(61, 48, 39, 33), blurRadius: 3, spreadRadius: 1)]),
         child: TabBar(
           indicatorColor: selected,
           controller: widget.controller,

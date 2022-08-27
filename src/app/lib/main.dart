@@ -1,14 +1,30 @@
+import 'package:app/api/plant_api.dart';
+import 'package:app/api/storage.dart';
 import 'package:app/base/root_widget.dart';
+import 'package:app/base/user.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:flutter/services.dart';
 
 void main() {
-  runApp(const MyApp());
+  runPlantApp();
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+void runPlantApp() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // TEMP: until we begin properly initialising users w/ login, etc
+  PlantAPI api = PlantAPI();
+  api.user = User.fromJSON({"id": 1, "name": "Jay Son"});
+  GetIt.I.registerSingleton<PlantAppStorage>(PlantAppStorage());
+  GetIt.I.registerSingleton<PlantAppCache>(PlantAppCache());
+  GetIt.I.registerSingleton<PlantAPI>(api);
+
+  runApp(const PlantApp());
+}
+
+class PlantApp extends StatelessWidget {
+  const PlantApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -18,7 +34,7 @@ class MyApp extends StatelessWidget {
           statusBarColor: lightColour, statusBarBrightness: Brightness.light, statusBarIconBrightness: Brightness.dark),
     ); // This ensures that the phones status bar is the same colour as the app background and the icons are visible
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Plant App',
       theme: ThemeData(
         // This is the theme of your application.
         //

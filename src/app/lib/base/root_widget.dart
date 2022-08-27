@@ -1,8 +1,8 @@
 import 'package:app/base/nav_bar.dart';
-import 'package:app/demo/demo_widget.dart';
+import 'package:app/utils/colour_scheme.dart';
+import 'package:app/interfaces/plant_type_info/plant_type_info_model.dart';
 import 'package:app/screens/main_screen.dart';
 import 'package:app/screens/layout_test_screen.dart';
-import 'package:app/utils/colour_scheme.dart';
 import 'package:flutter/material.dart';
 
 class RootWidget extends StatefulWidget {
@@ -39,6 +39,7 @@ class _RootWidgetState extends State<RootWidget> with SingleTickerProviderStateM
         iconData: Icons.question_answer,
         childFunc: () => const Text("boo"),
       ),
+      NavBarItem(text: "Test", iconData: Icons.abc, childFunc: () => PlantTypeInfoDemo()),
     ];
     controller = TabController(length: navItems!.length, vsync: this);
   }
