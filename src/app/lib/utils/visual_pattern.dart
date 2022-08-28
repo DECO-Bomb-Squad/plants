@@ -35,6 +35,20 @@ const textStyle = TextStyle(
   color: darkColour
 );
 
+// Small, clear text for buttons or other UI elements
+const buttonTextStyle = TextStyle(
+  fontSize: 14, 
+  fontWeight: FontWeight.w600,
+  color: lightColour
+);
+
+// Smallish body text for modal elements
+const modalTextStyle = TextStyle(
+  fontSize: 14, 
+  fontWeight: FontWeight.w400,
+  color: darkColour
+);
+
 // Decorations for individual elements
 BoxDecoration smallPlantComponent = BoxDecoration(
   color: accent,
@@ -44,4 +58,22 @@ BoxDecoration smallPlantComponent = BoxDecoration(
 BoxDecoration smallPostComponent = BoxDecoration(
   color: mutedAccent,
   borderRadius: BorderRadius.circular(radius)
+);
+
+
+// Button styling
+// Standard button
+ButtonStyle buttonStyle = ButtonStyle(
+  // shape: RoundedRectangleBorder(
+  //   borderRadius: BorderRadius.circular(radius)
+  // ), WHY DO YOU NOT WORK
+  backgroundColor: MaterialStateProperty.all<Color>(secondaryAccent),
+);
+
+// Water-related button
+ButtonStyle waterButtonStyle = ButtonStyle(
+  // shape: RoundedRectangleBorder(
+  //   borderRadius: BorderRadius.circular(radius)
+  // ), WHY DO YOU NOT WORK
+  backgroundColor: MaterialStateProperty.all<Color>(darkHighlight),
 );
