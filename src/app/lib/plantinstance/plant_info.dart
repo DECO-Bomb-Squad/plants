@@ -4,44 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
+import 'package:app/plantinstance/test_call.dart';
 
 class PlantInfoWidget extends StatefulWidget {
-  // Things that will not change after the widget is made are put here. Anything that can be changed by buttons, an API
-  // updating the widget, etc. should be contained in the state. Any variables put in the widget should be final
-  final String demoTitle;
+  final int plantID;
+  const PlantInfoWidget(this.plantID, {Key? key}) : super(key: key);
 
-  // This is the constructor for the widget - if you want to instantiate this widget you call this, with the required
-  // arguments
-  // use 'this.varname' in the constructor to automatically assign the arg to a class parameter :)
-  // https://dart.dev/guides/language/language-tour#constructors
-  const PlantInfoWidget(this.demoTitle, {Key? key}) : super(key: key);
-
-  // Any StatefulWidget must override createState by calling the constructor for the state you define
-  // You can use this arrow => to quickly return something instead of doing {return _DemoWidgetState();}
   @override
   State<PlantInfoWidget> createState() => _PlantInfoState();
 }
 
 class _PlantInfoState extends State<PlantInfoWidget> {
-  var testJson = jsonDecode(
-'''{
-    "plant_name": "Common Monstera",
-    "scientific_name": "Monstera Deliciosa",
-    "owner": "Dr Kaczynski",
-    "water_frequency": 7,
-    "tags": [
-        "Test tag"
-    ],
-    "watered": [
-        "2022-07-14T21:52",
-        "2022-08-28T23:28"
-    ],
-    "soil_type": "largePot",
-    "location": "fullShade"
-  }''');
 
   @override
   Widget build(BuildContext context) {
+    var testJson = jsonDecode(rawJson)[widget.plantID];
     PlantInfoModel model = PlantInfoModel.fromJSON(testJson);
     return InkWell(
       onTap: () {

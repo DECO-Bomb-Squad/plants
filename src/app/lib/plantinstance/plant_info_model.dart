@@ -41,19 +41,19 @@ enum SoilType {
 extension SoilTypeExtension on SoilType {
   String? toHumanString() {
     switch (index) {
-      case 1:
+      case 0:
         return "small pot";
-      case 2:
+      case 1:
         return "medium pot";
-      case 3:
+      case 2:
         return "large pot";
-      case 4:
+      case 3:
         return "window planter";
-      case 5:
+      case 4:
         return "garden bed";
-      case 6:
+      case 5:
         return "container of water";
-      case 7:
+      case 6:
         return "fish tank";
       default:
         return null;
@@ -71,13 +71,13 @@ enum LocationType {
 extension LocationExtension on LocationType {
   String? toHumanString() {
     switch (index) {
-      case 1:
+      case 0:
         return "indoors";
-      case 2:
+      case 1:
         return "in full shade";
-      case 3:
+      case 2:
         return "in partial shade";
-      case 4:
+      case 3:
         return "in full sunlight";
       default:
         return null;
