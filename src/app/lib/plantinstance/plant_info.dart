@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:app/utils/colour_scheme.dart';
+import 'package:app/plantinstance/plant_info_model.dart';
 
 class PlantInfoWidget extends StatefulWidget {
   // Things that will not change after the widget is made are put here. Anything that can be changed by buttons, an API
@@ -20,45 +23,66 @@ class PlantInfoWidget extends StatefulWidget {
 }
 
 class _PlantInfoState extends State<PlantInfoWidget> {
-  @override
-  Widget build(BuildContext context) => InkWell(
-    onTap: () {
-      showDialog(
-        context: context, 
-        builder: (_) => const PlantInfoDialog()
-      );
-    },
-    child: Container(
-      decoration: smallPlantComponent,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
-              Icon(Icons.check_circle, size: 40),
-              Icon(Icons.grass, size: 40)
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text("PlantName", style: subheaderStyle),
-              Text("Owner", style: textStyle)
-            ],
-          )
-          
-        ],
-      )
-    ),
-  );
-}
-
-class PlantInfoDialog extends StatelessWidget {
-  const PlantInfoDialog({super.key});
+  var testJson = jsonDecode(
+'''{
+    "plant_name": "Common Monstera",
+    "scientific_name": "Monstera Deliciosa",
+    "owner": "Dr Kaczynski",
+    "water_frequency": 7,
+    "tags": [
+        "Test tag"
+    ],
+    "watered": [
+        "2022-07-14T21:52",
+        "2022-08-28T23:28"
+    ],
+    "soil_type": "largePot",
+    "location": "fullShade"
+  }''');
 
   @override
   Widget build(BuildContext context) {
+    PlantInfoModel model = PlantInfoModel.fromJSON(testJson);
+    return InkWell(
+      onTap: () {
+        showDialog(
+          context: context, 
+          builder: (_) => PlantInfoDialog(model: model,)
+        );
+      },
+      child: Container(
+        decoration: smallPlantComponent,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: const [
+                Icon(Icons.check_circle, size: 40),
+                Icon(Icons.grass, size: 40)
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(model.plantName!, style: subheaderStyle, textAlign: TextAlign.center),
+                Text(model.owner!, style: textStyle, textAlign: TextAlign.center)
+              ],
+            )
+            
+          ],
+        )
+      ),
+    );
+  }
+}
+
+class PlantInfoDialog extends StatelessWidget {
+  final PlantInfoModel model;
+  const PlantInfoDialog({super.key, required this.model});
+
+  @override
+  Widget build(BuildContext context) { 
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
@@ -72,8 +96,8 @@ class PlantInfoDialog extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text("PlantName", style: mainHeaderStyle),
-            const Text("BotanicalName", style: sectionHeaderStyle),
+            Text(model.plantName!, style: mainHeaderStyle),
+            Text(model.scientificName!, style: sectionHeaderStyle),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: const [
@@ -96,10 +120,10 @@ class PlantInfoDialog extends StatelessWidget {
                 )
               ],
             ),
-            const Padding(
-              padding: EdgeInsets.all(20.0),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
               child: Text(
-                "Plant care info. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "Recommended to water every ${model.waterFrequency!} days. Last watered ${DateTime.now().difference(model.watered!.last).inDays.toString()} days ago. Planted in a ${model.soilType!.toHumanString()} located ${model.location!.toHumanString()}",
                 style: modalTextStyle
               )
             )

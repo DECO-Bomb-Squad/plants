@@ -44,7 +44,7 @@ const buttonTextStyle = TextStyle(
 
 // Smallish body text for modal elements
 const modalTextStyle = TextStyle(
-  fontSize: 14, 
+  fontSize: 16, 
   fontWeight: FontWeight.w400,
   color: darkColour
 );
