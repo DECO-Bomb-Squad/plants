@@ -1,5 +1,6 @@
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
+import 'package:app/plantinstance/plant_info.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -37,7 +38,7 @@ class _MainScreenState extends State<MainScreen> {
                       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent: 200, childAspectRatio: 1, crossAxisSpacing: 20, mainAxisSpacing: 20),
                       children:
-                          List<Widget>.generate(10, (int idx) => DecoratedBox(decoration: smallPlantComponent))))),
+                          List<Widget>.generate(6, (int idx) => PlantInfoWidget(idx))))),
           spacer,
           spacer,
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [

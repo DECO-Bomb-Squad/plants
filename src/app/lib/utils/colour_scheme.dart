@@ -1,11 +1,4 @@
-// TODO: change these dummy colours to the final colours!
-
 import 'package:flutter/material.dart';
-
-// DUMMY COLOURS
-const selectedIconColour = Colors.red;
-const unselectedIconColour = Colors.green;
-const navBarColour = Colors.yellow;
 
 // COLOURS FROM PROTOTYPE DOC
 const lightColour = Color(0xFFF5F1E0);
