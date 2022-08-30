@@ -37,8 +37,7 @@ class _MainScreenState extends State<MainScreen> {
                       scrollDirection: Axis.horizontal,
                       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent: 200, childAspectRatio: 1, crossAxisSpacing: 20, mainAxisSpacing: 20),
-                      children:
-                          List<Widget>.generate(6, (int idx) => PlantInfoWidget(idx))))),
+                      children: List<Widget>.generate(6, (int idx) => PlantInfoSmallEmpty(idx))))),
           spacer,
           spacer,
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [

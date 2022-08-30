@@ -27,7 +27,7 @@ class LoadingBuilderState<M> extends State<LoadingBuilder<M>> {
             } else if (snapshot.hasError) {
               return const Text("Something went wrong...");
             } else {
-              return const SizedBox(height: 100, width: 100, child: CircularProgressIndicator());
+              return Container(padding: const EdgeInsets.all(30), child: const CircularProgressIndicator());
             }
           }));
     }

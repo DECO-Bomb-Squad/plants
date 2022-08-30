@@ -1,42 +1,49 @@
-import 'dart:ffi';
-import 'package:app/api/plant_api.dart';
-import 'package:app/utils/loading_builder.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class PlantInfoModel {
-  String? plantName;      // Common name
-  String? scientificName; // Botanical name
-  String? owner;          // Who owns the plant?
-  int? waterFrequency;    // How many days between waterings
+  String? nickName;
+  String plantName; // Common name
+  String scientificName; // Botanical name
+  String owner; // Who owns the plant?
+  int waterFrequency; // How many days between waterings
 
-  List<String>? tags;     // System and user-added info tags
-  List<DateTime>? watered;// Dates of previous waterings
+  List<String>? tags; // System and user-added info tags
+  List<DateTime>? watered; // Dates of previous waterings
 
-  SoilType? soilType;     // How the plant is potted
-  LocationType? location;     // Where the plant is planted
-  ConditionType? condition;   // Status of the plant
-  
+  SoilType? soilType; // How the plant is potted
+  LocationType? location; // Where the plant is planted
+  ConditionType? condition; // Status of the plant
+
+  List<String> pictures; // list of image uris
 
   PlantInfoModel.fromJSON(Map<String, dynamic> json)
-  : plantName = json["plant_name"],
-    scientificName = json["scientific_name"],
-    owner = json["owner"],
-    waterFrequency = json["water_frequency"],
-    tags = (json["tags"] as List<dynamic>).map((e) => e as String).toList(),
-    watered = (json["watered"] as List<dynamic>).map((e) => DateTime.parse(e)).toList(),
-    soilType = SoilType.values.byName(json["soil_type"]),
-    location = LocationType.values.byName(json["location"]),
-    condition = ConditionType.normal; // Placeholder
+      : plantName = json["plant_name"],
+        scientificName = json["scientific_name"],
+        owner = json["owner"],
+        waterFrequency = json["water_frequency"],
+        tags = (json["tags"] as List<dynamic>).map((e) => e as String).toList(),
+        watered = (json["watered"] as List<dynamic>).map((e) => DateTime.parse(e)).toList(),
+        soilType = SoilType.values.byName(json["soil_type"]),
+        location = LocationType.values.byName(json["location"]),
+        nickName = json["nickname"],
+        condition = ConditionType.normal,
+        pictures = ((json["pictures"] ?? []) as List<dynamic>).map((e) => e as String).toList(); // Placeholder
+
+  Widget getCoverPhoto(double height, double width, IconData iconData, double iconSize) => ClipRRect(
+        borderRadius: BorderRadius.circular(8.0),
+        child: pictures.isNotEmpty
+            ? Image(
+                image: NetworkImage(pictures[0]),
+                height: height,
+                width: width,
+                fit: BoxFit.cover,
+              )
+            : Icon(iconData, size: iconSize),
+      );
 }
 
-enum SoilType {
-  smallPot,
-  mediumPot,
-  largePot,
-  windowPlanter,
-  gardenBed,
-  water,
-  fishTank
-}
+enum SoilType { smallPot, mediumPot, largePot, windowPlanter, gardenBed, water, fishTank }
 
 extension SoilTypeExtension on SoilType {
   String? toHumanString() {
@@ -85,8 +92,4 @@ extension LocationExtension on LocationType {
   }
 }
 
-enum ConditionType {
-  normal,
-  information,
-  problem
-}
+enum ConditionType { normal, information, problem }
