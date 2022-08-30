@@ -15,7 +15,7 @@ class ActivityType(DB.BASE):
     description = Column('description', String(255), nullable=False)
 
     # relationships
-    activities = relationship("Activity", back_populates='activities')
+    activities = relationship("Activity", back_populates='activityType')
 
     def __init__(self, name, description):
         self.name = name

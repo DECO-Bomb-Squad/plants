@@ -14,10 +14,10 @@ class Activity(DB.BASE):
     time = Column("time", DateTime(timezone=True), server_default=func.now())
 
     activityTypeId = Column("activityTypeId", String, ForeignKey(f"{TBL_ACTIVITY_TYPES}.id", name=f"fk_activity_type_id_{__tablename__}"), nullable=False)
-    activityType = relationship("ActivityType", back_populates='activity_types')
+    activityType = relationship("ActivityType", back_populates='activities')
 
     plantId = Column("plantId", Integer, ForeignKey(f"{TBL_PLANTS}.id", name=f"fk_plant_id_{__tablename__}"), nullable=False)
-    plant = relationship("Plant", back_populates='plants')
+    plant = relationship("Plant", back_populates='activities')
 
     def __init__(self, time, activityTypeId, plantId):
         self.activityTypeId = activityTypeId

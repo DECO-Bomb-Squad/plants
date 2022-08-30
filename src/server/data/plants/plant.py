@@ -17,10 +17,12 @@ class Plant(DB.BASE):
     description = Column('description', String(255), nullable=False)
 
     plantTypeId = Column("plantTypeId", Integer, ForeignKey(f"{TBL_PLANT_TYPES}.id", name=f"fk_plant_type_id_{__tablename__}"), nullable=False)
-    plantType = relationship("PlantType", back_populates='plants')
+    plantType = relationship("PlantType", back_populates='plant')
 
     userId = Column(Integer, ForeignKey(f"{TBL_USERS}.id", name=f"fk_user_id_{__tablename__}"), nullable=False)
-    user = relationship("User", back_populates='plants')
+    user = relationship("User", back_populates='userPlants')
+
+    activities = relationship("Activity", back_populates='plant')
 
 
     def __init__(self, name, description, plantTypeId, userId):

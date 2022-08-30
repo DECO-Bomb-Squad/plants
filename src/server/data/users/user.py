@@ -21,7 +21,7 @@ class User(DB.BASE):
     reputation = Column('reputation', Integer, nullable=False)
 
     # relationships
-    plants = relationship("Plant", back_populates="user")
+    userPlants = relationship("Plant", back_populates="user")
 
     def __init__(self, username, email, bio=None, reputation=0, startDate=func.now()) -> None:
         self.username = username
