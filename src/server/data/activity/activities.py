@@ -24,4 +24,12 @@ class Activity(DB.BASE):
         self.plantId = plantId
         self.time = time
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "time": self.time,
+            "activityTypeId": self.activityTypeId,
+            "plantId": self.plantId
+        }
+
     # will need to add more methods here for getting info and setting info of the user

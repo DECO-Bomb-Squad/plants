@@ -41,7 +41,13 @@ def add_activity(session):
 
     return "The activity was added to the plant successfully", 200
 
-@app.route("/activity/<plantUsername>", methods = ["GET", "POST"])
+@app.route("/activity/<plantId>", methods = ["GET", "POST"])
 @APICall
-def get_activities():
-    pass
+def get_activities(session, plantId: str):
+    # verify the id
+    plant: Plant = session.query(Plant).filter(Plant.id == plantId).first()
+    if not plant:
+        return "The requested plant does not exist", 400
+
+    # return information re: plant activities
+    return plant.get_serialized_activities(), 200

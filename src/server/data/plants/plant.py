@@ -31,6 +31,10 @@ class Plant(DB.BASE):
         self.plantTypeId = plantTypeId
         self.userId = userId
 
+    def get_serialized_activities(self):
+        allActivities = [activity.serialize() for activity in self.activities]
+        return jsonify(plantActivities=allActivities)
+
     def serialize(self):
         return {
             "id":   self.id,

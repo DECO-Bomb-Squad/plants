@@ -31,7 +31,7 @@ class User(DB.BASE):
         self.startDate = startDate
 
     def get_serialized_plants(self):
-        allPlants = [plant.serialize() for plant in self.plants]
+        allPlants = [plant.serialize() for plant in self.userPlants]
         return jsonify(userPlants=allPlants)
 
     def serialize(self):
