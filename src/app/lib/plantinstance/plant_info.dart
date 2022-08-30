@@ -1,30 +1,53 @@
-import 'dart:convert';
-
+import 'package:app/api/plant_api.dart';
+import 'package:app/screens/plant_care_screen.dart';
+import 'package:app/utils/colour_scheme.dart';
+import 'package:app/utils/loading_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:app/utils/visual_pattern.dart';
-import 'package:app/utils/colour_scheme.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
-import 'package:app/plantinstance/test_call.dart';
+import 'package:get_it/get_it.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class PlantInfoWidget extends StatefulWidget {
+class PlantInfoEmpty extends StatefulWidget {
   final int plantID;
-  const PlantInfoWidget(this.plantID, {Key? key}) : super(key: key);
+  final PlantAPI api = GetIt.I<PlantAPI>();
+  final bool isSmall;
+  PlantInfoEmpty(this.plantID, {super.key, required this.isSmall});
 
   @override
-  State<PlantInfoWidget> createState() => _PlantInfoState();
+  State<PlantInfoEmpty> createState() => _PlantInfoEmptyState();
 }
 
-class _PlantInfoState extends State<PlantInfoWidget> {
+class _PlantInfoEmptyState extends State<PlantInfoEmpty> {
   @override
   Widget build(BuildContext context) {
-    var testJson = jsonDecode(rawJson)[widget.plantID];
-    var actJson = jsonDecode(activitiesJson)["plantActivities"];
-    PlantInfoModel model = PlantInfoModel.fromJSON(testJson);
-    ActivityOccurenceModel act = ActivityOccurenceModel.fromListJSON(actJson);
-    return InkWell(
+    return Container(
+        decoration: smallPlantComponent,
+        child: LoadingBuilder(
+            widget.api.getPlantInfo(widget.plantID),
+            (m) => widget.isSmall
+                ? PlantInfoSmallWidget(m as PlantInfoModel, widget.plantID)
+                : PlantInfoLargeWidget(m as PlantInfoModel, widget.plantID)));
+  }
+}
+
+class PlantInfoSmallWidget extends StatefulWidget {
+  final int plantID;
+  final PlantInfoModel model;
+  const PlantInfoSmallWidget(this.model, this.plantID, {Key? key}) : super(key: key);
+
+  @override
+  State<PlantInfoSmallWidget> createState() => _PlantInfoSmallState();
+}
+
+class _PlantInfoSmallState extends State<PlantInfoSmallWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+        child: InkWell(
       onTap: () {
-        showDialog(context: context, builder: (_) => PlantInfoDialog(model: model, a: act));
+        showDialog(
+            context: context, builder: (_) => PlantInfoDialog(widget.model, () => setState(() {}), widget.plantID));
       },
       child: Container(
           decoration: smallPlantComponent,
@@ -33,123 +56,152 @@ class _PlantInfoState extends State<PlantInfoWidget> {
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: const [Icon(Icons.check_circle, size: 40), Icon(Icons.grass, size: 40)],
+                children: [
+                  Icon(widget.model.condition.iconData(), size: 50),
+                  widget.model.getCoverPhoto(80, 80, Icons.grass, 40),
+                ],
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(model.plantName!, style: subheaderStyle, textAlign: TextAlign.center),
-                  Text(model.owner!, style: textStyle, textAlign: TextAlign.center)
+                  Text(widget.model.nickName ?? widget.model.plantName,
+                      style: subheaderStyle, textAlign: TextAlign.center),
+                  Text(widget.model.scientificName, style: textStyle, textAlign: TextAlign.center)
                 ],
               )
             ],
           )),
-    );
+    ));
   }
 }
 
-SfCalendar calendarMini(ActivityOccurenceModel a) {
-  return SfCalendar(
-    //appointmentBuilder: appointmentBuilder,
-    monthCellBuilder: (context, details) {
-      bool isWater =
-          (details.appointments).where((element) => (element as Activity).eventName == 'watering').length > 0;
-      final Color backgroundColor = isWater ? Colors.blue : lightColour;
-      return Container(
-          decoration: BoxDecoration(color: backgroundColor, border: Border.all(color: Colors.black, width: 0.5)),
-          child: Center(
-            child: Text(
-              details.date.day.toString(),
-              style: TextStyle(color: Colors.black),
-            ),
-          ));
-    },
-    headerHeight: 15,
-    view: CalendarView.month,
-    headerStyle: CalendarHeaderStyle(textStyle: TextStyle(fontSize: 8, color: Colors.black)),
-    monthViewSettings: MonthViewSettings(
-        appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
-        numberOfWeeksInView: 6,
-        monthCellStyle: MonthCellStyle(
-            textStyle: TextStyle(fontSize: 8, color: Colors.black),
-            leadingDatesTextStyle: TextStyle(fontSize: 8, color: Colors.black),
-            trailingDatesTextStyle: TextStyle(fontSize: 8, color: Colors.black))),
-    todayTextStyle: TextStyle(fontSize: 8),
-    dataSource: ActivityDataSource(a.getActivities()),
-    // by default the month appointment display mode set as Indicator, we can
-    // change the display mode as appointment using the appointment display
-    // mode property
-    //monthViewSettings: const MonthViewSettings(appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
-  );
-}
-
-Widget appointmentBuilder(BuildContext context, CalendarAppointmentDetails calendarAppointmentDetails) {
-  final Activity appointment = calendarAppointmentDetails.appointments.first;
-  return Column(
-    children: [
-      Container(
-        width: calendarAppointmentDetails.bounds.width,
-        height: calendarAppointmentDetails.bounds.height * 2,
-        color: Colors.blue,
-      ),
-    ],
-  );
-}
-
-class PlantInfoDialog extends StatelessWidget {
+class PlantInfoLargeWidget extends StatefulWidget {
+  final int plantID;
   final PlantInfoModel model;
-  final ActivityOccurenceModel a;
-  const PlantInfoDialog({super.key, required this.model, required this.a});
+
+  const PlantInfoLargeWidget(this.model, this.plantID, {super.key});
+
+  @override
+  State<PlantInfoLargeWidget> createState() => _PlantInfoLargeState();
+}
+
+class _PlantInfoLargeState extends State<PlantInfoLargeWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+        child: InkWell(
+      onTap: () {
+        showDialog(
+            context: context, builder: (_) => PlantInfoDialog(widget.model, () => setState(() {}), widget.plantID));
+      },
+      child: Container(
+        decoration: smallPlantComponent,
+        padding: const EdgeInsets.only(left: 10, right: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            widget.model.getCoverPhoto(100, 100, Icons.grass, 50),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(widget.model.nickName ?? widget.model.plantName, style: mainHeaderStyle),
+                      Icon(widget.model.condition.iconData(), size: 50),
+                    ],
+                  ),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(widget.model.scientificName, style: textStyle, textAlign: TextAlign.center),
+                  ),
+                  widget.model.getWaterMeterRow(120, 20),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    ));
+  }
+}
+
+class PlantInfoDialog extends StatefulWidget {
+  final int plantID;
+  final PlantInfoModel model;
+  final void Function() rebuildParent;
+
+  const PlantInfoDialog(this.model, this.rebuildParent, this.plantID, {super.key});
+
+  @override
+  State<PlantInfoDialog> createState() => _PlantInfoDialogState();
+}
+
+class _PlantInfoDialogState extends State<PlantInfoDialog> {
+  PlantInfoModel get model => widget.model;
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
-        backgroundColor: Colors.transparent,
-        child: Container(
-          height: MediaQuery.of(context).size.height / 1.8,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            color: lightColour,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
+      backgroundColor: Colors.transparent,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height / 1.5,
+        ),
+        decoration: dialogComponent,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(model.plantName!, style: mainHeaderStyle),
-                Text(model.scientificName!, style: sectionHeaderStyle),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    const Icon(Icons.photo, size: 150),
-                    //const Icon(Icons.calendar_month, size: 150),
-                    IgnorePointer(child: Container(width: 100, height: 120, child: calendarMini(a))),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    ElevatedButton(
-                      onPressed: null,
-                      style: waterButtonStyle,
-                      child: const Text("Mark as watered", style: buttonTextStyle),
-                    ),
-                    ElevatedButton(
-                      onPressed: null,
-                      style: buttonStyle,
-                      child: const Text("More options", style: buttonTextStyle),
-                    )
-                  ],
-                ),
-                Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Text(
-                        "Recommended to water every ${model.waterFrequency!} days. Last watered ${DateTime.now().difference(model.watered!.last).inDays.toString()} days ago. Planted in a ${model.soilType!.toHumanString()} located ${model.location!.toHumanString()}",
-                        style: modalTextStyle))
+                Text(model.nickName ?? model.plantName, style: mainHeaderStyle),
+                Icon(model.condition.iconData(), size: 50)
               ],
             ),
-          ),
-        ));
+            Text(model.scientificName, style: sectionHeaderStyle),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                model.getCoverPhoto(150, 150, Icons.photo, 150),
+                const Icon(Icons.calendar_month, size: 150),
+              ],
+            ),
+            model.getWaterMeterRow(200, 30),
+            Text(model.condition.text(), style: textStyle),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    widget.rebuildParent();
+                    setState(() {
+                      model.watered.add(DateTime.now());
+                      model.watered.sort();
+                    });
+                  },
+                  style: waterButtonStyle,
+                  child: const Text("Mark as watered", style: buttonTextStyle),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context, rootNavigator: false)
+                      .push(MaterialPageRoute(builder: (context) => PlantCareEmpty(widget.plantID))),
+                  style: buttonStyle,
+                  child: const Text("More options", style: buttonTextStyle),
+                )
+              ],
+            ),
+            Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                    "Recommended to water every ${model.waterFrequency} days. Last watered ${model.timeSinceLastWater} days ago. Planted in a ${model.soilType!.toHumanString()} located ${model.location!.toHumanString()}",
+                    style: modalTextStyle))
+          ],
+        ),
+      ),
+    );
   }
 }

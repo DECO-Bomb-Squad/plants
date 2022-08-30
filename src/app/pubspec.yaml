@@ -38,6 +38,7 @@ dependencies:
   shared_preferences: ^2.0.13
   async: ^2.8.2
   loading_gifs: ^0.3.0
+  flutter_datetime_picker: ^1.5.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

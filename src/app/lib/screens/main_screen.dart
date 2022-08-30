@@ -10,10 +10,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int counter;
-
-  _MainScreenState() : counter = 0;
-
   @override
   Widget build(BuildContext context) => Container(
       padding: const EdgeInsets.only(left: 20, right: 20),
@@ -37,8 +33,7 @@ class _MainScreenState extends State<MainScreen> {
                       scrollDirection: Axis.horizontal,
                       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent: 200, childAspectRatio: 1, crossAxisSpacing: 20, mainAxisSpacing: 20),
-                      children:
-                          List<Widget>.generate(6, (int idx) => PlantInfoWidget(idx))))),
+                      children: List<Widget>.generate(6, (int idx) => PlantInfoEmpty(idx, isSmall: true))))),
           spacer,
           spacer,
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -57,12 +52,38 @@ class _MainScreenState extends State<MainScreen> {
                       childAspectRatio: 3 / 1,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20),
-                  children: List<Widget>.generate(10, (int idx) => DecoratedBox(decoration: smallPostComponent)))),
+                  children: List<Widget>.generate(
+                      10,
+                      (int idx) => DecoratedBox(
+                          decoration: smallPostComponent,
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                spacer,
+                                Container(
+                                    padding: const EdgeInsets.all(5),
+                                    child: Text(
+                                      questions[idx % 3],
+                                      style: subheaderStyle,
+                                    )),
+                                spacer,
+                                Container(
+                                    padding: const EdgeInsets.all(5),
+                                    child: Text(
+                                      questionsFurther[idx % 3],
+                                      style: textStyle,
+                                    )),
+                              ]))))),
         ],
       ));
 
-  // Can use getters like these to potentially do pretty complex operations, but still call it like its a class param!
-  // class functions with no arguments are often better used as getters!
-  // you can also define setters
   SizedBox get spacer => const SizedBox(height: 10, width: 10);
+
+  List<String> get questions => const ["Lounge room cat", "Watering levels", "Does my plant hate me"];
+  List<String> get questionsFurther => const [
+        "My cat keeps attacking my fiddle leaf",
+        "If I water my cactus everyday will it grow faster?",
+        "The thorns on the stem keep attacking me and my family. What can I do?"
+      ];
 }

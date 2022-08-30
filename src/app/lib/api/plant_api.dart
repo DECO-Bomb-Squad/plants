@@ -4,6 +4,9 @@ import 'dart:io';
 import 'package:app/api/storage.dart';
 import 'package:app/base/user.dart';
 import 'package:app/interfaces/plant_type_info/plant_type_info_model.dart';
+import 'package:app/plantinstance/plant_info_model.dart';
+import 'package:app/plantinstance/test_call.dart';
+import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
 
 //final AsyncCache<T> _getXCache = AsyncCache(const Duration(days: 1));
@@ -101,5 +104,14 @@ class PlantAPI {
   Future<PlantTypeInfoModel> getPlantTypeInfo(String plantTypeName) {
     Map<String, String> queryParams = {"plant_type_name": plantTypeName};
     return getGeneric('test_plant', (j) => PlantTypeInfoModel.fromJSON(j));
+  }
+
+  Future<PlantInfoModel> getPlantInfo(int id) =>
+      cache.plantInfoCache.putIfAbsent(id, () => AsyncCache(const Duration(days: 1))).fetch(() => _getPlantInfo(id));
+
+  Future<PlantInfoModel> _getPlantInfo(int id) {
+    Map<String, dynamic> testJson = jsonDecode(rawJson)[id];
+    PlantInfoModel model = PlantInfoModel.fromJSON(testJson);
+    return Future.delayed(const Duration(seconds: 1), () => model);
   }
 }

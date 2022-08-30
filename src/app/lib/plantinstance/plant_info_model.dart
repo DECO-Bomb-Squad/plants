@@ -1,149 +1,84 @@
-import 'dart:ffi';
 import 'dart:ui';
-import 'package:app/api/plant_api.dart';
 import 'package:app/utils/colour_scheme.dart';
-import 'package:app/utils/loading_builder.dart';
+import 'package:app/utils/colour_scheme.dart';
+import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class PlantInfoModel {
-  String? plantName; // Common name
-  String? scientificName; // Botanical name
-  String? owner; // Who owns the plant?
-  int? waterFrequency; // How many days between waterings
+  String? nickName;
+  String plantName; // Common name
+  String scientificName; // Botanical name
+  String owner; // Who owns the plant?
+  int waterFrequency; // How many days between waterings
 
-  ActivityOccurenceModel? activities; // Map of various activities and the time they occured
+  //Commented out till awaiting discussion on backend api return
+  // ActivityOccurenceModel? activities; // Map of various activities and the time they occured
 
   List<String>? tags; // System and user-added info tags
-  List<DateTime>? watered; // Dates of previous waterings
+  List<DateTime> watered; // Dates of previous waterings
 
   SoilType? soilType; // How the plant is potted
   LocationType? location; // Where the plant is planted
-  ConditionType? condition; // Status of the plant
+
+  List<String> pictures; // list of image uris
 
   PlantInfoModel.fromJSON(Map<String, dynamic> json)
       : plantName = json["plant_name"],
         scientificName = json["scientific_name"],
         owner = json["owner"],
         waterFrequency = json["water_frequency"],
-        activities = null, //ActivityOccurenceModel.fromListJSON(json["plantActivities"]),
         tags = (json["tags"] as List<dynamic>).map((e) => e as String).toList(),
-        watered = (json["watered"] as List<dynamic>).map((e) => DateTime.parse(e)).toList(),
+        watered = (json["watered"] as List<dynamic>).map((e) => DateTime.parse(e)).toList()..sort(),
         soilType = SoilType.values.byName(json["soil_type"]),
         location = LocationType.values.byName(json["location"]),
-        condition = ConditionType.normal; // Placeholder
-}
+        nickName = json["nickname"],
+        pictures = ((json["pictures"] ?? []) as List<dynamic>).map((e) => e as String).toList(); // Placeholder
 
-class ActivityOccurenceModel {
-  List<DateTime>? watering;
-  List<DateTime>? repotting;
-  List<DateTime>? fertilising;
-  List<DateTime>? worshipping;
+  Widget getCoverPhoto(double height, double width, IconData iconData, double iconSize) => ClipRRect(
+        borderRadius: BorderRadius.circular(8.0),
+        child: pictures.isNotEmpty
+            ? Image(
+                image: NetworkImage(pictures[0]),
+                height: height,
+                width: width,
+                fit: BoxFit.cover,
+              )
+            : Icon(iconData, size: iconSize),
+      );
 
-  ActivityOccurenceModel.fromListJSON(List<dynamic> json)
-      : watering = (json.where((element) => element['activityTypeId'] == ActivityTypeId.watering.index))
-                .map((e) => DateTime.parse(e["time"]))
-                .toList() ??
-            [],
-        repotting = (json.where((element) => element['activityTypeId'] == ActivityTypeId.repotting.index))
-                .map((e) => DateTime.parse(e["time"]))
-                .toList() ??
-            [],
-        fertilising = (json.where((element) => element['activityTypeId'] == ActivityTypeId.fertilising.index))
-                .map((e) => DateTime.parse(e["time"]))
-                .toList() ??
-            [],
-        worshipping = (json.where((element) => element['activityTypeId'] == ActivityTypeId.worshipping.index))
-                .map((e) => DateTime.parse(e["time"]))
-                .toList() ??
-            [];
+  int get timeSinceLastWater => DateTime.now().difference(watered.last).inDays;
 
-  List<Activity> getActivities() {
-    List<Activity> activities = [];
-    watering?.forEach((element) {
-      activities.add(Activity.activityFromType(ActivityTypeId.watering, element));
-    });
-    repotting?.forEach((element) {
-      activities.add(Activity.activityFromType(ActivityTypeId.repotting, element));
-    });
-    fertilising?.forEach((element) {
-      activities.add(Activity.activityFromType(ActivityTypeId.fertilising, element));
-    });
-    worshipping?.forEach((element) {
-      activities.add(Activity.activityFromType(ActivityTypeId.worshipping, element));
-    });
+  ConditionType get condition =>
+      (timeSinceLastWater > waterFrequency) ? ConditionType.needsWatering : ConditionType.happy;
 
-    return activities;
-  }
-}
-
-class Activity {
-  /// Creates a activity class with required details.
-  Activity(this.eventName, this.from, this.to, this.background, this.isAllDay);
-
-  static Activity activityFromType(ActivityTypeId a, DateTime d) {
-    return Activity(a.name, d, d, a.toColour(), false);
-  }
-
-  /// Event name which is equivalent to subject property of [Activity].
-  String eventName;
-
-  /// From which is equivalent to start time property of [Activity].
-  DateTime from;
-
-  /// To which is equivalent to end time property of [Activity].
-  DateTime to;
-
-  /// Background which is equivalent to color property of [Activity].
-  Color background;
-
-  /// IsAllDay which is equivalent to isAllDay property of [Activity].
-  bool isAllDay;
-}
-
-/// An object to set the appointment collection data source to calendar, which
-/// used to map the custom appointment data to the calendar appointment, and
-/// allows to add, remove or reset the appointment collection.
-class ActivityDataSource extends CalendarDataSource {
-  /// Creates a activity data source, which used to set the appointment
-  /// collection to the calendar
-  ActivityDataSource(List<Activity> source) {
-    appointments = source;
-  }
-
-  @override
-  DateTime getStartTime(int index) {
-    return _getActivityData(index).from;
-  }
-
-  @override
-  DateTime getEndTime(int index) {
-    return _getActivityData(index).to;
-  }
-
-  @override
-  String getSubject(int index) {
-    return _getActivityData(index).eventName;
-  }
-
-  @override
-  Color getColor(int index) {
-    return _getActivityData(index).background;
-  }
-
-  @override
-  bool isAllDay(int index) {
-    return _getActivityData(index).isAllDay;
-  }
-
-  Activity _getActivityData(int index) {
-    final dynamic activity = appointments![index];
-    late final Activity activityData;
-    if (activity is Activity) {
-      activityData = activity;
+  double get waterTimePercentage {
+    double fraction = 1.0 - timeSinceLastWater / waterFrequency;
+    if (fraction > 1.0) {
+      fraction = 1.0;
+    } else if (fraction <= 0.0) {
+      fraction = 0.01; // We want a little bit to show through the progress bar
     }
-
-    return activityData;
+    return fraction;
   }
+
+  Widget get wateringProgressBar => LinearProgressIndicator(
+        value: waterTimePercentage,
+        valueColor: const AlwaysStoppedAnimation<Color>(darkHighlight),
+        backgroundColor: lightHighlight,
+        minHeight: 20,
+      );
+
+  Row getWaterMeterRow(double meterWidth, double iconSize) => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.water_drop_outlined, size: iconSize),
+          SizedBox(
+            width: meterWidth,
+            child: wateringProgressBar,
+          ),
+          Icon(Icons.water_drop, size: iconSize),
+        ],
+      );
 }
 
 enum SoilType { smallPot, mediumPot, largePot, windowPlanter, gardenBed, water, fishTank }
@@ -195,7 +130,35 @@ extension LocationExtension on LocationType {
   }
 }
 
-enum ConditionType { normal, information, problem }
+enum ConditionType { happy, needsWatering, needsPotting, problem }
+
+extension ConditionExtension on ConditionType {
+  String text() {
+    switch (this) {
+      case ConditionType.happy:
+        return "This plant is happy!";
+      case ConditionType.needsPotting:
+        return "This plant is in need of repotting!";
+      case ConditionType.needsWatering:
+        return "This plant needs to be watered!";
+      case ConditionType.problem:
+        return "This plant is sick!";
+    }
+  }
+
+  IconData iconData() {
+    switch (this) {
+      case ConditionType.happy:
+        return Icons.sentiment_satisfied_alt;
+      case ConditionType.needsPotting:
+        return Icons.compost;
+      case ConditionType.needsWatering:
+        return Icons.water_drop_outlined;
+      case ConditionType.problem:
+        return Icons.sick;
+    }
+  }
+}
 
 enum ActivityTypeId { watering, repotting, fertilising, worshipping }
 
