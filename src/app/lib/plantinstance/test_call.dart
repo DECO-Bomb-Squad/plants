@@ -94,7 +94,7 @@ String rawJson = '''[
 String activitiesJson = '''{
     "plantActivities": [
         {
-            "activityTypeId": 1,
+            "activityTypeId": 0,
             "id": 3,
             "plantId": 2,
             "time": "2022-08-29T15:30"
@@ -104,6 +104,24 @@ String activitiesJson = '''{
             "id": 5,
             "plantId": 2,
             "time": "2022-08-29T15:30"
+        },
+        {
+            "activityTypeId": 3,
+            "id": 5,
+            "plantId": 2,
+            "time": "2022-08-25T15:30"
+        },
+        {
+            "activityTypeId": 4,
+            "id": 5,
+            "plantId": 2,
+            "time": "2022-08-20T15:30"
+        },
+        {
+            "activityTypeId": 0,
+            "id": 5,
+            "plantId": 2,
+            "time": "2022-08-20T15:30"
         }
     ]
 }''';

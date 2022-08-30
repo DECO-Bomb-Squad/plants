@@ -1,7 +1,9 @@
 import 'dart:ffi';
 import 'dart:ui';
 import 'package:app/api/plant_api.dart';
+import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/loading_builder.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class PlantInfoModel {
   String? plantName; // Common name
@@ -38,30 +40,48 @@ class ActivityOccurenceModel {
   List<DateTime>? worshipping;
 
   ActivityOccurenceModel.fromListJSON(List<dynamic> json)
-      : watering = (json.where((element) => element['activityTypeId'] == activityTypeId.watering.index))
+      : watering = (json.where((element) => element['activityTypeId'] == ActivityTypeId.watering.index))
                 .map((e) => DateTime.parse(e["time"]))
                 .toList() ??
             [],
-        repotting = (json.where((element) => element['activityTypeId'] == activityTypeId.repotting.index))
+        repotting = (json.where((element) => element['activityTypeId'] == ActivityTypeId.repotting.index))
                 .map((e) => DateTime.parse(e["time"]))
                 .toList() ??
             [],
-        fertilising = (json.where((element) => element['activityTypeId'] == activityTypeId.fertilising.index))
+        fertilising = (json.where((element) => element['activityTypeId'] == ActivityTypeId.fertilising.index))
                 .map((e) => DateTime.parse(e["time"]))
                 .toList() ??
             [],
-        worshipping = (json.where((element) => element['activityTypeId'] == activityTypeId.worshipping.index))
+        worshipping = (json.where((element) => element['activityTypeId'] == ActivityTypeId.worshipping.index))
                 .map((e) => DateTime.parse(e["time"]))
                 .toList() ??
             [];
+
+  List<Activity> getActivities() {
+    List<Activity> activities = [];
+    watering?.forEach((element) {
+      activities.add(Activity.activityFromType(ActivityTypeId.watering, element));
+    });
+    repotting?.forEach((element) {
+      activities.add(Activity.activityFromType(ActivityTypeId.repotting, element));
+    });
+    fertilising?.forEach((element) {
+      activities.add(Activity.activityFromType(ActivityTypeId.fertilising, element));
+    });
+    worshipping?.forEach((element) {
+      activities.add(Activity.activityFromType(ActivityTypeId.worshipping, element));
+    });
+
+    return activities;
+  }
 }
 
 class Activity {
-  /// Creates a meeting class with required details.
+  /// Creates a activity class with required details.
   Activity(this.eventName, this.from, this.to, this.background, this.isAllDay);
 
-  static Activity activityFromType(activityTypeId a, DateTime d) {
-    return Activity(a.name, d, d, Color.fromARGB(255, 0, 222, 214), false);
+  static Activity activityFromType(ActivityTypeId a, DateTime d) {
+    return Activity(a.name, d, d, a.toColour(), false);
   }
 
   /// Event name which is equivalent to subject property of [Activity].
@@ -78,6 +98,52 @@ class Activity {
 
   /// IsAllDay which is equivalent to isAllDay property of [Activity].
   bool isAllDay;
+}
+
+/// An object to set the appointment collection data source to calendar, which
+/// used to map the custom appointment data to the calendar appointment, and
+/// allows to add, remove or reset the appointment collection.
+class ActivityDataSource extends CalendarDataSource {
+  /// Creates a activity data source, which used to set the appointment
+  /// collection to the calendar
+  ActivityDataSource(List<Activity> source) {
+    appointments = source;
+  }
+
+  @override
+  DateTime getStartTime(int index) {
+    return _getActivityData(index).from;
+  }
+
+  @override
+  DateTime getEndTime(int index) {
+    return _getActivityData(index).to;
+  }
+
+  @override
+  String getSubject(int index) {
+    return _getActivityData(index).eventName;
+  }
+
+  @override
+  Color getColor(int index) {
+    return _getActivityData(index).background;
+  }
+
+  @override
+  bool isAllDay(int index) {
+    return _getActivityData(index).isAllDay;
+  }
+
+  Activity _getActivityData(int index) {
+    final dynamic activity = appointments![index];
+    late final Activity activityData;
+    if (activity is Activity) {
+      activityData = activity;
+    }
+
+    return activityData;
+  }
 }
 
 enum SoilType { smallPot, mediumPot, largePot, windowPlanter, gardenBed, water, fishTank }
@@ -131,4 +197,21 @@ extension LocationExtension on LocationType {
 
 enum ConditionType { normal, information, problem }
 
-enum activityTypeId { watering, repotting, fertilising, worshipping }
+enum ActivityTypeId { watering, repotting, fertilising, worshipping }
+
+extension ActivityColour on ActivityTypeId {
+  Color toColour() {
+    switch (index) {
+      case 0:
+        return darkHighlight;
+      case 1:
+        return secondaryAccent;
+      case 2:
+        return accent;
+      case 3:
+        return darkColour;
+      default:
+        return lightHighlight;
+    }
+  }
+}
