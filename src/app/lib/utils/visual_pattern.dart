@@ -60,6 +60,11 @@ BoxDecoration smallPostComponent = BoxDecoration(
   borderRadius: BorderRadius.circular(radius),
 );
 
+BoxDecoration dialogComponent = BoxDecoration(
+  color: lightColour,
+  borderRadius: BorderRadius.circular(15),
+);
+
 // Button styling
 // Standard button
 ButtonStyle buttonStyle = ButtonStyle(

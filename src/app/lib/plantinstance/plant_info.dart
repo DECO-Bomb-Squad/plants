@@ -2,7 +2,6 @@ import 'package:app/api/plant_api.dart';
 import 'package:app/utils/loading_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:app/utils/visual_pattern.dart';
-import 'package:app/utils/colour_scheme.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:get_it/get_it.dart';
 
@@ -39,7 +38,7 @@ class _PlantInfoSmallState extends State<PlantInfoSmallWidget> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        showDialog(context: context, builder: (_) => PlantInfoDialog(widget.model));
+        showDialog(context: context, builder: (_) => PlantInfoDialog(widget.model, () => setState(() {})));
       },
       child: Container(
           decoration: smallPlantComponent,
@@ -81,7 +80,7 @@ class _PlantInfoLargeState extends State<PlantInfoLargeWidget> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        showDialog(context: context, builder: (_) => PlantInfoDialog(widget.model));
+        showDialog(context: context, builder: (_) => PlantInfoDialog(widget.model, () => setState(() {})));
       },
       child: Container(
         decoration: smallPlantComponent,
@@ -118,8 +117,9 @@ class _PlantInfoLargeState extends State<PlantInfoLargeWidget> {
 
 class PlantInfoDialog extends StatefulWidget {
   final PlantInfoModel model;
+  final void Function() rebuildParent;
 
-  const PlantInfoDialog(this.model, {super.key});
+  const PlantInfoDialog(this.model, this.rebuildParent, {super.key});
 
   @override
   State<PlantInfoDialog> createState() => _PlantInfoDialogState();
@@ -137,10 +137,7 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
         constraints: BoxConstraints(
           maxHeight: MediaQuery.of(context).size.height / 1.5,
         ),
-        decoration: BoxDecoration(
-          color: lightColour,
-          borderRadius: BorderRadius.circular(15),
-        ),
+        decoration: dialogComponent,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -166,7 +163,13 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
-                  onPressed: null,
+                  onPressed: () {
+                    widget.rebuildParent();
+                    setState(() {
+                      model.watered.add(DateTime.now());
+                      model.watered.sort();
+                    });
+                  },
                   style: waterButtonStyle,
                   child: const Text("Mark as watered", style: buttonTextStyle),
                 ),
