@@ -9,57 +9,56 @@ const radius = 15.0;
 // Text styling
 // Equivalent to a <h1> element in HTML
 const mainHeaderStyle = TextStyle(
-  fontSize: 32, 
+  fontSize: 32,
   fontWeight: FontWeight.w500,
-  color: darkColour
+  color: darkColour,
 );
 
 // Equivalent to a <h2> element in HTML
 const sectionHeaderStyle = TextStyle(
-  fontSize: 24, 
+  fontSize: 24,
   fontWeight: FontWeight.w400,
-  color: darkColour
+  color: darkColour,
 );
 
 // Equivalent to a <h3> element in HTML
 const subheaderStyle = TextStyle(
-  fontSize: 20, 
+  fontSize: 20,
   fontWeight: FontWeight.w800,
-  color: darkColour
+  color: darkColour,
 );
 
 // Standard text, equivalent to a <p> element
 const textStyle = TextStyle(
-  fontSize: 20, 
+  fontSize: 20,
   fontWeight: FontWeight.w400,
-  color: darkColour
+  color: darkColour,
 );
 
 // Small, clear text for buttons or other UI elements
 const buttonTextStyle = TextStyle(
-  fontSize: 14, 
+  fontSize: 14,
   fontWeight: FontWeight.w600,
-  color: lightColour
+  color: lightColour,
 );
 
 // Smallish body text for modal elements
 const modalTextStyle = TextStyle(
-  fontSize: 16, 
+  fontSize: 16,
   fontWeight: FontWeight.w400,
-  color: darkColour
+  color: darkColour,
 );
 
 // Decorations for individual elements
 BoxDecoration smallPlantComponent = BoxDecoration(
   color: accent,
-  borderRadius: BorderRadius.circular(radius)
+  borderRadius: BorderRadius.circular(radius),
 );
 
 BoxDecoration smallPostComponent = BoxDecoration(
   color: mutedAccent,
-  borderRadius: BorderRadius.circular(radius)
+  borderRadius: BorderRadius.circular(radius),
 );
-
 
 // Button styling
 // Standard button

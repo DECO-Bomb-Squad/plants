@@ -6,21 +6,23 @@ import 'package:app/utils/colour_scheme.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:get_it/get_it.dart';
 
-class PlantInfoSmallEmpty extends StatefulWidget {
+class PlantInfoEmpty extends StatefulWidget {
   final int plantID;
   final PlantAPI api = GetIt.I<PlantAPI>();
-  PlantInfoSmallEmpty(this.plantID, {Key? key}) : super(key: key);
+  final bool isSmall;
+  PlantInfoEmpty(this.plantID, {super.key, required this.isSmall});
 
   @override
-  State<PlantInfoSmallEmpty> createState() => _PlantInfoSmallEmptyState();
+  State<PlantInfoEmpty> createState() => _PlantInfoEmptyState();
 }
 
-class _PlantInfoSmallEmptyState extends State<PlantInfoSmallEmpty> {
+class _PlantInfoEmptyState extends State<PlantInfoEmpty> {
   @override
   Widget build(BuildContext context) {
     return Container(
         decoration: smallPlantComponent,
-        child: LoadingBuilder(widget.api.getPlantInfo(widget.plantID), (m) => PlantInfoSmallWidget(m)));
+        child: LoadingBuilder(widget.api.getPlantInfo(widget.plantID),
+            (m) => widget.isSmall ? PlantInfoSmallWidget(m) : PlantInfoLargeWidget(m)));
   }
 }
 
@@ -37,11 +39,7 @@ class _PlantInfoSmallState extends State<PlantInfoSmallWidget> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        showDialog(
-            context: context,
-            builder: (_) => PlantInfoDialog(
-                  model: widget.model,
-                ));
+        showDialog(context: context, builder: (_) => PlantInfoDialog(widget.model));
       },
       child: Container(
           decoration: smallPlantComponent,
@@ -51,7 +49,7 @@ class _PlantInfoSmallState extends State<PlantInfoSmallWidget> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const Icon(Icons.check_circle, size: 40),
+                  Icon(widget.model.condition.iconData(), size: 50),
                   widget.model.getCoverPhoto(80, 80, Icons.grass, 40),
                 ],
               ),
@@ -69,17 +67,76 @@ class _PlantInfoSmallState extends State<PlantInfoSmallWidget> {
   }
 }
 
-class PlantInfoDialog extends StatelessWidget {
+class PlantInfoLargeWidget extends StatefulWidget {
   final PlantInfoModel model;
-  const PlantInfoDialog({super.key, required this.model});
+
+  const PlantInfoLargeWidget(this.model, {super.key});
+
+  @override
+  State<PlantInfoLargeWidget> createState() => _PlantInfoLargeState();
+}
+
+class _PlantInfoLargeState extends State<PlantInfoLargeWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        showDialog(context: context, builder: (_) => PlantInfoDialog(widget.model));
+      },
+      child: Container(
+        decoration: smallPlantComponent,
+        padding: const EdgeInsets.only(left: 10, right: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            widget.model.getCoverPhoto(100, 100, Icons.grass, 50),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(widget.model.nickName ?? widget.model.plantName, style: mainHeaderStyle),
+                      Icon(widget.model.condition.iconData(), size: 50),
+                    ],
+                  ),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(widget.model.scientificName, style: textStyle, textAlign: TextAlign.center),
+                  ),
+                  widget.model.getWaterMeterRow(120, 20),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class PlantInfoDialog extends StatefulWidget {
+  final PlantInfoModel model;
+
+  const PlantInfoDialog(this.model, {super.key});
+
+  @override
+  State<PlantInfoDialog> createState() => _PlantInfoDialogState();
+}
+
+class _PlantInfoDialogState extends State<PlantInfoDialog> {
+  PlantInfoModel get model => widget.model;
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
-        height: MediaQuery.of(context).size.height / 1.8,
         width: MediaQuery.of(context).size.width,
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height / 1.5,
+        ),
         decoration: BoxDecoration(
           color: lightColour,
           borderRadius: BorderRadius.circular(15),
@@ -88,7 +145,13 @@ class PlantInfoDialog extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(model.plantName, style: mainHeaderStyle),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(model.nickName ?? model.plantName, style: mainHeaderStyle),
+                Icon(model.condition.iconData(), size: 50)
+              ],
+            ),
             Text(model.scientificName, style: sectionHeaderStyle),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -97,6 +160,8 @@ class PlantInfoDialog extends StatelessWidget {
                 const Icon(Icons.calendar_month, size: 150),
               ],
             ),
+            model.getWaterMeterRow(200, 30),
+            Text(model.condition.text(), style: textStyle),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -115,7 +180,7 @@ class PlantInfoDialog extends StatelessWidget {
             Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Text(
-                    "Recommended to water every ${model.waterFrequency} days. Last watered ${DateTime.now().difference(model.watered!.last).inDays.toString()} days ago. Planted in a ${model.soilType!.toHumanString()} located ${model.location!.toHumanString()}",
+                    "Recommended to water every ${model.waterFrequency} days. Last watered ${model.timeSinceLastWater} days ago. Planted in a ${model.soilType!.toHumanString()} located ${model.location!.toHumanString()}",
                     style: modalTextStyle))
           ],
         ),
