@@ -90,3 +90,20 @@ String rawJson = '''[
     "location": "indoor"
   }
 ]''';
+
+String activitiesJson = '''{
+    "plantActivities": [
+        {
+            "activityTypeId": 1,
+            "id": 3,
+            "plantId": 2,
+            "time": "2022-08-29T15:30"
+        },
+        {
+            "activityTypeId": 2,
+            "id": 5,
+            "plantId": 2,
+            "time": "2022-08-29T15:30"
+        }
+    ]
+}''';
