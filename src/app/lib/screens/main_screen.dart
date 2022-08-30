@@ -10,10 +10,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int counter;
-
-  _MainScreenState() : counter = 0;
-
   @override
   Widget build(BuildContext context) => Container(
       padding: const EdgeInsets.only(left: 20, right: 20),
@@ -37,8 +33,7 @@ class _MainScreenState extends State<MainScreen> {
                       scrollDirection: Axis.horizontal,
                       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent: 200, childAspectRatio: 1, crossAxisSpacing: 20, mainAxisSpacing: 20),
-                      children:
-                          List<Widget>.generate(6, (int idx) => PlantInfoWidget(idx))))),
+                      children: List<Widget>.generate(6, (int idx) => PlantInfoEmpty(idx, isSmall: true))))),
           spacer,
           spacer,
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -61,8 +56,5 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ));
 
-  // Can use getters like these to potentially do pretty complex operations, but still call it like its a class param!
-  // class functions with no arguments are often better used as getters!
-  // you can also define setters
   SizedBox get spacer => const SizedBox(height: 10, width: 10);
 }
