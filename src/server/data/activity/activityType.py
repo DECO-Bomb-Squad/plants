@@ -12,14 +12,14 @@ class ActivityType(DB.BASE):
     __tablename__ = TBL_ACTIVITY_TYPES
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column('name', String(255), nullable=False)
-    desc = Column('desc', String(255), nullable=False)
+    description = Column('description', String(255), nullable=False)
 
     # relationships
-    activities = relationship("Activity", back_populates='activities')
+    activities = relationship("Activity", back_populates='activityType')
 
-    def __init__(self, name, desc):
+    def __init__(self, name, description):
         self.name = name
-        self.desc = desc
+        self.description = description
 
 
     # will need to add more methods here for getting info and setting info of the user
