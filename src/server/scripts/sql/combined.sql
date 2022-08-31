@@ -78,7 +78,7 @@ CREATE TABLE `plant_care_profile` (
     ON UPDATE CASCADE);
 
 CREATE TABLE `plant_care_profile_default` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `plantTypeId` INT NOT NULL,
   `soilType` VARCHAR(100) NOT NULL,
   `location` VARCHAR(100) NOT NULL,
