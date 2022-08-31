@@ -60,3 +60,35 @@ CREATE TABLE `activities` (
     REFERENCES `plants`.`plants` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE);
+
+CREATE TABLE `plant_care_profile` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `soilType` VARCHAR(100) NOT NULL,
+  `location` VARCHAR(100) NOT NULL,
+  `plantId` INT NOT NULL,
+  `daysBetwenWatering` INT NOT NULL,
+  `daysBetweenRepotting` INT NULL,
+  `daysBetweenFertilizer` INT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `plantId_idx` (`plantId` ASC) VISIBLE,
+  CONSTRAINT `plant_care_profile_plantId`
+    FOREIGN KEY (`plantId`)
+    REFERENCES `plants`.`plants` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+
+CREATE TABLE `plant_care_profile_default` (
+  `id` INT NOT NULL,
+  `plantTypeId` INT NOT NULL,
+  `soilType` VARCHAR(100) NOT NULL,
+  `location` VARCHAR(100) NOT NULL,
+  `daysBetweenWatering` INT NOT NULL,
+  `daysBetweenRepotting` INT NULL,
+  `daysBetweenFertilizer` INT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `pcp_default_plantTypeId_idx` (`plantTypeId` ASC) VISIBLE,
+  CONSTRAINT `pcp_default_plantTypeId`
+    FOREIGN KEY (`plantTypeId`)
+    REFERENCES `plants`.`plant_types` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);

@@ -1,5 +1,5 @@
 from data.constants import TBL_PLANTS, TBL_USERS, TBL_PLANT_TYPES
-from data.plants.privacy import Privacy
+from data.plants import PlantCareProfile
 from sqlalchemy import Column, Integer, String, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 from flask import jsonify
@@ -22,7 +22,9 @@ class Plant(DB.BASE):
     userId = Column(Integer, ForeignKey(f"{TBL_USERS}.id", name=f"fk_user_id_{__tablename__}"), nullable=False)
     user = relationship("User", back_populates='userPlants')
 
+    # individual relationships
     activities = relationship("Activity", back_populates='plant')
+    careProfile = relationship("PlantCareProfile", uselist=False, backref="plant_care_profile")
 
 
     def __init__(self, name, description, plantTypeId, userId):
@@ -35,13 +37,21 @@ class Plant(DB.BASE):
         allActivities = [activity.serialize() for activity in self.activities]
         return jsonify(plantActivities=allActivities)
 
+    # def get_serialized_status(self):
+    #     allStatus = [status.serialize() for status in self.status]
+    #     return jsonify(status=allStatus)
+
     def serialize(self):
         return {
             "id":   self.id,
             "name": self.name,
+            "scientific_name": "tbd",
             "description": self.description,
             "plantTypeId": self.plantTypeId,
-            "userId":      self.userId
+            # "user":        self.user.plant_serialize(), # NEEDS TESTING { userId: number, username: string}
+            "activities":  self.get_serialized_activities(),
+            "careProfile": "tbd", # { status1: value, status2: value }    i.e. location, soil_type
+            "tags":        "[tbd]"
         }
 
     # will need to add more methods here for getting info and setting info of the user
