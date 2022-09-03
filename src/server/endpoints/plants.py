@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from data import Plant, User, PlantType
+from data import Plant, User, PlantType, PlantCareProfile, PlantCareProfileDefault
 from utils.api import APICall
 
 import json
@@ -42,7 +42,8 @@ def add_personal_plant(session):
             # not plantTags):
             raise KeyError
 
-        # foreign key check
+        # # foreign key check
+        # print(userId)
         userCount: int = session.query(User).filter(User.id == userId).count()
         typeCount: int = session.query(PlantType).filter(PlantType.id == plantTypeId).count()
         if (userCount == 0 or typeCount == 0):
@@ -55,9 +56,22 @@ def add_personal_plant(session):
 
     # add to DB
     try:
-        plant = Plant(name=personalName, desc=description, plantTypeId=plantTypeId, userId=userId)
-        session.add(plant)
-        session.commit()
+        plant: Plant = Plant(name=personalName, desc=description, plantTypeId=plantTypeId, userId=userId)
+
+        # print(p)
+
+        # default: PlantCareProfileDefault = session.query(PlantCareProfileDefault).filter(PlantCareProfileDefault.plantTypeId == plantTypeId).first()
+        # if default is None:
+        #     raise Exception("The default plant care profile could not be found for this plant type")
+
+
+
+        # profile: PlantCareProfile = PlantCareProfile(plantId=default.id, soilType=default.soilType, location=default.location, daysBetweenWatering=default.daysBetweenWatering, daysBetweenFertilizer=default.daysBetweenFertilizer, daysBetweenRepotting=default.daysBetweenRepotting);
+
+        # session.add_all([plant, profile])
+        # session.add(plant)
+        # session.add(profile)
+        # session.commit()
     except Exception as e:
         return "A database error occurred:", e, 400
 

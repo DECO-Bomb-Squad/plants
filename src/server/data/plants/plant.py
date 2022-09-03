@@ -1,5 +1,5 @@
 from data.constants import TBL_PLANTS, TBL_USERS, TBL_PLANT_TYPES
-from data.plants import PlantCareProfile
+from data.plants.plantCareProfile import PlantCareProfile
 from sqlalchemy import Column, Integer, String, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 from flask import jsonify
@@ -17,7 +17,7 @@ class Plant(DB.BASE):
     description = Column('description', String(255), nullable=False)
 
     plantTypeId = Column("plantTypeId", Integer, ForeignKey(f"{TBL_PLANT_TYPES}.id", name=f"fk_plant_type_id_{__tablename__}"), nullable=False)
-    plantType = relationship("PlantType", back_populates='plant')
+    plantType = relationship("PlantType", uselist=False, backref="plant_types")
 
     userId = Column(Integer, ForeignKey(f"{TBL_USERS}.id", name=f"fk_user_id_{__tablename__}"), nullable=False)
     user = relationship("User", back_populates='userPlants')
@@ -33,9 +33,9 @@ class Plant(DB.BASE):
         self.plantTypeId = plantTypeId
         self.userId = userId
 
-    def get_serialized_activities(self):
-        allActivities = [activity.serialize() for activity in self.activities]
-        return jsonify(plantActivities=allActivities)
+    # def get_serialized_activities(self):
+    #     allActivities = [activity.serialize() for activity in self.activities]
+    #     return jsonify(plantActivities=allActivities)
 
     # def get_serialized_status(self):
     #     allStatus = [status.serialize() for status in self.status]
@@ -49,7 +49,7 @@ class Plant(DB.BASE):
             "description": self.description,
             "plantTypeId": self.plantTypeId,
             # "user":        self.user.plant_serialize(), # NEEDS TESTING { userId: number, username: string}
-            "activities":  self.get_serialized_activities(),
+            # "activities":  self.get_serialized_activities(),
             "careProfile": "tbd", # { status1: value, status2: value }    i.e. location, soil_type
             "tags":        "[tbd]"
         }

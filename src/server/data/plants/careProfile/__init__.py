@@ -1,1 +1,0 @@
-from data.plants.careProfile.plantCareProfile import PlantCareProfile

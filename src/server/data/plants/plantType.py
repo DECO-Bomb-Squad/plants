@@ -15,7 +15,8 @@ class PlantType(DB.BASE):
     fullName = Column('fullName', String(255), nullable=False)
 
     # relationships
-    plant = relationship("Plant", back_populates='plantType')
+    plant = relationship("Plant", back_populates='plantType', overlaps="plant_types")
+    defaultCareProfile = relationship("PlantCareProfileDefault", uselist=False, backref="plant_care_profile_default")
 
     def __init__(self, type, commonName, fullName):
         self.type = type
