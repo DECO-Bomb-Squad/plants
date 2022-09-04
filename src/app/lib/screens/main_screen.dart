@@ -1,6 +1,7 @@
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/plantinstance/plant_info.dart';
+import 'package:app/forum/post.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -52,7 +53,7 @@ class _MainScreenState extends State<MainScreen> {
                       childAspectRatio: 3 / 1,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20),
-                  children: List<Widget>.generate(10, (int idx) => DecoratedBox(decoration: smallPostComponent)))),
+                  children: List<Widget>.generate(10, (int idx) => PostSmallWidget()))),
         ],
       ));
 
