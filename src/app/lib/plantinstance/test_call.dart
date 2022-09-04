@@ -2,7 +2,7 @@ String rawJson = '''[
   { 
     "nickname": "Teddy",
     "plant_name": "Common Monstera",
-    "scientific_name": "Monstera Deliciosa",
+    "scientific_name": "Monstera Adansonii",
     "owner": "Dr Kaczynski",
     "water_frequency": 7,
     "tags": [

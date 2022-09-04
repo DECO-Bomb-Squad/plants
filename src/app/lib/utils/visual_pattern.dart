@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 // A few constants to help really ensure we have visual consistency
 const radius = 15.0;
+const smallRadius = 10.0;
 
 // Text styling
 // Equivalent to a <h1> element in HTML
@@ -49,7 +50,19 @@ const modalTextStyle = TextStyle(
   color: darkColour,
 );
 
-// Decorations for individual elements
+// Tag text
+const tagTextStyle = TextStyle(
+  fontSize: 16,
+  fontWeight: FontWeight.w600,
+  color: lightColour,
+);
+
+BoxDecoration tagComponent = BoxDecoration(
+  color: darkColour,
+  borderRadius: BorderRadius.circular(smallRadius)
+);
+
+// Decorations for individual plant elements
 BoxDecoration smallPlantComponent = BoxDecoration(
   color: accent,
   borderRadius: BorderRadius.circular(radius),
@@ -62,7 +75,7 @@ BoxDecoration smallPostComponent = BoxDecoration(
 
 BoxDecoration dialogComponent = BoxDecoration(
   color: lightColour,
-  borderRadius: BorderRadius.circular(15),
+  borderRadius: BorderRadius.circular(radius),
 );
 
 // Button styling
@@ -81,3 +94,5 @@ ButtonStyle waterButtonStyle = ButtonStyle(
   // ), WHY DO YOU NOT WORK
   backgroundColor: MaterialStateProperty.all<Color>(darkHighlight),
 );
+
+// Helper functions for generating common components
