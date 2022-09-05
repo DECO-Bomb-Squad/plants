@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:app/forum/tags.dart';
 import 'package:app/plantinstance/plant_info.dart';
 import 'package:app/forum/comments.dart';
-import 'package:app/utils/colour_scheme.dart';
+import 'package:app/base/header_sliver.dart';
 
 class PostScreen extends StatefulWidget {
   final int id;
@@ -17,31 +17,7 @@ class _PostScreenState extends State<PostScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
     body: NestedScrollView(
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        return <Widget>[
-          SliverAppBar(
-            leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: (() => Navigator.of(context).pop())),
-            backgroundColor: lightColour,
-            shadowColor: lightColour,
-            pinned: false,
-            floating: true,
-            forceElevated: innerBoxIsScrolled,
-            iconTheme: const IconThemeData(color: darkHighlight, size: 35),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.person),
-                tooltip: 'Add new entry',
-                onPressed: () {/* ... */},
-              ),
-              IconButton(
-                icon: const Icon(Icons.notifications),
-                tooltip: 'Add new entry',
-                onPressed: () {/* ... */},
-              ),
-            ],
-          ),
-        ];
-      },
+      headerSliverBuilder: StandardHeaderBuilder,
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
