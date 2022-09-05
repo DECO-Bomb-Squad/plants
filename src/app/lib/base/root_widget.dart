@@ -39,7 +39,7 @@ class _RootWidgetState extends State<RootWidget> with SingleTickerProviderStateM
       NavBarItem(
         text: "Ask\nQuestion",
         iconData: Icons.question_answer,
-        childFunc: () => const PostScreen(),
+        childFunc: () => const PostScreen(1),
       ),
     ];
     controller = TabController(length: navItems!.length, vsync: this);
