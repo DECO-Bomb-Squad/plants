@@ -1,58 +1,34 @@
-import 'package:app/forum/post.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/forum/tags.dart';
 import 'package:app/base/header_sliver.dart';
+import 'package:app/forum/post.dart';
 
-class CreatePostScreen extends StatefulWidget {
-
-  const CreatePostScreen({Key? key}) : super(key: key);
+class ReplyPostScreen extends StatefulWidget {
+  final int postID;
+  const ReplyPostScreen(this.postID, {Key? key}) : super(key: key);
 
   @override
-  State<CreatePostScreen> createState() => _CreatePostScreenState();
+  State<ReplyPostScreen> createState() => _ReplyPostScreenState();
 }
 
-class _CreatePostScreenState extends State<CreatePostScreen> {
-  final double padding = 15.0;
-
+class _ReplyPostScreenState extends State<ReplyPostScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
     body: NestedScrollView(
       headerSliverBuilder: StandardHeaderBuilder,
       body: Padding(
         padding: EdgeInsets.all(padding),
-        child: Column(
+        child: 
+          Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
               width: MediaQuery.of(context).size.width - (padding * 2),
-              child: DecoratedBox(
-                decoration: inputComponent,
-                child: Padding (
-                  padding: EdgeInsets.all(padding),
-                  child: Text("Write a descriptive title...", style: inputTitleStyle)
-                ),
+              child: Padding (
+                padding: EdgeInsets.all(padding),
+                child: Text("Existing question/comment, blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah ", style: textStyle)
               )
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.15,
-              width: MediaQuery.of(context).size.width - (padding * 2),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [ 
-                  Text("Tags", style: sectionHeaderStyle),
-                  SizedBox(
-                    height: 40,
-                    child: ListView.builder(
-                      itemCount: 10,
-                      scrollDirection: Axis.horizontal,
-                      controller: ScrollController(),
-                      itemBuilder: ((context, index) => tagItemBuilder(context, index))            
-                    )
-                  )
-                ],
-              ),
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.30,
@@ -65,7 +41,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text("Write your question here. Make sure to include plenty of detail...", style: inputStyle,)
+                        Text("Write your response here. Make sure to include plenty of detail...", style: inputStyle,)
                       ],
                     ),
                   )

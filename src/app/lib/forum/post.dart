@@ -22,7 +22,7 @@ class _PostSmallState extends State<PostSmallWidget> {
       onTap: () {
         Navigator.push(context,
         MaterialPageRoute(builder: (context) => const PostScreen(1)));
-      }, // TODO: Make this work properly - uncomment and test if you want to see what's wrong
+      },
       child: DecoratedBox(
         decoration: smallPostComponent,
         child: Padding(
@@ -49,6 +49,32 @@ class _PostSmallState extends State<PostSmallWidget> {
           ),
         )
       )
+    );
+  }
+}
+
+class MakePostWidget extends StatelessWidget {
+  const MakePostWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+         ElevatedButton(
+          onPressed: () {
+          },
+          style: buttonStyle,
+          child: const Text("Post", style: buttonTextStyle),
+        ),
+        ElevatedButton(
+          onPressed: () {
+          },
+          style: buttonStyle,
+          child: const Text("Save as draft", style: buttonTextStyle),
+        ),
+      ],
     );
   }
 }

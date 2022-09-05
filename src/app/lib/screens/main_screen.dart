@@ -1,3 +1,4 @@
+import 'package:app/screens/create_post_screen.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/plantinstance/plant_info.dart';
@@ -41,7 +42,10 @@ class _MainScreenState extends State<MainScreen> {
             const Text("HOT QUESTIONS", style: mainHeaderStyle),
             IconButton(
               icon: const Icon(Icons.add),
-              onPressed: () => null,
+              onPressed: () {
+                Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const CreatePostScreen()));
+              },
             )
           ]),
           Flexible(

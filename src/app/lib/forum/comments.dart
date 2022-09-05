@@ -1,8 +1,9 @@
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
+import 'package:app/screens/reply_post_screen.dart';
 
 class CommentManager {
-  Column getComment() {
+  Column getComment(context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -40,6 +41,25 @@ class CommentManager {
               flex: 4,
               child: Text(
               "dfjklskdfsj ksdjhfksdhjfksjdh fkjsdh f kjshdfjk hsdjkfh sdjkfh skdjf ksjdhf ksjdhf kjs dfk hsd kfjh sdkjfh skejdh fiksh j"
+              )
+            )
+          ]
+        ),
+        Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: Container(),
+            ),
+            Expanded(
+              flex: 4,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const ReplyPostScreen(1)));
+                },
+                style: smallButtonStyle,
+                child: const Text("Write a response...", style: smallButtonTextStyle)
               )
             )
           ]

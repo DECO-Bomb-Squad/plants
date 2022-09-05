@@ -1,9 +1,11 @@
+import 'package:app/screens/create_post_screen.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/forum/tags.dart';
 import 'package:app/plantinstance/plant_info.dart';
 import 'package:app/forum/comments.dart';
 import 'package:app/base/header_sliver.dart';
+import 'package:app/screens/reply_post_screen.dart';
 
 class PostScreen extends StatefulWidget {
   final int id;
@@ -52,9 +54,7 @@ class _PostScreenState extends State<PostScreen> {
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.28,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child:GridView(
+              child: GridView(
                   scrollDirection: Axis.horizontal,
                   controller: ScrollController(),
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -65,13 +65,27 @@ class _PostScreenState extends State<PostScreen> {
                   ),
                   children: List<Widget>.generate(2, (int idx) => PlantInfoEmpty(idx, isSmall: true))
                 )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.15,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const ReplyPostScreen(1)));
+                    },
+                    style: buttonStyle,
+                    child: const Text("Write a response...", style: buttonTextStyle)
+                  )
+                ],
               )
             ),
-            spacer,
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CommentManager().getComment()
+                CommentManager().getComment(context)
               ],
             )
           ]
@@ -81,4 +95,4 @@ class _PostScreenState extends State<PostScreen> {
   );
 }
 
-SizedBox get spacer => const SizedBox(height: 20, width: 10);
+SizedBox get spacer => const SizedBox(height: 20, width: 10); // TODO: Hacky, remove
