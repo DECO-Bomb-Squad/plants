@@ -102,3 +102,38 @@ String rawJson = '''[
     "pictures": ["https://i.etsystatic.com/15235325/r/il/9ad9a3/1769707810/il_fullxfull.1769707810_5ux0.jpg"]
   }
 ]''';
+
+String activitiesJson = '''{
+    "plantActivities": [
+        {
+            "activityTypeId": 0,
+            "id": 3,
+            "plantId": 2,
+            "time": "2022-08-29T15:30"
+        },
+        {
+            "activityTypeId": 2,
+            "id": 5,
+            "plantId": 2,
+            "time": "2022-08-29T15:30"
+        },
+        {
+            "activityTypeId": 0,
+            "id": 5,
+            "plantId": 2,
+            "time": "2022-08-25T15:30"
+        },
+        {
+            "activityTypeId": 1,
+            "id": 5,
+            "plantId": 2,
+            "time": "2022-08-20T15:30"
+        },
+        {
+            "activityTypeId": 0,
+            "id": 5,
+            "plantId": 2,
+            "time": "2022-08-20T15:30"
+        }
+    ]
+}''';

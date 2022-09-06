@@ -52,9 +52,38 @@ class _MainScreenState extends State<MainScreen> {
                       childAspectRatio: 3 / 1,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20),
-                  children: List<Widget>.generate(10, (int idx) => DecoratedBox(decoration: smallPostComponent)))),
+                  children: List<Widget>.generate(
+                      10,
+                      (int idx) => DecoratedBox(
+                          decoration: smallPostComponent,
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                spacer,
+                                Container(
+                                    padding: const EdgeInsets.all(5),
+                                    child: Text(
+                                      questions[idx % 3],
+                                      style: subheaderStyle,
+                                    )),
+                                spacer,
+                                Container(
+                                    padding: const EdgeInsets.all(5),
+                                    child: Text(
+                                      questionsFurther[idx % 3],
+                                      style: textStyle,
+                                    )),
+                              ]))))),
         ],
       ));
 
   SizedBox get spacer => const SizedBox(height: 10, width: 10);
+
+  List<String> get questions => const ["Lounge room cat", "Watering levels", "Does my plant hate me"];
+  List<String> get questionsFurther => const [
+        "My cat keeps attacking my fiddle leaf",
+        "If I water my cactus everyday will it grow faster?",
+        "The thorns on the stem keep attacking me and my family. What can I do?"
+      ];
 }

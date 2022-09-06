@@ -1,5 +1,8 @@
+import 'dart:ui';
+import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class PlantInfoModel {
   String? nickName;
@@ -7,6 +10,9 @@ class PlantInfoModel {
   String scientificName; // Botanical name
   String owner; // Who owns the plant?
   int waterFrequency; // How many days between waterings
+
+  //Commented out till awaiting discussion on backend api return
+  // ActivityOccurenceModel? activities; // Map of various activities and the time they occured
 
   List<String>? tags; // System and user-added info tags
   List<DateTime> watered; // Dates of previous waterings
@@ -150,6 +156,25 @@ extension ConditionExtension on ConditionType {
         return Icons.water_drop_outlined;
       case ConditionType.problem:
         return Icons.sick;
+    }
+  }
+}
+
+enum ActivityTypeId { watering, repotting, fertilising, worshipping }
+
+extension ActivityColour on ActivityTypeId {
+  Color toColour() {
+    switch (index) {
+      case 0:
+        return darkHighlight;
+      case 1:
+        return secondaryAccent;
+      case 2:
+        return accent;
+      case 3:
+        return darkColour;
+      default:
+        return lightHighlight;
     }
   }
 }
