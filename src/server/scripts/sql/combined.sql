@@ -1,11 +1,11 @@
-CREATE TABLE `plants`.`plant_types` (
+CREATE TABLE `plant_types` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(255) NOT NULL,
   `commonName` VARCHAR(255) NOT NULL,
   `fullName` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`));
 
-  CREATE TABLE `plants`.`users` (
+  CREATE TABLE `users` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(255) NOT NULL,
   `email` VARCHAR(64) NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE `plants`.`plant_types` (
   UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE,
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE);
 
-  CREATE TABLE `plants`.`plants` (
+  CREATE TABLE `plants` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `desc` VARCHAR(255) NOT NULL,
@@ -33,5 +33,30 @@ CREATE TABLE `plants`.`plant_types` (
   CONSTRAINT `userId`
     FOREIGN KEY (`userId`)
     REFERENCES `plants`.`users` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+
+CREATE TABLE `activity_types` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `description` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`));
+
+CREATE TABLE `activities` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `time` DATETIME NOT NULL,
+  `activityTypeId` INT NOT NULL,
+  `plantId` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `activityType_idx` (`activityTypeId` ASC) VISIBLE,
+  INDEX `plant_idx` (`plantId` ASC) VISIBLE,
+  CONSTRAINT `activityType`
+    FOREIGN KEY (`activityTypeId`)
+    REFERENCES `plants`.`activity_types` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `plant`
+    FOREIGN KEY (`plantId`)
+    REFERENCES `plants`.`plants` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE);

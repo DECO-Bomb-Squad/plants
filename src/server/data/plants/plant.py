@@ -14,26 +14,32 @@ class Plant(DB.BASE):
     __tablename__ = TBL_PLANTS
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column('name', String(255), nullable=False)
-    desc = Column('desc', String(255), nullable=False)
+    description = Column('description', String(255), nullable=False)
 
     plantTypeId = Column("plantTypeId", Integer, ForeignKey(f"{TBL_PLANT_TYPES}.id", name=f"fk_plant_type_id_{__tablename__}"), nullable=False)
-    plantType = relationship("PlantType", back_populates='plants')
+    plantType = relationship("PlantType", back_populates='plant')
 
     userId = Column(Integer, ForeignKey(f"{TBL_USERS}.id", name=f"fk_user_id_{__tablename__}"), nullable=False)
-    user = relationship("User", back_populates='plants')
+    user = relationship("User", back_populates='userPlants')
+
+    activities = relationship("Activity", back_populates='plant')
 
 
-    def __init__(self, name, desc, plantTypeId, userId):
+    def __init__(self, name, description, plantTypeId, userId):
         self.name = name
-        self.desc = desc
+        self.description = description
         self.plantTypeId = plantTypeId
         self.userId = userId
+
+    def get_serialized_activities(self):
+        allActivities = [activity.serialize() for activity in self.activities]
+        return jsonify(plantActivities=allActivities)
 
     def serialize(self):
         return {
             "id":   self.id,
             "name": self.name,
-            "desc": self.desc,
+            "description": self.description,
             "plantTypeId": self.plantTypeId,
             "userId":      self.userId
         }
