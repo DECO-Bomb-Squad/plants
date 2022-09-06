@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class PlantInfoModel {
+  int id;
   String? nickName;
   String plantName; // Common name
   String scientificName; // Botanical name
@@ -23,7 +24,8 @@ class PlantInfoModel {
   List<String> pictures; // list of image uris
 
   PlantInfoModel.fromJSON(Map<String, dynamic> json)
-      : plantName = json["plant_name"],
+      : id = json["id"],
+        plantName = json["plant_name"],
         scientificName = json["scientific_name"],
         owner = json["owner"],
         waterFrequency = json["water_frequency"],

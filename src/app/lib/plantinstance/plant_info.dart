@@ -1,4 +1,5 @@
 import 'package:app/api/plant_api.dart';
+import 'package:app/plantinstance/plant_image_gallery.dart';
 import 'package:app/screens/plant_care_screen.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/loading_builder.dart';
@@ -166,7 +167,14 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                model.getCoverPhoto(150, 150, Icons.photo, 150),
+                GestureDetector(
+                  onTap: () => Navigator.of(context, rootNavigator: false).push(
+                    MaterialPageRoute(
+                      builder: (context) => PlantGalleryEmpty(widget.plantID),
+                    ),
+                  ),
+                  child: model.getCoverPhoto(150, 150, Icons.photo, 150),
+                ),
                 const Icon(Icons.calendar_month, size: 150),
               ],
             ),
