@@ -25,6 +25,7 @@ class Plant(DB.BASE):
     # individual relationships
     activities = relationship("Activity", back_populates='plant')
     careProfile = relationship("PlantCareProfile", uselist=False, backref="plant_care_profile")
+    tags = relationship("PlantTag", back_populates="plant")
 
 
     def __init__(self, plantName, plantDesc, plantTypeId, userId):
@@ -36,6 +37,10 @@ class Plant(DB.BASE):
     def get_serialized_activities(self):
         allActivities = [activity.serialize() for activity in self.activities]
         return allActivities
+
+    def get_serialized_tags(self):
+        allTags = [tag.serialize() for tag in self.tags]
+        return allTags
 
     def serialize(self):
         return {
