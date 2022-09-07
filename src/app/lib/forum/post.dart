@@ -63,12 +63,14 @@ class MakePostWidget extends StatelessWidget {
       children: [
          ElevatedButton(
           onPressed: () {
+            Navigator.pop(context);
           },
           style: buttonStyle,
           child: const Text("Post", style: buttonTextStyle),
         ),
         ElevatedButton(
           onPressed: () {
+            Navigator.pop(context);
           },
           style: buttonStyle,
           child: const Text("Save as draft", style: buttonTextStyle),
