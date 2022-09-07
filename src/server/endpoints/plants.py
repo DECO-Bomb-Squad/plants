@@ -1,7 +1,8 @@
 from flask import Blueprint, request
-from data import Plant, User, PlantType, PlantCareProfile, PlantCareProfileDefault
+from data import Plant, User, PlantType, PlantCareProfile, PlantCareProfileDefault, Activity, ActivityType
 from sqlalchemy.sql.expression import func
 from utils.api import APICall
+from flask import jsonify
 
 import json
 
@@ -149,25 +150,7 @@ def delete_personal_plant(session):
 
 # ==== Miscellaneous Plant Endpoints ====
 
-'''
-Adds an Activity to a Plant (POST)
-    - Params:
-        - plantId:      int
-        - activityType: int
-        - time:         date
-'''
-def add_activity():
-    pass
 
-'''
-Gets Activity of a Plant (GET)
-    - Params:
-        - plantId: int
-    - Return:
-        - time series of activity
-'''
-def get_activity():
-    pass
 
 # ==== Plant Type Management Endpoints ====
 # Consider if these endpoints are really necessary.

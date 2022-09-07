@@ -41,7 +41,7 @@ class Plant(DB.BASE):
         return {
             "id":   self.id,
             "name": self.plantName,
-            "scientific_name": "tbd",
+            "scientific_name": self.plantType.fullName,
             "description": self.plantDesc,
             "plantTypeId": self.plantTypeId,
             "user":        self.user.snip_serialize(),
