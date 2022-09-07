@@ -18,7 +18,7 @@
 In the future, when you have already installed the packages and created the enivironment,
 all you will need to do is start the virtual environment.
 
-## Setting Up MySQL (Locally)
+### Setting Up MySQL (Locally)
 1. Install a local MySQL server on your local machine: https://www.mysql.com/downloads/
 2. Install MySQLWorkbench: https://www.mysql.com/products/workbench/
 3. Start the MySQL server
