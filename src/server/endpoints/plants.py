@@ -77,30 +77,23 @@ def add_personal_plant(session):
 
     # add to DB
     try:
-        # profile = PlantCareProfile(
-        #     plantId=50, soilType="soilType", plantLocation="plantLocation",
-        #     daysBetweenWatering=1, daysBetweenFertilizer=1,
-        #     daysBetweenRepotting=1)
-
-        # session.add(profile)
-        # session.commit()
-
-        plant: Plant = Plant(name=personalName, description=description, plantTypeId=plantTypeId, userId=userId)
+        plant: Plant = Plant(plantName=personalName, plantDesc=description, plantTypeId=plantTypeId, userId=userId)
 
         default: PlantCareProfileDefault = session.query(PlantCareProfileDefault).filter(PlantCareProfileDefault.plantTypeId == plantTypeId).first()
         if default is None:
             raise Exception("The default plant care profile could not be found for this plant type")
 
-        # session.add(plant)
-        # session.flush()
-        # session.refresh(plant)
+        session.add(plant)
+        session.flush()
+        session.refresh(plant)
 
-        # I sacrificed to the greater power that IS. Believe me, I tried for a very long to make this work properly.
-        # maxPCP: PlantCareProfileDefault = session.query(func.max(PlantCareProfile.id))
-        # res = session.execute(func.max(PlantCareProfile.id)).mappings().first()
-        # maxId = res['max_1'] + 1
-        
-        # return add_profile(default, plant)
+        profile = PlantCareProfile(
+            plantId=plant.id, soilType=default.soilType, plantLocation=default.plantLocation,
+            daysBetweenWatering=default.daysBetweenWatering, daysBetweenFertilizer=default.daysBetweenFertilizer,
+            daysBetweenRepotting=default.daysBetweenRepotting)
+
+        session.add(profile)
+        session.commit()
 
     except Exception as e:
         return "A database error occurred:", e, 400

@@ -13,8 +13,8 @@ Personal Plant Model for SQLALchemy
 class Plant(DB.BASE):
     __tablename__ = TBL_PLANTS
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column('name', String(255), nullable=False)
-    description = Column('description', String(255), nullable=False)
+    plantName = Column('plantName', String(255), nullable=False)
+    plantDesc = Column('plantDesc', String(255), nullable=False)
 
     plantTypeId = Column("plantTypeId", Integer, ForeignKey(f"{TBL_PLANT_TYPES}.id", name=f"fk_plant_type_id_{__tablename__}"), nullable=False)
     plantType = relationship("PlantType", uselist=False, backref="plant_types")
@@ -27,9 +27,9 @@ class Plant(DB.BASE):
     careProfile = relationship("PlantCareProfile", uselist=False, backref="plant_care_profile")
 
 
-    def __init__(self, name, description, plantTypeId, userId):
-        self.name = name
-        self.description = description
+    def __init__(self, plantName, plantDesc, plantTypeId, userId):
+        self.plantName = plantName
+        self.plantDesc = plantDesc
         self.plantTypeId = plantTypeId
         self.userId = userId
 
