@@ -20,8 +20,11 @@ class _PlantInfoEmptyState extends State<PlantInfoEmpty> {
   Widget build(BuildContext context) {
     return Container(
         decoration: smallPlantComponent,
-        child: LoadingBuilder(widget.api.getPlantInfo(widget.plantID),
-            (m) => widget.isSmall ? PlantInfoSmallWidget(m) : PlantInfoLargeWidget(m)));
+        child: LoadingBuilder(
+            widget.api.getPlantInfo(widget.plantID),
+            (m) => widget.isSmall
+                ? PlantInfoSmallWidget(m as PlantInfoModel)
+                : PlantInfoLargeWidget(m as PlantInfoModel)));
   }
 }
 
