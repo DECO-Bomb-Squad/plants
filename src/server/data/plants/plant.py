@@ -37,10 +37,6 @@ class Plant(DB.BASE):
         allActivities = [activity.serialize() for activity in self.activities]
         return allActivities
 
-    # def get_serialized_status(self):
-    #     allStatus = [status.serialize() for status in self.status]
-    #     return jsonify(status=allStatus)
-
     def serialize(self):
         return {
             "id":   self.id,
@@ -50,7 +46,7 @@ class Plant(DB.BASE):
             "plantTypeId": self.plantTypeId,
             "user":        self.user.snip_serialize(),
             "activities":  self.get_serialized_activities(),
-            "careProfile": self.careProfile,
+            "careProfile": self.careProfile.serialize(),
             "tags":        "[tbd]"
         }
 
