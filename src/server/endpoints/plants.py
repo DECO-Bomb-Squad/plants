@@ -1,5 +1,6 @@
 from flask import Blueprint, request
-from data import Plant, User, PlantType
+from data import Plant, User, PlantType, PlantCareProfile, PlantCareProfileDefault
+from sqlalchemy.sql.expression import func
 from utils.api import APICall
 
 import json
@@ -8,6 +9,26 @@ import json
 app = Blueprint('plant_endpoints', __name__)
 
 # ===== Personal Plant Management Endpoints ====
+
+# @APICall
+# def add_profile(sesh, default: PlantCareProfileDefault, plant: Plant):
+#     try:
+#         profile = PlantCareProfile(
+#             plantId=plant.id, soilType=default.soilType, plantLocation=default.plantLocation,
+#             daysBetweenWatering=default.daysBetweenWatering, daysBetweenFertilizer=default.daysBetweenFertilizer,
+#             daysBetweenRepotting=default.daysBetweenRepotting)
+
+#         print(profile.serialize())
+
+#         print('add')
+#         sesh.add(profile)
+#         # session.flush()
+#         print('commit')
+#         sesh.commit()
+
+#         return "Done", 200
+#     except Exception as e:
+#         return f"Error: {e}", 500
 
 '''
 Adds a PERSONAL plant. (POST)
@@ -42,7 +63,8 @@ def add_personal_plant(session):
             # not plantTags):
             raise KeyError
 
-        # foreign key check
+        # # foreign key check
+        # print(userId)
         userCount: int = session.query(User).filter(User.id == userId).count()
         typeCount: int = session.query(PlantType).filter(PlantType.id == plantTypeId).count()
         if (userCount == 0 or typeCount == 0):
@@ -55,9 +77,24 @@ def add_personal_plant(session):
 
     # add to DB
     try:
-        plant = Plant(name=personalName, desc=description, plantTypeId=plantTypeId, userId=userId)
+        plant: Plant = Plant(plantName=personalName, plantDesc=description, plantTypeId=plantTypeId, userId=userId)
+
+        default: PlantCareProfileDefault = session.query(PlantCareProfileDefault).filter(PlantCareProfileDefault.plantTypeId == plantTypeId).first()
+        if default is None:
+            raise Exception("The default plant care profile could not be found for this plant type")
+
         session.add(plant)
+        session.flush()
+        session.refresh(plant)
+
+        profile = PlantCareProfile(
+            plantId=plant.id, soilType=default.soilType, plantLocation=default.plantLocation,
+            daysBetweenWatering=default.daysBetweenWatering, daysBetweenFertilizer=default.daysBetweenFertilizer,
+            daysBetweenRepotting=default.daysBetweenRepotting)
+
+        session.add(profile)
         session.commit()
+
     except Exception as e:
         return "A database error occurred:", e, 400
 

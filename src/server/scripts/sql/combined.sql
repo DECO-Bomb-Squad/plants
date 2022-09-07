@@ -18,8 +18,8 @@ CREATE TABLE `plant_types` (
 
   CREATE TABLE `plants` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NOT NULL,
-  `desc` VARCHAR(255) NOT NULL,
+  `plantName` VARCHAR(255) NOT NULL,
+  `plantDesc` VARCHAR(255) NOT NULL,
   `plantTypeId` INT NOT NULL,
   `userId` INT NOT NULL,
   PRIMARY KEY (`id`),
@@ -39,12 +39,12 @@ CREATE TABLE `plant_types` (
 CREATE TABLE `activity_types` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
-  `description` VARCHAR(255) NOT NULL,
+  `activityDesc` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`));
 
 CREATE TABLE `activities` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `time` DATETIME NOT NULL,
+  `activityTime` DATETIME NOT NULL,
   `activityTypeId` INT NOT NULL,
   `plantId` INT NOT NULL,
   PRIMARY KEY (`id`),
@@ -58,5 +58,37 @@ CREATE TABLE `activities` (
   CONSTRAINT `plant`
     FOREIGN KEY (`plantId`)
     REFERENCES `plants`.`plants` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+
+CREATE TABLE `plant_care_profile` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `soilType` VARCHAR(100) NOT NULL,
+  `plantLocation` VARCHAR(100) NOT NULL,
+  `plantId` INT NOT NULL,
+  `daysBetweenWatering` INT NOT NULL,
+  `daysBetweenRepotting` INT NULL,
+  `daysBetweenFertilizer` INT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `plantId_idx` (`plantId` ASC) VISIBLE,
+  CONSTRAINT `plant_care_profile_plantId`
+    FOREIGN KEY (`plantId`)
+    REFERENCES `plants`.`plants` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+
+CREATE TABLE `plant_care_profile_default` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `plantTypeId` INT NOT NULL,
+  `soilType` VARCHAR(100) NOT NULL,
+  `plantLocation` VARCHAR(100) NOT NULL,
+  `daysBetweenWatering` INT NOT NULL,
+  `daysBetweenRepotting` INT NULL,
+  `daysBetweenFertilizer` INT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `pcp_default_plantTypeId_idx` (`plantTypeId` ASC) VISIBLE,
+  CONSTRAINT `pcp_default_plantTypeId`
+    FOREIGN KEY (`plantTypeId`)
+    REFERENCES `plants`.`plant_types` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE);
