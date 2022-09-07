@@ -33,9 +33,9 @@ class Plant(DB.BASE):
         self.plantTypeId = plantTypeId
         self.userId = userId
 
-    # def get_serialized_activities(self):
-    #     allActivities = [activity.serialize() for activity in self.activities]
-    #     return jsonify(plantActivities=allActivities)
+    def get_serialized_activities(self):
+        allActivities = [activity.serialize() for activity in self.activities]
+        return allActivities
 
     # def get_serialized_status(self):
     #     allStatus = [status.serialize() for status in self.status]
@@ -44,13 +44,13 @@ class Plant(DB.BASE):
     def serialize(self):
         return {
             "id":   self.id,
-            "name": self.name,
+            "name": self.plantName,
             "scientific_name": "tbd",
-            "description": self.description,
+            "description": self.plantDesc,
             "plantTypeId": self.plantTypeId,
-            # "user":        self.user.plant_serialize(), # NEEDS TESTING { userId: number, username: string}
-            # "activities":  self.get_serialized_activities(),
-            "careProfile": "tbd", # { status1: value, status2: value }    i.e. location, soil_type
+            "user":        self.user.snip_serialize(),
+            "activities":  self.get_serialized_activities(),
+            "careProfile": self.careProfile,
             "tags":        "[tbd]"
         }
 

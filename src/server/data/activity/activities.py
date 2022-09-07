@@ -11,7 +11,7 @@ Personal Activity Model for SQLALchemy
 class Activity(DB.BASE):
     __tablename__ = TBL_ACTIVITIES
     id = Column(Integer, primary_key=True, autoincrement=True)
-    time = Column("time", DateTime(timezone=True), server_default=func.now())
+    activityTime = Column("activityTime", DateTime(timezone=True), server_default=func.now())
 
     activityTypeId = Column("activityTypeId", String, ForeignKey(f"{TBL_ACTIVITY_TYPES}.id", name=f"fk_activity_type_id_{__tablename__}"), nullable=False)
     activityType = relationship("ActivityType", back_populates='activities')
@@ -27,7 +27,7 @@ class Activity(DB.BASE):
     def serialize(self):
         return {
             "id": self.id,
-            "time": self.time,
+            "time": self.activityTime,
             "activityTypeId": self.activityTypeId,
             "plantId": self.plantId
         }
