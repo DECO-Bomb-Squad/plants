@@ -17,6 +17,7 @@ class PlantType(DB.BASE):
     # relationships
     plant = relationship("Plant", back_populates='plantType', overlaps="plant_types")
     defaultCareProfile = relationship("PlantCareProfileDefault", uselist=False, backref="plant_care_profile_default")
+    
     tags = relationship("PlantTag", back_populates="plantType")
 
     def get_serialized_tags(self):

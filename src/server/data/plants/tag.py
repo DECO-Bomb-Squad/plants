@@ -16,5 +16,11 @@ class Tag(DB.BASE):
     plantTypes = relationship("PlantTag", back_populates="tag")
     # tags = relationship("PlantTag", back_populates="plantType")
 
-    def __init__(self, type):
-        self.plantTypeId = type
+    def __init__(self, label):
+        self.label = label
+
+    def serialize(self):
+        return {
+            "tagId": self.id,
+            "label": self.label
+        }

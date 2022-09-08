@@ -92,3 +92,26 @@ CREATE TABLE `plant_care_profile_default` (
     REFERENCES `plants`.`plant_types` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE);
+
+CREATE TABLE `tags` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`));
+
+CREATE TABLE `plant_tags` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `plantTypeId` INT NOT NULL,
+  `tagId` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `plant_type_to_plant_tag_idx` (`plantTypeId` ASC) VISIBLE,
+  INDEX `tag_id_to_plant_tag_idx` (`tagId` ASC) VISIBLE,
+  CONSTRAINT `plant_type_to_plant_tag`
+    FOREIGN KEY (`plantTypeId`)
+    REFERENCES `plants`.`plant_types` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `tag_id_to_plant_tag`
+    FOREIGN KEY (`tagId`)
+    REFERENCES `plants`.`tags` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);

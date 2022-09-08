@@ -24,8 +24,9 @@ class Plant(DB.BASE):
 
     # individual relationships
     activities = relationship("Activity", back_populates='plant')
+    # tags = relationship("PlantTag", back_populates="plant") # access through plantType
+
     careProfile = relationship("PlantCareProfile", uselist=False, backref="plant_care_profile")
-    tags = relationship("PlantTag", back_populates="plant")
 
 
     def __init__(self, plantName, plantDesc, plantTypeId, userId):
