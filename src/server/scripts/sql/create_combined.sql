@@ -61,6 +61,19 @@ CREATE TABLE `activities` (
     ON DELETE CASCADE
     ON UPDATE CASCADE);
 
+    CREATE TABLE `photos` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `uri` VARCHAR(255) NOT NULL,
+  `photoTime` DATETIME NOT NULL,
+  `plantId` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `plant_idx` (`plantId` ASC) VISIBLE,
+  CONSTRAINT `photoPlant`
+    FOREIGN KEY (`plantId`)
+    REFERENCES `plants`.`plants` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+
 CREATE TABLE `plant_care_profile` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `soilType` VARCHAR(100) NOT NULL,
