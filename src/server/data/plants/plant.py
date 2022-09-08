@@ -53,7 +53,7 @@ class Plant(DB.BASE):
             "user":        self.user.snip_serialize(),
             "activities":  self.get_serialized_activities(),
             "careProfile": self.careProfile.serialize(),
-            "tags":        "[tbd]"
+            "tags":        self.plantType.get_serialized_tags()
         }
 
     # will need to add more methods here for getting info and setting info of the user
