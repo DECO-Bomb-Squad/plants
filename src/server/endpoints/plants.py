@@ -185,10 +185,43 @@ def add_plant_tag(session, plantId):
 
     return 'The tag was added successfully', 200
 
+'''
+Only removes the tag associated with the plant. The tag remains in the DB.
+'''
 @app.route("/plant/<plantId>/tag", methods = ['DELETE'])
 @APICall
-def remove_plant_tag(session):
-    pass
+def remove_plant_tag(session, plantId):
+    try:
+        tagId: str = request.form['tagId']
+
+        # verify information
+        if (not tagId):
+            raise KeyError
+
+        # check if plant already exists
+        plant = session.query(Plant).filter(Plant.id == plantId).first()
+        if not plant:
+            return "This plant was not found", 400
+    except KeyError as e:
+        return "To remove a tag, you must provide: tagId: int", 400
+    except Exception as e:
+        return "An unknown error occurred:", e, 400
+
+    # attempt a deletion
+    try:
+        tag = session.query(PlantTag).filter(PlantTag.tagId == tagId).first()
+        
+        if not tag:
+            return "This tag does not exist", 400
+
+        session.delete(tag)
+        session.commit()
+    except Exception as e:
+        return "Error deleting tag:", e, 500
+
+    return "Tag was successfully deleted", 200
+
+
 
 # ==== Miscellaneous Plant Endpoints ====
 
