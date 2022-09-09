@@ -11,26 +11,6 @@ app = Blueprint('plant_endpoints', __name__)
 
 # ===== Personal Plant Management Endpoints ====
 
-# @APICall
-# def add_profile(sesh, default: PlantCareProfileDefault, plant: Plant):
-#     try:
-#         profile = PlantCareProfile(
-#             plantId=plant.id, soilType=default.soilType, plantLocation=default.plantLocation,
-#             daysBetweenWatering=default.daysBetweenWatering, daysBetweenFertilizer=default.daysBetweenFertilizer,
-#             daysBetweenRepotting=default.daysBetweenRepotting)
-
-#         print(profile.serialize())
-
-#         print('add')
-#         sesh.add(profile)
-#         # session.flush()
-#         print('commit')
-#         sesh.commit()
-
-#         return "Done", 200
-#     except Exception as e:
-#         return f"Error: {e}", 500
-
 '''
 Adds a PERSONAL plant. (POST)
     - Params: 
