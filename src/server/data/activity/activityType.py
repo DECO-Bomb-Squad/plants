@@ -12,7 +12,7 @@ class ActivityType(DB.BASE):
     __tablename__ = TBL_ACTIVITY_TYPES
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column('name', String(255), nullable=False)
-    activityDesc = Column('description', String(255), nullable=False)
+    activityDesc = Column('activityDesc', String(255), nullable=False)
 
     # relationships
     activities = relationship("Activity", back_populates='activityType')

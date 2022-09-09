@@ -22,7 +22,7 @@ class Activity(DB.BASE):
     def __init__(self, time, activityTypeId, plantId):
         self.activityTypeId = activityTypeId
         self.plantId = plantId
-        self.time = time
+        self.activityTime = time
 
     def serialize(self):
         return {

@@ -24,6 +24,8 @@ class Plant(DB.BASE):
 
     # individual relationships
     activities = relationship("Activity", back_populates='plant')
+    # tags = relationship("PlantTag", back_populates="plant") # access through plantType
+
     careProfile = relationship("PlantCareProfile", uselist=False, backref="plant_care_profile")
 
 
@@ -37,17 +39,21 @@ class Plant(DB.BASE):
         allActivities = [activity.serialize() for activity in self.activities]
         return allActivities
 
+    def get_serialized_tags(self):
+        allTags = [tag.serialize() for tag in self.tags]
+        return allTags
+
     def serialize(self):
         return {
             "id":   self.id,
             "name": self.plantName,
-            "scientific_name": "tbd",
+            "scientific_name": self.plantType.fullName,
             "description": self.plantDesc,
             "plantTypeId": self.plantTypeId,
             "user":        self.user.snip_serialize(),
             "activities":  self.get_serialized_activities(),
             "careProfile": self.careProfile.serialize(),
-            "tags":        "[tbd]"
+            "tags":        self.plantType.get_serialized_tags()
         }
 
     # will need to add more methods here for getting info and setting info of the user
