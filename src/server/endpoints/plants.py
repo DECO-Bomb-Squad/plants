@@ -251,7 +251,7 @@ def add_plant_photo(session):
         session.commit()
 
     except KeyError as e:
-        return 'To test a photo, please provide a plantId: int and uri: string)', 400
+        return 'To add a photo, please provide a plantId: int and uri: string)', 400
         
     except Exception as e:
         return 'Error adding photo:', e, 400
