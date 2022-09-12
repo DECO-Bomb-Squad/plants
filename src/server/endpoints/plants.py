@@ -306,20 +306,17 @@ def get_plant_photos(session):
 
         if not plant:
             return "The requested plant was not found", 400
+    except Exception as e:
+        return "Error finding plant by id", 400
 
+    try:
         photos: Photo = session.query(Photo).filter(Photo.plantId == plantId).all()
-        
-        if not photos:
-            return '{\n	"photolist": [\n\n	]\n}', 200
-
+        allPhotos = [p.serialize_compact() for p in photos]
+        return jsonify(photolist=allPhotos), 200
     
     except Exception as e:
         return "Error getting photo list", 400
             
-    
-    allPhotos = [p.serialize_compact() for p in photos]
-    return jsonify(photolist=allPhotos), 200
-
 
 
 # ==== Miscellaneous Plant Endpoints ====
