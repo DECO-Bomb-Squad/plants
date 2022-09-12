@@ -234,28 +234,24 @@ def add_plant_photo(session):
     try:
         plantId: int = request.form['plantId']
         uri: str     = request.form['uri']
-        photoTime    = request.form['photoTime']
 
         # verify information
         if (not plantId or 
-            not uri or 
-            not photoTime):
+            not uri):
             raise KeyError
         
-        print("\n\n[ADDPHOTO] plantId: " + plantId + ", uri: " + uri + "photoTime: " + photoTime + "\n\n") #debug
 
         # check plant exists
         plant = session.query(Plant).filter(Plant.id == plantId).first()
         if (not plant):
             return 'Could not find plant with id = %s' %plantId, 400
 
-        newPhoto = Photo(uri=uri, photoTime=photoTime, plantId=plantId)
+        newPhoto = Photo(uri=uri, plantId=plantId)
         session.add(newPhoto)
-        print("before commit \n\n") #debug
         session.commit()
 
     except KeyError as e:
-        return 'To add a photo, please provide a plantId, uri and a photoTime', 400
+        return 'To test a photo, please provide a plantId: int and uri: string)', 400
         
     except Exception as e:
         return 'Error adding photo:', e, 400
@@ -267,7 +263,7 @@ def add_plant_photo(session):
 Remove a photo URI from a plant.
 
 '''
-@app.route("/plant/photos/remove", methods = ['POST'])
+@app.route("/plant/photos/remove", methods = ['DELETE'])
 @APICall
 def delete_plant_photo(session):
     try:
@@ -307,25 +303,22 @@ def get_plant_photos(session):
             return 'Please provide a plantId.', 400
         
         plant: Plant = session.query(Plant).filter(Plant.id == plantId).first()
-        photos: Photo = session.query(Photo).filter(Photo.plantId == plantId).all()
 
         if not plant:
             return "The requested plant was not found", 400
+
+        photos: Photo = session.query(Photo).filter(Photo.plantId == plantId).all()
         
         if not photos:
-            return "There exist no photos associated with this plant", 400
+            return '{\n	"photolist": [\n\n	]\n}', 200
 
     
     except Exception as e:
         return "Error getting photo list", 400
-    
-    # print("\n\n" + jsonify(plant.get_serialized_photos()) + "\n\n") #debug
-        
+            
     
     allPhotos = [p.serialize_compact() for p in photos]
     return jsonify(photolist=allPhotos), 200
-    # return jsonify(plant.get_serialized_photos()), 200
-
 
 
 

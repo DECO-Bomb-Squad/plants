@@ -18,9 +18,9 @@ class Photo(DB.BASE):
     plantId = Column("plantId", Integer, ForeignKey(f"{TBL_PLANTS}.id", name=f"fk_plant_id_{__tablename__}"), nullable=False)
     plant = relationship("Plant", back_populates="photos")
 
-    def __init__(self, uri, photoTime, plantId):
+    def __init__(self, uri, plantId):
         self.uri = uri
-        self.photoTime = photoTime
+        self.photoTime = func.now()
         self.plantId = plantId
 
     # standard serialize
