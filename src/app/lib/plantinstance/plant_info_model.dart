@@ -1,8 +1,6 @@
-import 'dart:ui';
-import 'package:app/utils/colour_scheme.dart';
+import 'package:app/utils/activity_calendar.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class PlantInfoModel extends ChangeNotifier {
   int id;
@@ -12,16 +10,13 @@ class PlantInfoModel extends ChangeNotifier {
   String owner; // Who owns the plant?
   int waterFrequency; // How many days between waterings
 
-  //Commented out till awaiting discussion on backend api return
-  // ActivityOccurenceModel? activities; // Map of various activities and the time they occured
+  ActivityOccurenceModel activities; // Map of various activities and the time they occured
 
   List<String>? tags; // System and user-added info tags
-  List<DateTime> watered; // Dates of previous waterings
 
   SoilType? soilType; // How the plant is potted
   LocationType? location; // Where the plant is planted
 
-  List<String> pictures; // list of image uris
   Map<DateTime, String> images;
 
   PlantInfoModel.fromJSON(Map<String, dynamic> json)
@@ -31,13 +26,14 @@ class PlantInfoModel extends ChangeNotifier {
         owner = json["owner"],
         waterFrequency = json["water_frequency"],
         tags = (json["tags"] as List<dynamic>).map((e) => e as String).toList(),
-        watered = (json["watered"] as List<dynamic>).map((e) => DateTime.parse(e)).toList()..sort(),
         soilType = SoilType.values.byName(json["soil_type"]),
         location = LocationType.values.byName(json["location"]),
         nickName = json["nickname"],
-        pictures = ((json["pictures"] ?? []) as List<dynamic>).map((e) => e as String).toList(),
         images = ((json["images"] ?? {}) as Map<dynamic, dynamic>)
-            .map((key, value) => MapEntry(DateTime.parse(key as String), value as String));
+            .map((key, value) => MapEntry(DateTime.parse(key as String), value as String)),
+        activities = ActivityOccurenceModel.fromListJSON(json["activities"]) {
+    activities.addListener(notifyListeners);
+  }
 
   Widget getCoverPhoto(double height, double width, IconData iconData, double iconSize) => ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
@@ -57,7 +53,7 @@ class PlantInfoModel extends ChangeNotifier {
     return temp.map((e) => e.value).toList();
   }
 
-  int get timeSinceLastWater => DateTime.now().difference(watered.last).inDays;
+  int get timeSinceLastWater => DateTime.now().difference(activities.lastWatered).inDays;
 
   ConditionType get condition =>
       (timeSinceLastWater > waterFrequency) ? ConditionType.needsWatering : ConditionType.happy;
@@ -95,6 +91,12 @@ class PlantInfoModel extends ChangeNotifier {
     // TODO do api call here
     images[time] = imageURL;
     notifyListeners(); // trigger rebuild in widgets that share this model
+  }
+
+  void removeImage(String imageURL) {
+    // TODO do api call here
+    images.removeWhere((key, value) => value == imageURL);
+    notifyListeners();
   }
 }
 

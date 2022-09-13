@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:app/api/plant_api.dart';
 import 'package:app/plantinstance/plant_info.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
-import 'package:app/plantinstance/test_call.dart';
 import 'package:app/utils/activity_calendar.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/loading_builder.dart';
@@ -42,23 +41,22 @@ class PlantCareScreen extends StatefulWidget {
 }
 
 class _PlantCareScreenState extends State<PlantCareScreen> {
-  ActivityOccurenceModel activityModel =
-      ActivityOccurenceModel.fromListJSON(jsonDecode(activitiesJson)["plantActivities"]);
+  ActivityOccurenceModel get activityModel => widget.model.activities;
 
   @override
   void initState() {
     super.initState();
-    widget.model.addListener(() {
-      setState(() {});
-    });
+    widget.model.addListener(rebuild);
   }
 
   @override
   void dispose() {
     super.dispose();
-    widget.model.removeListener(() {
-      setState(() {});
-    });
+    widget.model.removeListener(rebuild);
+  }
+
+  void rebuild() {
+    setState(() {});
   }
 
   @override
@@ -127,7 +125,7 @@ class _PlantCareScreenState extends State<PlantCareScreen> {
                                 child: TextButton(
                                     onPressed: () {
                                       DateTime? selected = calendar.controller?.selectedDate;
-                                      selected != null ? activityModel.watering?.add(selected) : null;
+                                      activityModel.addWatering(selected);
                                       setState(() {});
                                     },
                                     style: waterButtonStyle,
@@ -141,7 +139,7 @@ class _PlantCareScreenState extends State<PlantCareScreen> {
                                 child: TextButton(
                                     onPressed: () {
                                       DateTime? selected = calendar.controller?.selectedDate;
-                                      selected != null ? activityModel.fertilising?.add(selected) : null;
+                                      activityModel.addFertilising(selected);
                                       setState(() {});
                                     },
                                     style: buttonStyle,
@@ -155,7 +153,7 @@ class _PlantCareScreenState extends State<PlantCareScreen> {
                                 child: TextButton(
                                     onPressed: () {
                                       DateTime? selected = calendar.controller?.selectedDate;
-                                      selected != null ? activityModel.repotting?.add(selected) : null;
+                                      activityModel.addRepotting(selected);
                                       setState(() {});
                                     },
                                     style: buttonStyle,
@@ -172,7 +170,7 @@ class _PlantCareScreenState extends State<PlantCareScreen> {
                       child: TextButton(
                           onPressed: () {
                             DateTime? selected = calendar.controller?.selectedDate;
-                            selected != null ? activityModel.fertilising?.add(selected) : null;
+                            activityModel.addFertilising(selected);
                             setState(() {});
                           },
                           style: buttonStyle,

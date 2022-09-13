@@ -1,13 +1,11 @@
 import 'package:app/api/plant_api.dart';
 import 'package:app/plantinstance/plant_image_gallery.dart';
 import 'package:app/screens/plant_care_screen.dart';
-import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/loading_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:get_it/get_it.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class PlantInfoEmpty extends StatefulWidget {
   final int plantID;
@@ -45,9 +43,17 @@ class _PlantInfoSmallState extends State<PlantInfoSmallWidget> {
   @override
   void initState() {
     super.initState();
-    widget.model.addListener(() {
-      setState(() {});
-    });
+    widget.model.addListener(rebuild);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.model.removeListener(rebuild);
+  }
+
+  void rebuild() {
+    setState(() {});
   }
 
   @override
@@ -98,17 +104,17 @@ class _PlantInfoLargeState extends State<PlantInfoLargeWidget> {
   @override
   void initState() {
     super.initState();
-    widget.model.addListener(() {
-      setState(() {});
-    });
+    widget.model.addListener(rebuild);
   }
 
   @override
   void dispose() {
     super.dispose();
-    widget.model.removeListener(() {
-      setState(() {});
-    });
+    widget.model.removeListener(rebuild);
+  }
+
+  void rebuild() {
+    setState(() {});
   }
 
   @override
@@ -169,17 +175,17 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
   @override
   void initState() {
     super.initState();
-    widget.model.addListener(() {
-      setState(() {});
-    });
+    widget.model.addListener(rebuild);
   }
 
   @override
   void dispose() {
     super.dispose();
-    widget.model.removeListener(() {
-      setState(() {});
-    });
+    widget.model.removeListener(rebuild);
+  }
+
+  void rebuild() {
+    setState(() {});
   }
 
   @override
@@ -227,8 +233,7 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
                   onPressed: () {
                     widget.rebuildParent();
                     setState(() {
-                      model.watered.add(DateTime.now());
-                      model.watered.sort();
+                      model.activities.addWatering(DateTime.now());
                     });
                   },
                   style: waterButtonStyle,

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:app/api/plant_api.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/utils/colour_scheme.dart';
@@ -21,22 +19,20 @@ class PlantGalleryScreen extends StatefulWidget {
 }
 
 class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
-  String blobLink = "blob";
-
   @override
   void initState() {
     super.initState();
-    widget.model.addListener(() {
-      setState(() {});
-    });
+    widget.model.addListener(rebuild);
   }
 
   @override
   void dispose() {
     super.dispose();
-    widget.model.removeListener(() {
-      setState(() {});
-    });
+    widget.model.removeListener(rebuild);
+  }
+
+  void rebuild() {
+    setState(() {});
   }
 
   Future<Uint8List?> getImage(ImageSource source) async {
@@ -55,7 +51,7 @@ class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
       path,
       bodyBytes: imgBytes,
     );
-    blobLink = (await storage.getBlobLink(path)).toString();
+    String blobLink = (await storage.getBlobLink(path)).toString();
     widget.model.addNewImage(blobLink, DateTime.now());
   }
 
@@ -66,7 +62,7 @@ class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: (() => Navigator.of(context).pop())),
+              leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: (() => Navigator.of(context).pop())),
               backgroundColor: lightColour,
               shadowColor: lightColour,
               pinned: false,
@@ -80,7 +76,6 @@ class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(
             children: [
-              Text(blobLink),
               Flexible(
                 flex: 1,
                 child: Row(
@@ -89,18 +84,18 @@ class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
                       children: [
                         IconButton(
                           onPressed: () => doStuffWithImage(ImageSource.camera),
-                          icon: Icon(Icons.camera_alt),
+                          icon: const Icon(Icons.camera_alt),
                         ),
-                        Text("Take Picture"),
+                        const Text("Take Picture"),
                       ],
                     ),
                     Column(
                       children: [
                         IconButton(
                           onPressed: () => doStuffWithImage(ImageSource.gallery),
-                          icon: Icon(Icons.image),
+                          icon: const Icon(Icons.image),
                         ),
-                        Text("From Gallery"),
+                        const Text("From Gallery"),
                       ],
                     ),
                   ],
@@ -108,7 +103,10 @@ class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
               ),
               Flexible(
                 flex: 3,
-                child: GalleryView(widget.model.sortedImages.map((i) => GalleryImage("", i)).toList()),
+                child: GalleryView(
+                  widget.model.sortedImages.map((i) => GalleryImage("", i)).toList(),
+                  deleteCallback: widget.model.removeImage,
+                ),
               ),
             ],
           ),
