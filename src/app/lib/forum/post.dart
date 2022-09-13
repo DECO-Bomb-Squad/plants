@@ -5,7 +5,6 @@ import 'package:app/screens/post_screen.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:app/forum/post_model.dart';
 import 'package:flutter/material.dart';
-import 'package:app/screens/layout_test_screen.dart';
 
 class PostSmallWidget extends StatefulWidget {
   const PostSmallWidget({Key? key}) : super(key: key);
@@ -64,12 +63,14 @@ class MakePostWidget extends StatelessWidget {
       children: [
          ElevatedButton(
           onPressed: () {
+            Navigator.pop(context);
           },
           style: buttonStyle,
           child: const Text("Post", style: buttonTextStyle),
         ),
         ElevatedButton(
           onPressed: () {
+            Navigator.pop(context);
           },
           style: buttonStyle,
           child: const Text("Save as draft", style: buttonTextStyle),
