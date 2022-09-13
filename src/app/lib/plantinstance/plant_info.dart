@@ -250,7 +250,7 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
             Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Text(
-                    "Recommended to water every ${model.waterFrequency} days. Last watered ${model.timeSinceLastWater} days ago. Planted in a ${model.soilType!.toHumanString()} located ${model.location!.toHumanString()}",
+                    "Recommended to water every ${model.waterFrequency} days. Last watered ${model.timeSinceLastWater} days ago. Planted in a ${model.careProfile.soilType.toHumanString()} located ${model.careProfile.location.toHumanString()}",
                     style: modalTextStyle))
           ],
         ),

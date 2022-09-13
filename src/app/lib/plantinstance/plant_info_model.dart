@@ -2,20 +2,35 @@ import 'package:app/utils/activity_calendar.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:flutter/material.dart';
 
+class PlantCareProfile extends ChangeNotifier {
+  int id;
+  LocationType location;
+  SoilType soilType;
+
+  int daysBetweenWatering;
+  int daysBetweenFertilising;
+  int daysBetweenRepotting;
+
+  PlantCareProfile.fromJSON(Map<String, dynamic> json)
+      : id = json["id"],
+        location = LocationType.values.byName(json["plantLocation"]),
+        soilType = SoilType.values.byName(json["soilType"]),
+        daysBetweenWatering = json["daysBetweenWatering"],
+        daysBetweenFertilising = json["daysBetweenFertilizer"],
+        daysBetweenRepotting = json["daysBetweenRepotting"];
+}
+
 class PlantInfoModel extends ChangeNotifier {
+  // TODO add "owner" User when properly implemented - need json key changed
   int id;
   String? nickName;
   String plantName; // Common name
   String scientificName; // Botanical name
-  String owner; // Who owns the plant?
-  int waterFrequency; // How many days between waterings
 
   ActivityOccurenceModel activities; // Map of various activities and the time they occured
+  PlantCareProfile careProfile;
 
   List<String>? tags; // System and user-added info tags
-
-  SoilType? soilType; // How the plant is potted
-  LocationType? location; // Where the plant is planted
 
   Map<DateTime, String> images;
 
@@ -23,15 +38,12 @@ class PlantInfoModel extends ChangeNotifier {
       : id = json["id"],
         plantName = json["plant_name"],
         scientificName = json["scientific_name"],
-        owner = json["owner"],
-        waterFrequency = json["water_frequency"],
         tags = (json["tags"] as List<dynamic>).map((e) => e as String).toList(),
-        soilType = SoilType.values.byName(json["soil_type"]),
-        location = LocationType.values.byName(json["location"]),
         nickName = json["nickname"],
         images = ((json["images"] ?? {}) as Map<dynamic, dynamic>)
             .map((key, value) => MapEntry(DateTime.parse(key as String), value as String)),
-        activities = ActivityOccurenceModel.fromListJSON(json["activities"]) {
+        activities = ActivityOccurenceModel.fromListJSON(json["activities"]),
+        careProfile = PlantCareProfile.fromJSON(json["careProfile"]) {
     activities.addListener(notifyListeners);
   }
 
@@ -54,6 +66,8 @@ class PlantInfoModel extends ChangeNotifier {
   }
 
   int get timeSinceLastWater => DateTime.now().difference(activities.lastWatered).inDays;
+
+  int get waterFrequency => careProfile.daysBetweenWatering;
 
   ConditionType get condition =>
       (timeSinceLastWater > waterFrequency) ? ConditionType.needsWatering : ConditionType.happy;

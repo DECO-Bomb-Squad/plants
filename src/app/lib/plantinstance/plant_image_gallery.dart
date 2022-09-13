@@ -2,6 +2,7 @@ import 'package:app/api/plant_api.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/image_gallery.dart';
+import 'package:app/utils/visual_pattern.dart';
 import 'package:azblob/azblob.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -80,29 +81,14 @@ class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
                 flex: 1,
                 child: Row(
                   children: [
-                    Column(
-                      children: [
-                        IconButton(
-                          onPressed: () => doStuffWithImage(ImageSource.camera),
-                          icon: const Icon(Icons.camera_alt),
-                        ),
-                        const Text("Take Picture"),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        IconButton(
-                          onPressed: () => doStuffWithImage(ImageSource.gallery),
-                          icon: const Icon(Icons.image),
-                        ),
-                        const Text("From Gallery"),
-                      ],
-                    ),
+                    imageGetter("Take Picture", Icons.camera_alt, ImageSource.camera),
+                    spacer,
+                    imageGetter("From Gallery", Icons.image, ImageSource.gallery),
                   ],
                 ),
               ),
               Flexible(
-                flex: 3,
+                flex: 4,
                 child: GalleryView(
                   widget.model.sortedImages.map((i) => GalleryImage("", i)).toList(),
                   deleteCallback: widget.model.removeImage,
@@ -114,4 +100,27 @@ class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
       ),
     );
   }
+
+  Widget imageGetter(String subtitleText, IconData icon, ImageSource source) => Expanded(
+        child: Container(
+          decoration: smallPostComponent,
+          padding: EdgeInsets.all(5),
+          child: Column(
+            children: [
+              Expanded(
+                child: FittedBox(
+                  fit: BoxFit.fill,
+                  child: IconButton(
+                    onPressed: () => doStuffWithImage(source),
+                    icon: Icon(icon),
+                  ),
+                ),
+              ),
+              Text(subtitleText, style: subheaderStyle),
+            ],
+          ),
+        ),
+      );
+
+  Widget get spacer => SizedBox(width: 10);
 }
