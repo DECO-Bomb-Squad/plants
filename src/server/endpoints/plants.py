@@ -300,14 +300,14 @@ def get_plant_photos(session):
         plantId: int = request.form['plantId']
 
         if (not plantId):
-            return 'Please provide a plantId.', 400
+            return 'Please provide a plantId: int.', 400
         
         plant: Plant = session.query(Plant).filter(Plant.id == plantId).first()
 
         if not plant:
             return "The requested plant was not found", 400
     except Exception as e:
-        return "Error finding plant by id", 400
+        return "To return plant photos, please provide plantId: int", 400
 
     try:
         photos: Photo = session.query(Photo).filter(Photo.plantId == plantId).all()
