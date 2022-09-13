@@ -1,4 +1,5 @@
 import 'package:app/api/plant_api.dart';
+import 'package:app/screens/add_plant_screen.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/plantinstance/plant_info.dart';
@@ -18,12 +19,20 @@ class _MainScreenState extends State<MainScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-              alignment: Alignment.centerLeft,
-              child: const Text(
-                "MY PLANTS",
-                style: mainHeaderStyle,
-              )),
+          Row(children: [
+            Container(
+                alignment: Alignment.centerLeft,
+                child: const Text(
+                  "MY PLANTS",
+                  style: mainHeaderStyle,
+                )),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context, rootNavigator: false)
+                  .push(MaterialPageRoute(builder: (context) => PlantAddScreen())),
+              style: buttonStyle,
+              child: const Text("++++", style: buttonTextStyle),
+            )
+          ]),
           spacer,
           SizedBox(
             height: 160,

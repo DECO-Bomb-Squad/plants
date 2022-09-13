@@ -109,6 +109,11 @@ class PlantAPI {
     return getGeneric('test_plant', (j) => PlantTypeInfoModel.fromJSON(j));
   }
 
+  PlantTypeInfoModel getPlantTypes(String plantTypeName) {
+    return PlantTypeInfoModel.fromJSON(
+        {"plant_name": "Rose", "scientific_name": "Scientific", "tags": [], "imageUrls": []});
+  }
+
   Future<PlantInfoModel> getPlantInfo(int id) =>
       cache.plantInfoCache.putIfAbsent(id, () => AsyncCache(const Duration(days: 1))).fetch(() => _getPlantInfo(id));
 
