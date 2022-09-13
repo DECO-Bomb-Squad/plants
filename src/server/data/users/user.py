@@ -34,6 +34,12 @@ class User(DB.BASE):
         allPlants = [plant.serialize() for plant in self.userPlants]
         return jsonify(userPlants=allPlants)
 
+    def snip_serialize(self):
+        return {
+            "userId":   self.id,
+            "username": self.username
+        }
+
     def serialize(self):
         return {
             "userId": self.id,

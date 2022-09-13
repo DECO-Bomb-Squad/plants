@@ -1,6 +1,8 @@
 from flask import Blueprint, request
-from data import Plant, User, PlantType
+from data import Plant, User, PlantType, PlantCareProfile, PlantCareProfileDefault, Activity, ActivityType, Tag, PlantTag
+from sqlalchemy.sql.expression import func
 from utils.api import APICall
+from flask import jsonify
 
 import json
 
@@ -42,7 +44,8 @@ def add_personal_plant(session):
             # not plantTags):
             raise KeyError
 
-        # foreign key check
+        # # foreign key check
+        # print(userId)
         userCount: int = session.query(User).filter(User.id == userId).count()
         typeCount: int = session.query(PlantType).filter(PlantType.id == plantTypeId).count()
         if (userCount == 0 or typeCount == 0):
@@ -55,9 +58,24 @@ def add_personal_plant(session):
 
     # add to DB
     try:
-        plant = Plant(name=personalName, desc=description, plantTypeId=plantTypeId, userId=userId)
+        plant: Plant = Plant(plantName=personalName, plantDesc=description, plantTypeId=plantTypeId, userId=userId)
+
+        default: PlantCareProfileDefault = session.query(PlantCareProfileDefault).filter(PlantCareProfileDefault.plantTypeId == plantTypeId).first()
+        if default is None:
+            raise Exception("The default plant care profile could not be found for this plant type")
+
         session.add(plant)
+        session.flush()
+        session.refresh(plant)
+
+        profile = PlantCareProfile(
+            plantId=plant.id, soilType=default.soilType, plantLocation=default.plantLocation,
+            daysBetweenWatering=default.daysBetweenWatering, daysBetweenFertilizer=default.daysBetweenFertilizer,
+            daysBetweenRepotting=default.daysBetweenRepotting)
+
+        session.add(profile)
         session.commit()
+
     except Exception as e:
         return "A database error occurred:", e, 400
 
@@ -110,27 +128,84 @@ def delete_personal_plant(session):
 
     return "Plant was successfully deleted", 200
 
+# ==== Plant Tags Endpoints ====
+@app.route("/plant/<plantId>/tag", methods = ['POST'])
+@APICall
+def add_plant_tag(session, plantId):
+    try:
+        label: str = request.form['label']
+
+        # verify information
+        if (not label):
+            raise KeyError
+
+        # check if plant already exists
+        plant = session.query(Plant).filter(Plant.id == plantId).first()
+        if not plant:
+            return "This plant was not found", 400
+
+    except KeyError as e:
+        return "To add a tag, you must provide: label: str", 400
+    except Exception as e:
+        return "An unknown error occurred:", e, 400
+
+    # add to database
+    try:
+        tag = Tag(label=label)
+        session.add(tag)
+        session.flush()
+        session.refresh(tag)
+
+        plantTag = PlantTag(typeId=plant.plantTypeId, tagId=tag.id)
+        session.add(plantTag)
+        session.commit()
+
+    except Exception as e:
+        print("An unknown error occurred:", e)
+
+    return 'The tag was added successfully', 200
+
+'''
+Only removes the tag associated with the plant. The tag remains in the DB.
+'''
+@app.route("/plant/<plantId>/tag", methods = ['DELETE'])
+@APICall
+def remove_plant_tag(session, plantId):
+    try:
+        tagId: str = request.form['tagId']
+
+        # verify information
+        if (not tagId):
+            raise KeyError
+
+        # check if plant already exists
+        plant = session.query(Plant).filter(Plant.id == plantId).first()
+        if not plant:
+            return "This plant was not found", 400
+    except KeyError as e:
+        return "To remove a tag, you must provide: tagId: int", 400
+    except Exception as e:
+        return "An unknown error occurred:", e, 400
+
+    # attempt a deletion
+    try:
+        tag = session.query(PlantTag).filter(PlantTag.tagId == tagId).first()
+        
+        if not tag:
+            return "This tag does not exist", 400
+
+        session.delete(tag)
+        session.commit()
+    except Exception as e:
+        return "Error deleting tag:", e, 500
+
+    return "Tag was successfully deleted", 200
+
+
+
 # ==== Miscellaneous Plant Endpoints ====
 
-'''
-Adds an Activity to a Plant (POST)
-    - Params:
-        - plantId:      int
-        - activityType: int
-        - time:         date
-'''
-def add_activity():
-    pass
 
-'''
-Gets Activity of a Plant (GET)
-    - Params:
-        - plantId: int
-    - Return:
-        - time series of activity
-'''
-def get_activity():
-    pass
 
 # ==== Plant Type Management Endpoints ====
 # Consider if these endpoints are really necessary.

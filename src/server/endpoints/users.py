@@ -1,9 +1,11 @@
+from typing import List
 from flask import Blueprint,request
 from sqlalchemy import update
 from data import User
 import json
 from data.constants import TBL_USERS
 from utils.api import APICall
+from flask import jsonify
 
 app = Blueprint('user_endpoints', __name__)
 # session = DB.SESSION()
@@ -56,9 +58,9 @@ Gets ALL Users (GET)
 @app.route("/users/", methods = ['GET', 'POST'])
 @APICall
 def get_all_users(sesh):
-    users = sesh.query(User).all()
-    res = json.dumps(list(map(lambda user : {"username": user.username, "id": user.id}, users)))
-    return res, 200
+    users: List[User] = sesh.query(User).all()
+    allUsers = [user.serialize() for user in users]
+    return jsonify(users=allUsers)
 
 '''
 Gets a User (GET)
