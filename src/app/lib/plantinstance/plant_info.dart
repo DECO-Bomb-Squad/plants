@@ -43,6 +43,14 @@ class PlantInfoSmallWidget extends StatefulWidget {
 
 class _PlantInfoSmallState extends State<PlantInfoSmallWidget> {
   @override
+  void initState() {
+    super.initState();
+    widget.model.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Material(
         child: InkWell(
@@ -87,6 +95,22 @@ class PlantInfoLargeWidget extends StatefulWidget {
 }
 
 class _PlantInfoLargeState extends State<PlantInfoLargeWidget> {
+  @override
+  void initState() {
+    super.initState();
+    widget.model.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.model.removeListener(() {
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -143,6 +167,22 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
   PlantInfoModel get model => widget.model;
 
   @override
+  void initState() {
+    super.initState();
+    widget.model.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.model.removeListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -170,7 +210,7 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
                 GestureDetector(
                   onTap: () => Navigator.of(context, rootNavigator: false).push(
                     MaterialPageRoute(
-                      builder: (context) => PlantGalleryEmpty(widget.plantID),
+                      builder: (context) => PlantGalleryScreen(widget.plantID, widget.model),
                     ),
                   ),
                   child: model.getCoverPhoto(150, 150, Icons.photo, 150),

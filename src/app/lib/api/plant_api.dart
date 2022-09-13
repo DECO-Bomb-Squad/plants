@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:app/api/storage.dart';
 import 'package:app/base/user.dart';
 import 'package:app/interfaces/plant_type_info/plant_type_info_model.dart';
-import 'package:app/plantinstance/plant_image_gallery_model.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/plantinstance/test_call.dart';
 import 'package:async/async.dart';
@@ -119,9 +118,9 @@ class PlantAPI {
     return Future.delayed(const Duration(seconds: 1), () => model);
   }
 
-  Future<PlantImageGalleryModel> getPlantGallery(int id) {
-    Map<String, dynamic> testJson = jsonDecode(galleryJson)[id];
-    PlantImageGalleryModel model = PlantImageGalleryModel.fromJSON(testJson);
-    return Future.delayed(const Duration(seconds: 1), () => model);
-  }
+  // Future<PlantImageGalleryModel> getPlantGallery(int id) {
+  //   Map<String, dynamic> testJson = jsonDecode(galleryJson)[id];
+  //   PlantImageGalleryModel model = PlantImageGalleryModel.fromJSON(testJson);
+  //   return Future.delayed(const Duration(seconds: 1), () => model);
+  // }
 }

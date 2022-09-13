@@ -15,7 +15,11 @@ String rawJson = '''[
     ],
     "soil_type": "largePot",
     "location": "fullShade",
-    "pictures": ["https://www.thespruce.com/thmb/Yn-yjMFQGSvoH4_r3y-mLljqrjY=/4461x3346/smart/filters:no_upscale()/grow-monstera-adansonii-swiss-cheese-plant-1902774-hero-01-dc903dae459a4dd5b919d5e1d1bee9d3.jpg"]
+    "pictures": ["https://www.thespruce.com/thmb/Yn-yjMFQGSvoH4_r3y-mLljqrjY=/4461x3346/smart/filters:no_upscale()/grow-monstera-adansonii-swiss-cheese-plant-1902774-hero-01-dc903dae459a4dd5b919d5e1d1bee9d3.jpg"],
+    "images": {
+      "2022-08-20T15:30": "https://www.thespruce.com/thmb/Yn-yjMFQGSvoH4_r3y-mLljqrjY=/4461x3346/smart/filters:no_upscale()/grow-monstera-adansonii-swiss-cheese-plant-1902774-hero-01-dc903dae459a4dd5b919d5e1d1bee9d3.jpg",
+      "2022-08-18T14:15": "https://cdn.shopify.com/s/files/1/0416/6438/1085/products/monstera_900x.jpg?v=1659019393"
+    }
   },
   { 
     "id": 1,

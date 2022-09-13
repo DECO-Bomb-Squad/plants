@@ -4,7 +4,7 @@ import 'package:app/utils/colour_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class PlantInfoModel {
+class PlantInfoModel extends ChangeNotifier {
   int id;
   String? nickName;
   String plantName; // Common name
@@ -22,6 +22,7 @@ class PlantInfoModel {
   LocationType? location; // Where the plant is planted
 
   List<String> pictures; // list of image uris
+  Map<DateTime, String> images;
 
   PlantInfoModel.fromJSON(Map<String, dynamic> json)
       : id = json["id"],
@@ -34,19 +35,27 @@ class PlantInfoModel {
         soilType = SoilType.values.byName(json["soil_type"]),
         location = LocationType.values.byName(json["location"]),
         nickName = json["nickname"],
-        pictures = ((json["pictures"] ?? []) as List<dynamic>).map((e) => e as String).toList(); // Placeholder
+        pictures = ((json["pictures"] ?? []) as List<dynamic>).map((e) => e as String).toList(),
+        images = ((json["images"] ?? {}) as Map<dynamic, dynamic>)
+            .map((key, value) => MapEntry(DateTime.parse(key as String), value as String));
 
   Widget getCoverPhoto(double height, double width, IconData iconData, double iconSize) => ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
-        child: pictures.isNotEmpty
+        child: images.isNotEmpty
             ? Image(
-                image: NetworkImage(pictures[0]),
+                image: NetworkImage(sortedImages[0]),
                 height: height,
                 width: width,
                 fit: BoxFit.cover,
               )
             : Icon(iconData, size: iconSize),
       );
+
+  List<String> get sortedImages {
+    // Reverse sort - most recent at start of list
+    List<MapEntry<DateTime, String>> temp = images.entries.toList()..sort((a, b) => b.key.compareTo(a.key));
+    return temp.map((e) => e.value).toList();
+  }
 
   int get timeSinceLastWater => DateTime.now().difference(watered.last).inDays;
 
@@ -81,6 +90,12 @@ class PlantInfoModel {
           Icon(Icons.water_drop, size: iconSize),
         ],
       );
+
+  void addNewImage(String imageURL, DateTime time) {
+    // TODO do api call here
+    images[time] = imageURL;
+    notifyListeners(); // trigger rebuild in widgets that share this model
+  }
 }
 
 enum SoilType { smallPot, mediumPot, largePot, windowPlanter, gardenBed, water, fishTank }

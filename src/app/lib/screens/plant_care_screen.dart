@@ -44,6 +44,23 @@ class PlantCareScreen extends StatefulWidget {
 class _PlantCareScreenState extends State<PlantCareScreen> {
   ActivityOccurenceModel activityModel =
       ActivityOccurenceModel.fromListJSON(jsonDecode(activitiesJson)["plantActivities"]);
+
+  @override
+  void initState() {
+    super.initState();
+    widget.model.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.model.removeListener(() {
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     SfCalendar calendar = calendarMini(activityModel);

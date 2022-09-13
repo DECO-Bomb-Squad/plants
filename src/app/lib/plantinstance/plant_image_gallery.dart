@@ -1,43 +1,18 @@
 import 'dart:io';
 
 import 'package:app/api/plant_api.dart';
-import 'package:app/plantinstance/plant_image_gallery_model.dart';
+import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/image_gallery.dart';
-import 'package:app/utils/loading_builder.dart';
-import 'package:app/utils/visual_pattern.dart';
 import 'package:azblob/azblob.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
-
-class PlantGalleryEmpty extends StatefulWidget {
-  final int plantID;
-  final PlantAPI api = GetIt.I<PlantAPI>();
-  PlantGalleryEmpty(this.plantID, {super.key});
-
-  @override
-  State<PlantGalleryEmpty> createState() => _PlantGalleryEmptyState();
-}
-
-class _PlantGalleryEmptyState extends State<PlantGalleryEmpty> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: smallPlantComponent,
-      child: LoadingBuilder(
-        widget.api.getPlantGallery(widget.plantID),
-        (m) => PlantGalleryScreen(widget.plantID, m as PlantImageGalleryModel),
-      ),
-    );
-  }
-}
 
 class PlantGalleryScreen extends StatefulWidget {
   final int plantID;
-  final PlantImageGalleryModel model;
+  final PlantInfoModel model;
 
   const PlantGalleryScreen(this.plantID, this.model, {super.key});
 
@@ -47,6 +22,22 @@ class PlantGalleryScreen extends StatefulWidget {
 
 class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
   String blobLink = "blob";
+
+  @override
+  void initState() {
+    super.initState();
+    widget.model.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.model.removeListener(() {
+      setState(() {});
+    });
+  }
 
   Future<Uint8List?> getImage(ImageSource source) async {
     XFile? image = await ImagePicker().pickImage(source: source);
@@ -65,7 +56,7 @@ class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
       bodyBytes: imgBytes,
     );
     blobLink = (await storage.getBlobLink(path)).toString();
-    setState(() {});
+    widget.model.addNewImage(blobLink, DateTime.now());
   }
 
   @override
