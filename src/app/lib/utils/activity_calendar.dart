@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:flutter/material.dart';
@@ -59,11 +61,15 @@ SfCalendar calendarMini(ActivityOccurenceModel a) {
   );
 }
 
-class ActivityOccurenceModel {
-  List<DateTime>? watering;
-  List<DateTime>? repotting;
-  List<DateTime>? fertilising;
-  List<DateTime>? worshipping;
+class ActivityOccurenceModel extends ChangeNotifier {
+  List<DateTime> watering;
+  List<DateTime> repotting;
+  List<DateTime> fertilising;
+  List<DateTime> worshipping;
+
+  DateTime? _lastWatered;
+  DateTime? _lastRepotted;
+  DateTime? _lastFertilised;
 
   ActivityOccurenceModel.fromListJSON(List<dynamic> json)
       : watering = (json.where((element) => element['activityTypeId'] == ActivityTypeId.watering.index))
@@ -85,20 +91,70 @@ class ActivityOccurenceModel {
 
   List<Activity> getActivities() {
     List<Activity> activities = [];
-    watering?.forEach((element) {
+    watering.forEach((element) {
       activities.add(Activity.activityFromType(ActivityTypeId.watering, element));
     });
-    repotting?.forEach((element) {
+    repotting.forEach((element) {
       activities.add(Activity.activityFromType(ActivityTypeId.repotting, element));
     });
-    fertilising?.forEach((element) {
+    fertilising.forEach((element) {
       activities.add(Activity.activityFromType(ActivityTypeId.fertilising, element));
     });
-    worshipping?.forEach((element) {
+    worshipping.forEach((element) {
       activities.add(Activity.activityFromType(ActivityTypeId.worshipping, element));
     });
 
     return activities;
+  }
+
+  DateTime mostRecent(DateTime a, DateTime b) => a.isAfter(b) ? a : b;
+
+  DateTime get lastWatered {
+    _lastWatered ??= watering.reduce(mostRecent);
+    return _lastWatered!;
+  }
+
+  DateTime get lastFertilised {
+    _lastFertilised ??= fertilising.reduce(mostRecent);
+    return _lastFertilised!;
+  }
+
+  DateTime get lastRepotted {
+    _lastRepotted ??= repotting.reduce(mostRecent);
+    return _lastRepotted!;
+  }
+
+  void addWatering(DateTime? day) {
+    if (day != null) {
+      // TODO do api call here
+      watering.add(day);
+      if (day.isAfter(lastWatered)) {
+        _lastWatered = day;
+      }
+      notifyListeners();
+    }
+  }
+
+  void addRepotting(DateTime? day) {
+    if (day != null) {
+      // TODO do api call here
+      repotting.add(day);
+      if (day.isAfter(lastRepotted)) {
+        _lastRepotted = day;
+      }
+      notifyListeners();
+    }
+  }
+
+  void addFertilising(DateTime? day) {
+    if (day != null) {
+      // TODO do api call here
+      fertilising.add(day);
+      if (day.isAfter(lastFertilised)) {
+        _lastFertilised = day;
+      }
+      notifyListeners();
+    }
   }
 }
 
