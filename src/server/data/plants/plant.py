@@ -28,6 +28,11 @@ class Plant(DB.BASE):
 
     careProfile = relationship("PlantCareProfile", uselist=False, backref="plant_care_profile")
 
+    photos = relationship("Photo", back_populates="plant")
+
+    def get_serialized_photos(self):
+        allPhotos = [photo.serialize() for photo in self.photos]
+        return allPhotos
 
     def __init__(self, plantName, plantDesc, plantTypeId, userId):
         self.plantName = plantName
@@ -45,15 +50,16 @@ class Plant(DB.BASE):
 
     def serialize(self):
         return {
-            "id":   self.id,
-            "name": self.plantName,
+            "id":              self.id,
+            "name":            self.plantName,
             "scientific_name": self.plantType.fullName,
-            "description": self.plantDesc,
-            "plantTypeId": self.plantTypeId,
-            "user":        self.user.snip_serialize(),
-            "activities":  self.get_serialized_activities(),
-            "careProfile": self.careProfile.serialize(),
-            "tags":        self.plantType.get_serialized_tags()
+            "description":     self.plantDesc,
+            "plantTypeId":     self.plantTypeId,
+            "user":            self.user.snip_serialize(),
+            "activities":      self.get_serialized_activities(),
+            "careProfile":     self.careProfile.serialize(),
+            "tags":            self.plantType.get_serialized_tags(),
+            "photos":          self.get_serialized_photos() 
         }
 
     # will need to add more methods here for getting info and setting info of the user

@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from data import Plant, User, PlantType, PlantCareProfile, PlantCareProfileDefault, Activity, ActivityType, Tag, PlantTag
+from data import Plant, User, PlantType, PlantCareProfile, PlantCareProfileDefault, Activity, ActivityType, Tag, PlantTag, Photo
 from sqlalchemy.sql.expression import func
 from utils.api import APICall
 from flask import jsonify
@@ -201,6 +201,102 @@ def remove_plant_tag(session, plantId):
 
     return "Tag was successfully deleted", 200
 
+
+# ==== Photo Endpoints ====
+
+'''
+Add a photo URI to a plant.
+
+'''
+@app.route("/plant/photos/add", methods = ['POST'])
+@APICall
+def add_plant_photo(session):
+    try:
+        plantId: int = request.form['plantId']
+        uri: str     = request.form['uri']
+
+        # verify information
+        if (not plantId or 
+            not uri):
+            raise KeyError
+        
+
+        # check plant exists
+        plant = session.query(Plant).filter(Plant.id == plantId).first()
+        if (not plant):
+            return 'Could not find plant with id = %s' %plantId, 400
+
+        newPhoto = Photo(uri=uri, plantId=plantId)
+        session.add(newPhoto)
+        session.commit()
+
+    except KeyError as e:
+        return 'To add a photo, please provide a plantId: int and uri: string)', 400
+        
+    except Exception as e:
+        return 'Error adding photo:', e, 400
+
+    return 'Added photo successfully', 200
+
+    
+'''
+Remove a photo URI from a plant.
+
+'''
+@app.route("/plant/photos/remove", methods = ['DELETE'])
+@APICall
+def delete_plant_photo(session):
+    try:
+        photoId: int = request.form['photoId']
+
+
+        # verify information
+        if (not photoId):
+            raise KeyError
+
+        photo = session.query(Photo).filter(Photo.id == photoId).first()
+        if (not photo):
+            return 'Could not find photo with id = %s' %photoId, 400
+
+        session.delete(photo)
+        session.commit()        
+
+    except KeyError as e:
+        return 'To remove a photo, please provide a valid photoId.', 400
+        
+    except Exception as e:
+        return 'Error removing photo', e, 400
+
+    return 'Removed photo successfully', 200
+
+'''
+Return a collection of photos for a given plant id. 
+I'll do some filtering to only return what Miri wanted
+'''
+@app.route("/plant/photos", methods = ["GET"])
+@APICall
+def get_plant_photos(session):
+    try:
+        plantId: int = request.form['plantId']
+
+        if (not plantId):
+            return 'Please provide a plantId: int.', 400
+        
+        plant: Plant = session.query(Plant).filter(Plant.id == plantId).first()
+
+        if not plant:
+            return "The requested plant was not found", 400
+    except Exception as e:
+        return "To return plant photos, please provide plantId: int", 400
+
+    try:
+        photos: Photo = session.query(Photo).filter(Photo.plantId == plantId).all()
+        allPhotos = [p.serialize_compact() for p in photos]
+        return jsonify(photolist=allPhotos), 200
+    
+    except Exception as e:
+        return "Error getting photo list", 400
+            
 
 
 # ==== Miscellaneous Plant Endpoints ====
