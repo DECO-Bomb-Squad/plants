@@ -1,12 +1,11 @@
 import 'package:app/api/plant_api.dart';
+import 'package:app/plantinstance/plant_image_gallery.dart';
 import 'package:app/screens/plant_care_screen.dart';
-import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/loading_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:get_it/get_it.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class PlantInfoEmpty extends StatefulWidget {
   final int plantID;
@@ -41,6 +40,22 @@ class PlantInfoSmallWidget extends StatefulWidget {
 }
 
 class _PlantInfoSmallState extends State<PlantInfoSmallWidget> {
+  @override
+  void initState() {
+    super.initState();
+    widget.model.addListener(rebuild);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.model.removeListener(rebuild);
+  }
+
+  void rebuild() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -86,6 +101,22 @@ class PlantInfoLargeWidget extends StatefulWidget {
 }
 
 class _PlantInfoLargeState extends State<PlantInfoLargeWidget> {
+  @override
+  void initState() {
+    super.initState();
+    widget.model.addListener(rebuild);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.model.removeListener(rebuild);
+  }
+
+  void rebuild() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -142,6 +173,22 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
   PlantInfoModel get model => widget.model;
 
   @override
+  void initState() {
+    super.initState();
+    widget.model.addListener(rebuild);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.model.removeListener(rebuild);
+  }
+
+  void rebuild() {
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -166,7 +213,14 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                model.getCoverPhoto(150, 150, Icons.photo, 150),
+                GestureDetector(
+                  onTap: () => Navigator.of(context, rootNavigator: false).push(
+                    MaterialPageRoute(
+                      builder: (context) => PlantGalleryScreen(widget.plantID, widget.model),
+                    ),
+                  ),
+                  child: model.getCoverPhoto(150, 150, Icons.photo, 150),
+                ),
                 const Icon(Icons.calendar_month, size: 150),
               ],
             ),
@@ -179,8 +233,7 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
                   onPressed: () {
                     widget.rebuildParent();
                     setState(() {
-                      model.watered.add(DateTime.now());
-                      model.watered.sort();
+                      model.activities.addWatering(DateTime.now());
                     });
                   },
                   style: waterButtonStyle,
@@ -197,7 +250,7 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
             Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Text(
-                    "Recommended to water every ${model.waterFrequency} days. Last watered ${model.timeSinceLastWater} days ago. Planted in a ${model.soilType!.toHumanString()} located ${model.location!.toHumanString()}",
+                    "Recommended to water every ${model.waterFrequency} days. Last watered ${model.timeSinceLastWater} days ago. Planted in a ${model.careProfile.soilType.toHumanString()} located ${model.careProfile.location.toHumanString()}",
                     style: modalTextStyle))
           ],
         ),

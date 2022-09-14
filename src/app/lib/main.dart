@@ -15,7 +15,11 @@ void runPlantApp() async {
   WidgetsFlutterBinding.ensureInitialized();
   // TEMP: until we begin properly initialising users w/ login, etc
   PlantAPI api = PlantAPI();
-  api.user = User.fromJSON({"id": 1, "name": "Jay Son"});
+  api.user = User.fromJSON({
+    "id": 1,
+    "name": "Jay Son",
+    "plantIds": [0, 1, 2, 3],
+  });
   GetIt.I.registerSingleton<PlantAppStorage>(PlantAppStorage());
   GetIt.I.registerSingleton<PlantAppCache>(PlantAppCache());
   GetIt.I.registerSingleton<PlantAPI>(api);
