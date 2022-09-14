@@ -79,7 +79,7 @@ def add_personal_plant(session):
     except Exception as e:
         return "A database error occurred:", e, 400
 
-    return "The plant was added successfully", 200
+    return plant.serialize(), 200
 
 '''
 Gets a PERSONAL Plant (GET)

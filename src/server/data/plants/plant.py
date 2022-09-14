@@ -52,6 +52,7 @@ class Plant(DB.BASE):
         return {
             "id":              self.id,
             "name":            self.plantName,
+            "common_name":     self.plantType.commonName,
             "scientific_name": self.plantType.fullName,
             "description":     self.plantDesc,
             "plantTypeId":     self.plantTypeId,
