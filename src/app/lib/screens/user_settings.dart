@@ -34,7 +34,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             spacer,
             Switch(value: isSelected, onChanged: ((value) => !isSelected)), // example switch
             spacer,
-            DropdownButton(items: exampleDropDown, onChanged: ((value) => value = value)), // example drop down
+            DropdownButton<dynamic>(items: exampleDropDown, onChanged: ((value) => value = value)), // example drop down
             spacer,
             // add button
             ElevatedButton(
