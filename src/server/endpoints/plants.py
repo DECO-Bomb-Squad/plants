@@ -12,6 +12,41 @@ app = Blueprint('plant_endpoints', __name__)
 # ===== Personal Plant Management Endpoints ====
 
 '''
+Update a personal plant with new nickname and/or description
+'''
+@app.route("/plant/update", methods = ["PATCH"])
+@APICall
+def update_plant(session):
+    try:
+        plantId: int     = request.form['plantId']
+        nickname: str    = request.form['nickname']
+        description: str = request.form['description']
+
+        if (not nickname or
+            not description or
+            not plantId):
+            raise KeyError
+
+        plant: Plant = session.query(Plant).filter(Plant.id == plantId).first()
+        if (not plant):
+            return f"The plant with id [{plantId}] could not be found", 400
+
+    except KeyError as e:
+        return "To update a plant, you must provide - plantId: int, nickname: str, description: str", 400
+    except Exception as e:
+        return "An unknown exception occurred", 500
+
+    # update the database
+    try:
+        plant.plantName = nickname
+        plant.plantDesc = description
+        session.commit()
+    except Exception as e:
+        return f"A database error occurred: {e}", 500
+
+    return plant.serialize(), 200
+
+'''
 Adds a PERSONAL plant. (POST)
     - Params: 
         - personalName:  string  
