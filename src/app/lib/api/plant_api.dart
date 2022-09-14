@@ -15,6 +15,9 @@ import 'package:http/http.dart' as http;
 const BACKEND_URL_LOCAL = "10.0.2.2:3000";
 const BACKEND_URL_PROD = "TODO_fill_in_later";
 
+const AZURE_BLOB_CONN_STR =
+    "DefaultEndpointsProtocol=https;AccountName=bombsquadaloe;AccountKey=GASDIh22FSLmouUeAGYLRThOBdmkBiTr06yDPuVNu8jPUdPw7Nh7M86Af3xBNTd5l5HbcjRZHt48+AStbaK+ew==;EndpointSuffix=core.windows.net";
+
 class PlantAPI {
   static final PlantAPI _instance = PlantAPI._internal();
 
@@ -114,4 +117,10 @@ class PlantAPI {
     PlantInfoModel model = PlantInfoModel.fromJSON(testJson);
     return Future.delayed(const Duration(seconds: 1), () => model);
   }
+
+  // Future<PlantImageGalleryModel> getPlantGallery(int id) {
+  //   Map<String, dynamic> testJson = jsonDecode(galleryJson)[id];
+  //   PlantImageGalleryModel model = PlantImageGalleryModel.fromJSON(testJson);
+  //   return Future.delayed(const Duration(seconds: 1), () => model);
+  // }
 }

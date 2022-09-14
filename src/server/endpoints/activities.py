@@ -1,53 +1,78 @@
 from flask import Blueprint, request
 from data import Plant, User, PlantType, ActivityType, Activity
 from utils.api import APICall
+from flask import jsonify
 
 import json
 
 
 app = Blueprint('activities', __name__)
 
-@app.route("/activity", methods = ["POST"])
+'''
+Adds an Activity to a Plant (POST)
+    - Params:
+        - plantId:      int
+        - activityType: int
+        - time:         date
+'''
+@app.route('/activity', methods = ['POST'])
 @APICall
 def add_activity(session):
     try:
-        plantId         = request.form['plantId']
-        activityTypeID  = request.form['activityTypeId']
-        time            = request.form['time']
+        plantId = request.form['plantId']
+        activityTypeId = request.form['activityTypeId']
+        time = request.form['time']
 
         # verify all information is present
         if (not plantId or
-            not activityTypeID or
+            not activityTypeId or
             not time):
             raise KeyError
 
-        # foreign key check
-        typeCount: int = session.query(ActivityType).filter(ActivityType.id == activityTypeID).count()
-        if typeCount == 0:
-            return "Invalid activityTypeId. The activityType was not found.", 400
+        # dealing with enums
+        activityTypeId = str(int(activityTypeId) + 1)
+
+        plantCount: int = session.query(Plant).filter(Plant.id == plantId).count()
+        activityType: ActivityType = session.query(ActivityType).filter(ActivityType.id == activityTypeId).first()
+        if (plantCount == 0):
+            return "This plant was not found", 400
+        if (not activityType):
+            return "This activity type was not found", 400
 
     except KeyError as e:
-        return "This endpoint accepts plantId: int, activityTypeId: int, time: datetime", 400
+        return "This endpoint requires plantId: int, activityTypeId: int, time: date", 400
     except Exception as e:
-        return "An unknown exception occurred", 400
+        return f"Something went wrong: {e}", 400
 
-    # commit to DB
+    # add to DB
     try:
-        activity = Activity(time=time, activityTypeId=activityTypeID, plantId=plantId)
-        session.add(activity)
+        activ: Activity = Activity(time=time, activityTypeId=activityTypeId, plantId=plantId)
+        session.add(activ)
         session.commit()
     except Exception as e:
-        return "A database error occurred:", e, 400
+        return f"There was a database error: {e}", 500
 
-    return "The activity was added to the plant successfully", 200
-
-@app.route("/activity/<plantId>", methods = ["GET", "POST"])
+    return "The activity was added successfully", 200
+'''
+Gets Activity of a Plant (GET)
+    - Params:
+        - plantId: int
+    - Return:
+        - time series of activity
+'''
+@app.route('/activity/<plantId>', methods = ['GET', 'POST'])
 @APICall
-def get_activities(session, plantId: str):
-    # verify the id
+def get_activity(session, plantId):
+    # verify the ids
     plant: Plant = session.query(Plant).filter(Plant.id == plantId).first()
-    if not plant:
-        return "The requested plant does not exist", 400
+    activity: Activity = session.query(Activity).filter(Activity.plantId == plantId).all()
 
-    # return information re: plant activities
-    return plant.get_serialized_activities(), 200
+    if not plant:
+        return "The requested plant was not found", 400
+    
+    if not activity:
+        return "There exist no activities associated with this plant", 400
+
+    # return information about the activities
+    allActivities = [a.serialize() for a in activity]
+    return jsonify(activites=allActivities), 200

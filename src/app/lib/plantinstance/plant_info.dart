@@ -1,4 +1,6 @@
 import 'package:app/api/plant_api.dart';
+import 'package:app/plantinstance/plant_image_gallery.dart';
+import 'package:app/screens/plant_care_screen.dart';
 import 'package:app/utils/loading_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:app/utils/visual_pattern.dart';
@@ -23,14 +25,15 @@ class _PlantInfoEmptyState extends State<PlantInfoEmpty> {
         child: LoadingBuilder(
             widget.api.getPlantInfo(widget.plantID),
             (m) => widget.isSmall
-                ? PlantInfoSmallWidget(m as PlantInfoModel)
-                : PlantInfoLargeWidget(m as PlantInfoModel)));
+                ? PlantInfoSmallWidget(m as PlantInfoModel, widget.plantID)
+                : PlantInfoLargeWidget(m as PlantInfoModel, widget.plantID)));
   }
 }
 
 class PlantInfoSmallWidget extends StatefulWidget {
+  final int plantID;
   final PlantInfoModel model;
-  const PlantInfoSmallWidget(this.model, {Key? key}) : super(key: key);
+  const PlantInfoSmallWidget(this.model, this.plantID, {Key? key}) : super(key: key);
 
   @override
   State<PlantInfoSmallWidget> createState() => _PlantInfoSmallState();
@@ -38,10 +41,28 @@ class PlantInfoSmallWidget extends StatefulWidget {
 
 class _PlantInfoSmallState extends State<PlantInfoSmallWidget> {
   @override
+  void initState() {
+    super.initState();
+    widget.model.addListener(rebuild);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.model.removeListener(rebuild);
+  }
+
+  void rebuild() {
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return Material(
+        child: InkWell(
       onTap: () {
-        showDialog(context: context, builder: (_) => PlantInfoDialog(widget.model, () => setState(() {})));
+        showDialog(
+            context: context, builder: (_) => PlantInfoDialog(widget.model, () => setState(() {}), widget.plantID));
       },
       child: Container(
           decoration: smallPlantComponent,
@@ -65,14 +86,15 @@ class _PlantInfoSmallState extends State<PlantInfoSmallWidget> {
               )
             ],
           )),
-    );
+    ));
   }
 }
 
 class PlantInfoLargeWidget extends StatefulWidget {
+  final int plantID;
   final PlantInfoModel model;
 
-  const PlantInfoLargeWidget(this.model, {super.key});
+  const PlantInfoLargeWidget(this.model, this.plantID, {super.key});
 
   @override
   State<PlantInfoLargeWidget> createState() => _PlantInfoLargeState();
@@ -80,10 +102,28 @@ class PlantInfoLargeWidget extends StatefulWidget {
 
 class _PlantInfoLargeState extends State<PlantInfoLargeWidget> {
   @override
+  void initState() {
+    super.initState();
+    widget.model.addListener(rebuild);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.model.removeListener(rebuild);
+  }
+
+  void rebuild() {
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return Material(
+        child: InkWell(
       onTap: () {
-        showDialog(context: context, builder: (_) => PlantInfoDialog(widget.model, () => setState(() {})));
+        showDialog(
+            context: context, builder: (_) => PlantInfoDialog(widget.model, () => setState(() {}), widget.plantID));
       },
       child: Container(
         decoration: smallPlantComponent,
@@ -114,15 +154,16 @@ class _PlantInfoLargeState extends State<PlantInfoLargeWidget> {
           ],
         ),
       ),
-    );
+    ));
   }
 }
 
 class PlantInfoDialog extends StatefulWidget {
+  final int plantID;
   final PlantInfoModel model;
   final void Function() rebuildParent;
 
-  const PlantInfoDialog(this.model, this.rebuildParent, {super.key});
+  const PlantInfoDialog(this.model, this.rebuildParent, this.plantID, {super.key});
 
   @override
   State<PlantInfoDialog> createState() => _PlantInfoDialogState();
@@ -130,6 +171,22 @@ class PlantInfoDialog extends StatefulWidget {
 
 class _PlantInfoDialogState extends State<PlantInfoDialog> {
   PlantInfoModel get model => widget.model;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.model.addListener(rebuild);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.model.removeListener(rebuild);
+  }
+
+  void rebuild() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +213,14 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                model.getCoverPhoto(150, 150, Icons.photo, 150),
+                GestureDetector(
+                  onTap: () => Navigator.of(context, rootNavigator: false).push(
+                    MaterialPageRoute(
+                      builder: (context) => PlantGalleryScreen(widget.plantID, widget.model),
+                    ),
+                  ),
+                  child: model.getCoverPhoto(150, 150, Icons.photo, 150),
+                ),
                 const Icon(Icons.calendar_month, size: 150),
               ],
             ),
@@ -169,15 +233,15 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
                   onPressed: () {
                     widget.rebuildParent();
                     setState(() {
-                      model.watered.add(DateTime.now());
-                      model.watered.sort();
+                      model.activities.addWatering(DateTime.now());
                     });
                   },
                   style: waterButtonStyle,
                   child: const Text("Mark as watered", style: buttonTextStyle),
                 ),
                 ElevatedButton(
-                  onPressed: null,
+                  onPressed: () => Navigator.of(context, rootNavigator: false)
+                      .push(MaterialPageRoute(builder: (context) => PlantCareEmpty(widget.plantID))),
                   style: buttonStyle,
                   child: const Text("More options", style: buttonTextStyle),
                 )
@@ -186,7 +250,7 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
             Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Text(
-                    "Recommended to water every ${model.waterFrequency} days. Last watered ${model.timeSinceLastWater} days ago. Planted in a ${model.soilType!.toHumanString()} located ${model.location!.toHumanString()}",
+                    "Recommended to water every ${model.waterFrequency} days. Last watered ${model.timeSinceLastWater} days ago. Planted in a ${model.careProfile.soilType.toHumanString()} located ${model.careProfile.location.toHumanString()}",
                     style: modalTextStyle))
           ],
         ),
