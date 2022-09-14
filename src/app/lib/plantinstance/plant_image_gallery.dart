@@ -42,9 +42,11 @@ class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
     return image.readAsBytes();
   }
 
-  void doStuffWithImage(ImageSource source) async {
+  void addImage(ImageSource source) async {
+    // get Image from imagepicker
     XFile? image = await ImagePicker().pickImage(source: source);
     if (image == null) return;
+    // Transfer image to bytes, send to Azure
     Uint8List imgBytes = await image.readAsBytes();
     var storage = AzureStorage.parse(AZURE_BLOB_CONN_STR);
     String path = "/images/${image.name}";
@@ -52,6 +54,7 @@ class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
       path,
       bodyBytes: imgBytes,
     );
+    // Get permanent access URI from Azure
     String blobLink = (await storage.getBlobLink(path)).toString();
     widget.model.addNewImage(blobLink, DateTime.now());
   }
@@ -111,7 +114,7 @@ class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
                 child: FittedBox(
                   fit: BoxFit.fill,
                   child: IconButton(
-                    onPressed: () => doStuffWithImage(source),
+                    onPressed: () => addImage(source),
                     icon: Icon(icon),
                   ),
                 ),
