@@ -26,7 +26,7 @@ class Photo(DB.BASE):
     # standard serialize
     def serialize(self):
         return {
-            "id": self.id,
+            "photoId": self.id,
             "uri": self.uri,
             "timestamp": self.photoTime,
             "plantId": self.plantId
@@ -35,6 +35,7 @@ class Photo(DB.BASE):
     # compact serialize
     def serialize_compact(self):
         return {
+            "photoId": self.id,
             "uri": self.uri,
             "timestamp": self.photoTime
         }
