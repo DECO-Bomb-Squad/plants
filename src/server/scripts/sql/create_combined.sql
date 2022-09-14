@@ -61,7 +61,7 @@ CREATE TABLE `activities` (
     ON DELETE CASCADE
     ON UPDATE CASCADE);
 
-    CREATE TABLE `photos` (
+  CREATE TABLE `photos` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `uri` VARCHAR(255) NOT NULL,
   `photoTime` DATETIME NOT NULL,

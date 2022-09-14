@@ -231,7 +231,7 @@ def add_plant_photo(session):
         session.commit()
 
     except KeyError as e:
-        return 'To add a photo, please provide a plantId: int and uri: string)', 400
+        return 'To add a photo, please provide a plantId: int and uri: string', 400
         
     except Exception as e:
         return 'Error adding photo:', e, 400
@@ -292,7 +292,7 @@ def get_plant_photos(session):
     try:
         photos: Photo = session.query(Photo).filter(Photo.plantId == plantId).all()
         allPhotos = [p.serialize_compact() for p in photos]
-        return jsonify(photolist=allPhotos), 200
+        return jsonify(photoList=allPhotos), 200
     
     except Exception as e:
         return "Error getting photo list", 400
