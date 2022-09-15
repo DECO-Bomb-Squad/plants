@@ -255,10 +255,11 @@ def delete_plant_photo(session):
             raise KeyError
 
         photos = session.query(Photo).filter(Photo.uri == uri).all()
-        if (not photo):
+        if (not photos):
             return 'Could not find photos with uri = %s' %uri, 400
 
-        session.delete(photo)
+        for p in photos:
+            session.delete(p)
         session.commit()        
 
     except KeyError as e:
@@ -270,8 +271,7 @@ def delete_plant_photo(session):
     return 'Removed photo successfully', 200
 
 '''
-Return a collection of photos for a given plant id. 
-I'll do some filtering to only return what Miri wanted
+Return a collection of photos for a given plant id.
 '''
 @app.route("/plant/photos", methods = ["GET"])
 @APICall
@@ -298,7 +298,7 @@ def get_plant_photos(session):
         return "Error getting photo list", 400
 
 '''
-Return a map of URL:timestamp, time in ISO-whatever
+Return a map of URL:timestamp, time in ISO-8601
 '''
 @app.route("/plant/photosmap", methods = ["GET"])
 @APICall
@@ -318,12 +318,8 @@ def get_plant_photo_map(session):
 
     try:
         photos: Photo = session.query(Photo).filter(Photo.plantId == plantId).all()
-        allPhotos = {}
-        for p in photos:
-            dt = p.photoTime            
-            iso = dt.isoformat()
-            uri = p.uri
-            allPhotos[iso] = uri
+
+        allPhotos = {p.photoTime.isoformat():p.uri for p in photos}
             # iso and uri are not guaranteed unique but i feel like that's enough of an edge case to ignore :)
 
         return jsonify(photoMap=allPhotos), 200
