@@ -31,7 +31,7 @@ class Plant(DB.BASE):
     photos = relationship("Photo", back_populates="plant")
 
     def get_serialized_photos(self):
-        allPhotos = [photo.serialize() for photo in self.photos]
+        allPhotos = {p.photoTime.isoformat():p.uri for p in self.photos}
         return allPhotos
 
     def __init__(self, plantName, plantDesc, plantTypeId, userId):

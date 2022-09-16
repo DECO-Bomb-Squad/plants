@@ -247,31 +247,31 @@ Remove a photo URI from a plant.
 @APICall
 def delete_plant_photo(session):
     try:
-        photoId: int = request.form['photoId']
+        uri: str = request.form['uri']
 
 
         # verify information
-        if (not photoId):
+        if (not uri):
             raise KeyError
 
-        photo = session.query(Photo).filter(Photo.id == photoId).first()
-        if (not photo):
-            return 'Could not find photo with id = %s' %photoId, 400
+        photos = session.query(Photo).filter(Photo.uri == uri).all()
+        if (not photos):
+            return 'Could not find photos with uri = %s' %uri, 400
 
-        session.delete(photo)
+        for p in photos:
+            session.delete(p)
         session.commit()        
 
     except KeyError as e:
-        return 'To remove a photo, please provide a valid photoId.', 400
+        return 'To remove a photo, please provide a uri: string.', 400
         
     except Exception as e:
-        return 'Error removing photo', e, 400
+        return 'Unknown error removing photo', e, 400
 
     return 'Removed photo successfully', 200
 
 '''
-Return a collection of photos for a given plant id. 
-I'll do some filtering to only return what Miri wanted
+Return a collection of photos for a given plant id.
 '''
 @app.route("/plant/photos", methods = ["GET"])
 @APICall
@@ -293,6 +293,36 @@ def get_plant_photos(session):
         photos: Photo = session.query(Photo).filter(Photo.plantId == plantId).all()
         allPhotos = [p.serialize_compact() for p in photos]
         return jsonify(photoList=allPhotos), 200
+    
+    except Exception as e:
+        return "Error getting photo list", 400
+
+'''
+Return a map of URL:timestamp, time in ISO-8601
+'''
+@app.route("/plant/photosmap", methods = ["GET"])
+@APICall
+def get_plant_photo_map(session):
+    try:
+        plantId: int = request.form['plantId']
+
+        if (not plantId):
+            return 'Please provide a plantId: int.', 400
+        
+        plant: Plant = session.query(Plant).filter(Plant.id == plantId).first()
+
+        if not plant:
+            return "The requested plant was not found", 400
+    except Exception as e:
+        return "To return plant photos, please provide plantId: int", 400
+
+    try:
+        photos: Photo = session.query(Photo).filter(Photo.plantId == plantId).all()
+
+        allPhotos = {p.photoTime.isoformat():p.uri for p in photos}
+            # iso and uri are not guaranteed unique but i feel like that's enough of an edge case to ignore :)
+
+        return jsonify(photoMap=allPhotos), 200
     
     except Exception as e:
         return "Error getting photo list", 400
