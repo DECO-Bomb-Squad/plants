@@ -104,7 +104,7 @@ def add_personal_plant(session):
         session.refresh(plant)
 
         profile = PlantCareProfile(
-            plantId=plant.id, soilType=default.soilType, plantLocation=default.plantLocation,
+            soilType=default.soilType, plantLocation=default.plantLocation,
             daysBetweenWatering=default.daysBetweenWatering, daysBetweenFertilizer=default.daysBetweenFertilizer,
             daysBetweenRepotting=default.daysBetweenRepotting)
 
