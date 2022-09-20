@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 
 // Must refer to 10.0.2.2 within emulator - 127.0.0.1 refers to the emulator itself!
 const BACKEND_URL_LOCAL = "10.0.2.2:3000";
-const BACKEND_URL_PROD = "TODO_fill_in_later";
+const BACKEND_URL_PROD = "https://peclarke.pythonanywhere.com/";
 
 const AZURE_BLOB_CONN_STR =
     "DefaultEndpointsProtocol=https;AccountName=bombsquadaloe;AccountKey=GASDIh22FSLmouUeAGYLRThOBdmkBiTr06yDPuVNu8jPUdPw7Nh7M86Af3xBNTd5l5HbcjRZHt48+AStbaK+ew==;EndpointSuffix=core.windows.net";
@@ -23,9 +23,9 @@ class PlantAPI {
 
   factory PlantAPI() => _instance;
 
-  final _baseAddress = BACKEND_URL_LOCAL;
-  // final _baseAddress = BACKEND_URL_LOCAL;
-  //final _baseAddress = kReleaseMode ? BACKEND_URL_PROD : BACKEND_URL_LOCAL;
+  // IMPORTANT! use local if the pythonanywhere deployment doesn't match what the front end model expects!
+  // Change this "false" to a "true" to use prod deployment
+  final _baseAddress = false ? BACKEND_URL_PROD : BACKEND_URL_LOCAL;
 
   PlantAppStorage store = PlantAppStorage();
   PlantAppCache cache = PlantAppCache();
