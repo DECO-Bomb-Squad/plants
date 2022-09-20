@@ -126,4 +126,18 @@ class PlantAPI {
 
     return response.statusCode == 200;
   }
+
+  Future<bool> addPlantActivity(DateTime day, ActivityTypeId type, int plantId) async {
+    String path = "/activity";
+
+    http.Response response = await http.post(makePath(path),
+        headers: header,
+        body: {'plantId': plantId.toString(), 'activityTypeId': type.index.toString(), 'time': day.toIso8601String()});
+
+    return response.statusCode == 200;
+  }
+
+  Future<bool> addWatering(DateTime day, int plantId) => addPlantActivity(day, ActivityTypeId.watering, plantId);
+  Future<bool> addRepotting(DateTime day, int plantId) => addPlantActivity(day, ActivityTypeId.repotting, plantId);
+  Future<bool> addFertilising(DateTime day, int plantId) => addPlantActivity(day, ActivityTypeId.fertilising, plantId);
 }

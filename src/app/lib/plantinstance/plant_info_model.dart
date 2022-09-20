@@ -48,7 +48,7 @@ class PlantInfoModel extends ChangeNotifier {
         nickName = json["name"],
         images = ((json["photos"] ?? {}) as Map<dynamic, dynamic>)
             .map((key, value) => MapEntry(DateTime.parse(key as String), value as String)),
-        activities = ActivityOccurenceModel.fromListJSON(json["activities"]),
+        activities = ActivityOccurenceModel.fromListJSON(json["id"], json["activities"]),
         careProfile = PlantCareProfile.fromJSON(json["careProfile"]) {
     activities.addListener(notifyListeners);
   }
