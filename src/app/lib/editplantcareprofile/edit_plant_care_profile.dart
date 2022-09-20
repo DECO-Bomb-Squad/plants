@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:app/editplantcareprofile/edit_plant_care_profile_model.dart';
 
 class EditPlantCareProfile extends StatefulWidget {
-  final EditPlantCareProfileModel model;
+  final EditPlantCareProfile model;
 
   const EditPlantCareProfile(this.model, {super.key});
 
