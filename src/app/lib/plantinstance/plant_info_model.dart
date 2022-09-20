@@ -1,38 +1,57 @@
+import 'package:app/utils/activity_calendar.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:flutter/material.dart';
 
-class PlantInfoModel {
+class PlantCareProfile extends ChangeNotifier {
+  int id;
+  LocationType location;
+  SoilType soilType;
+
+  int daysBetweenWatering;
+  int daysBetweenFertilising;
+  int daysBetweenRepotting;
+
+  PlantCareProfile.fromJSON(Map<String, dynamic> json)
+      : id = json["id"],
+        location = LocationType.values.byName(json["plantLocation"]),
+        soilType = SoilType.values.byName(json["soilType"]),
+        daysBetweenWatering = json["daysBetweenWatering"],
+        daysBetweenFertilising = json["daysBetweenFertilizer"],
+        daysBetweenRepotting = json["daysBetweenRepotting"];
+}
+
+class PlantInfoModel extends ChangeNotifier {
+  // TODO add "owner" User when properly implemented - need json key changed
+  int id;
   String? nickName;
   String plantName; // Common name
   String scientificName; // Botanical name
-  String owner; // Who owns the plant?
-  int waterFrequency; // How many days between waterings
+
+  ActivityOccurenceModel activities; // Map of various activities and the time they occured
+  PlantCareProfile careProfile;
 
   List<String>? tags; // System and user-added info tags
-  List<DateTime> watered; // Dates of previous waterings
 
-  SoilType? soilType; // How the plant is potted
-  LocationType? location; // Where the plant is planted
-
-  List<String> pictures; // list of image uris
+  Map<DateTime, String> images;
 
   PlantInfoModel.fromJSON(Map<String, dynamic> json)
-      : plantName = json["plant_name"],
+      : id = json["id"],
+        plantName = json["plant_name"],
         scientificName = json["scientific_name"],
-        owner = json["owner"],
-        waterFrequency = json["water_frequency"],
         tags = (json["tags"] as List<dynamic>).map((e) => e as String).toList(),
-        watered = (json["watered"] as List<dynamic>).map((e) => DateTime.parse(e)).toList()..sort(),
-        soilType = SoilType.values.byName(json["soil_type"]),
-        location = LocationType.values.byName(json["location"]),
         nickName = json["nickname"],
-        pictures = ((json["pictures"] ?? []) as List<dynamic>).map((e) => e as String).toList(); // Placeholder
+        images = ((json["images"] ?? {}) as Map<dynamic, dynamic>)
+            .map((key, value) => MapEntry(DateTime.parse(key as String), value as String)),
+        activities = ActivityOccurenceModel.fromListJSON(json["activities"]),
+        careProfile = PlantCareProfile.fromJSON(json["careProfile"]) {
+    activities.addListener(notifyListeners);
+  }
 
   Widget getCoverPhoto(double height, double width, IconData iconData, double iconSize) => ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
-        child: pictures.isNotEmpty
+        child: images.isNotEmpty
             ? Image(
-                image: NetworkImage(pictures[0]),
+                image: NetworkImage(sortedImages[0]),
                 height: height,
                 width: width,
                 fit: BoxFit.cover,
@@ -40,7 +59,15 @@ class PlantInfoModel {
             : Icon(iconData, size: iconSize),
       );
 
-  int get timeSinceLastWater => DateTime.now().difference(watered.last).inDays;
+  List<String> get sortedImages {
+    // Reverse sort - most recent at start of list
+    List<MapEntry<DateTime, String>> temp = images.entries.toList()..sort((a, b) => b.key.compareTo(a.key));
+    return temp.map((e) => e.value).toList();
+  }
+
+  int get timeSinceLastWater => DateTime.now().difference(activities.lastWatered).inDays;
+
+  int get waterFrequency => careProfile.daysBetweenWatering;
 
   ConditionType get condition =>
       (timeSinceLastWater > waterFrequency) ? ConditionType.needsWatering : ConditionType.happy;
@@ -73,6 +100,18 @@ class PlantInfoModel {
           Icon(Icons.water_drop, size: iconSize),
         ],
       );
+
+  void addNewImage(String imageURL, DateTime time) {
+    // TODO do api call here
+    images[time] = imageURL;
+    notifyListeners(); // trigger rebuild in widgets that share this model
+  }
+
+  void removeImage(String imageURL) {
+    // TODO do api call here
+    images.removeWhere((key, value) => value == imageURL);
+    notifyListeners();
+  }
 }
 
 enum SoilType { smallPot, mediumPot, largePot, windowPlanter, gardenBed, water, fishTank }
@@ -150,6 +189,25 @@ extension ConditionExtension on ConditionType {
         return Icons.water_drop_outlined;
       case ConditionType.problem:
         return Icons.sick;
+    }
+  }
+}
+
+enum ActivityTypeId { watering, repotting, fertilising, worshipping }
+
+extension ActivityColour on ActivityTypeId {
+  Color toColour() {
+    switch (index) {
+      case 0:
+        return darkHighlight;
+      case 1:
+        return secondaryAccent;
+      case 2:
+        return accent;
+      case 3:
+        return darkColour;
+      default:
+        return lightHighlight;
     }
   }
 }

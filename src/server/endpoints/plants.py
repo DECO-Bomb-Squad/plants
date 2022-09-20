@@ -1,6 +1,8 @@
 from flask import Blueprint, request
-from data import Plant, User, PlantType
+from data import Plant, User, PlantType, PlantCareProfile, PlantCareProfileDefault, Activity, ActivityType, Tag, PlantTag, Photo
+from sqlalchemy.sql.expression import func
 from utils.api import APICall
+from flask import jsonify
 
 import json
 
@@ -42,7 +44,8 @@ def add_personal_plant(session):
             # not plantTags):
             raise KeyError
 
-        # foreign key check
+        # # foreign key check
+        # print(userId)
         userCount: int = session.query(User).filter(User.id == userId).count()
         typeCount: int = session.query(PlantType).filter(PlantType.id == plantTypeId).count()
         if (userCount == 0 or typeCount == 0):
@@ -55,9 +58,24 @@ def add_personal_plant(session):
 
     # add to DB
     try:
-        plant = Plant(name=personalName, desc=description, plantTypeId=plantTypeId, userId=userId)
+        plant: Plant = Plant(plantName=personalName, plantDesc=description, plantTypeId=plantTypeId, userId=userId)
+
+        default: PlantCareProfileDefault = session.query(PlantCareProfileDefault).filter(PlantCareProfileDefault.plantTypeId == plantTypeId).first()
+        if default is None:
+            raise Exception("The default plant care profile could not be found for this plant type")
+
         session.add(plant)
+        session.flush()
+        session.refresh(plant)
+
+        profile = PlantCareProfile(
+            plantId=plant.id, soilType=default.soilType, plantLocation=default.plantLocation,
+            daysBetweenWatering=default.daysBetweenWatering, daysBetweenFertilizer=default.daysBetweenFertilizer,
+            daysBetweenRepotting=default.daysBetweenRepotting)
+
+        session.add(profile)
         session.commit()
+
     except Exception as e:
         return "A database error occurred:", e, 400
 
@@ -110,27 +128,210 @@ def delete_personal_plant(session):
 
     return "Plant was successfully deleted", 200
 
+# ==== Plant Tags Endpoints ====
+@app.route("/plant/<plantId>/tag", methods = ['POST'])
+@APICall
+def add_plant_tag(session, plantId):
+    try:
+        label: str = request.form['label']
+
+        # verify information
+        if (not label):
+            raise KeyError
+
+        # check if plant already exists
+        plant = session.query(Plant).filter(Plant.id == plantId).first()
+        if not plant:
+            return "This plant was not found", 400
+
+    except KeyError as e:
+        return "To add a tag, you must provide: label: str", 400
+    except Exception as e:
+        return "An unknown error occurred:", e, 400
+
+    # add to database
+    try:
+        tag = Tag(label=label)
+        session.add(tag)
+        session.flush()
+        session.refresh(tag)
+
+        plantTag = PlantTag(typeId=plant.plantTypeId, tagId=tag.id)
+        session.add(plantTag)
+        session.commit()
+
+    except Exception as e:
+        print("An unknown error occurred:", e)
+
+    return 'The tag was added successfully', 200
+
+'''
+Only removes the tag associated with the plant. The tag remains in the DB.
+'''
+@app.route("/plant/<plantId>/tag", methods = ['DELETE'])
+@APICall
+def remove_plant_tag(session, plantId):
+    try:
+        tagId: str = request.form['tagId']
+
+        # verify information
+        if (not tagId):
+            raise KeyError
+
+        # check if plant already exists
+        plant = session.query(Plant).filter(Plant.id == plantId).first()
+        if not plant:
+            return "This plant was not found", 400
+    except KeyError as e:
+        return "To remove a tag, you must provide: tagId: int", 400
+    except Exception as e:
+        return "An unknown error occurred:", e, 400
+
+    # attempt a deletion
+    try:
+        tag = session.query(PlantTag).filter(PlantTag.tagId == tagId).first()
+        
+        if not tag:
+            return "This tag does not exist", 400
+
+        session.delete(tag)
+        session.commit()
+    except Exception as e:
+        return "Error deleting tag:", e, 500
+
+    return "Tag was successfully deleted", 200
+
+
+# ==== Photo Endpoints ====
+
+'''
+Add a photo URI to a plant.
+
+'''
+@app.route("/plant/photos/add", methods = ['POST'])
+@APICall
+def add_plant_photo(session):
+    try:
+        plantId: int = request.form['plantId']
+        uri: str     = request.form['uri']
+
+        # verify information
+        if (not plantId or 
+            not uri):
+            raise KeyError
+        
+
+        # check plant exists
+        plant = session.query(Plant).filter(Plant.id == plantId).first()
+        if (not plant):
+            return 'Could not find plant with id = %s' %plantId, 400
+
+        newPhoto = Photo(uri=uri, plantId=plantId)
+        session.add(newPhoto)
+        session.commit()
+
+    except KeyError as e:
+        return 'To add a photo, please provide a plantId: int and uri: string', 400
+        
+    except Exception as e:
+        return 'Error adding photo:', e, 400
+
+    return 'Added photo successfully', 200
+
+    
+'''
+Remove a photo URI from a plant.
+
+'''
+@app.route("/plant/photos/remove", methods = ['DELETE'])
+@APICall
+def delete_plant_photo(session):
+    try:
+        uri: str = request.form['uri']
+
+
+        # verify information
+        if (not uri):
+            raise KeyError
+
+        photos = session.query(Photo).filter(Photo.uri == uri).all()
+        if (not photos):
+            return 'Could not find photos with uri = %s' %uri, 400
+
+        for p in photos:
+            session.delete(p)
+        session.commit()        
+
+    except KeyError as e:
+        return 'To remove a photo, please provide a uri: string.', 400
+        
+    except Exception as e:
+        return 'Unknown error removing photo', e, 400
+
+    return 'Removed photo successfully', 200
+
+'''
+Return a collection of photos for a given plant id.
+'''
+@app.route("/plant/photos", methods = ["GET"])
+@APICall
+def get_plant_photos(session):
+    try:
+        plantId: int = request.form['plantId']
+
+        if (not plantId):
+            return 'Please provide a plantId: int.', 400
+        
+        plant: Plant = session.query(Plant).filter(Plant.id == plantId).first()
+
+        if not plant:
+            return "The requested plant was not found", 400
+    except Exception as e:
+        return "To return plant photos, please provide plantId: int", 400
+
+    try:
+        photos: Photo = session.query(Photo).filter(Photo.plantId == plantId).all()
+        allPhotos = [p.serialize_compact() for p in photos]
+        return jsonify(photoList=allPhotos), 200
+    
+    except Exception as e:
+        return "Error getting photo list", 400
+
+'''
+Return a map of URL:timestamp, time in ISO-8601
+'''
+@app.route("/plant/photosmap", methods = ["GET"])
+@APICall
+def get_plant_photo_map(session):
+    try:
+        plantId: int = request.form['plantId']
+
+        if (not plantId):
+            return 'Please provide a plantId: int.', 400
+        
+        plant: Plant = session.query(Plant).filter(Plant.id == plantId).first()
+
+        if not plant:
+            return "The requested plant was not found", 400
+    except Exception as e:
+        return "To return plant photos, please provide plantId: int", 400
+
+    try:
+        photos: Photo = session.query(Photo).filter(Photo.plantId == plantId).all()
+
+        allPhotos = {p.photoTime.isoformat():p.uri for p in photos}
+            # iso and uri are not guaranteed unique but i feel like that's enough of an edge case to ignore :)
+
+        return jsonify(photoMap=allPhotos), 200
+    
+    except Exception as e:
+        return "Error getting photo list", 400
+            
+
+
 # ==== Miscellaneous Plant Endpoints ====
 
-'''
-Adds an Activity to a Plant (POST)
-    - Params:
-        - plantId:      int
-        - activityType: int
-        - time:         date
-'''
-def add_activity():
-    pass
 
-'''
-Gets Activity of a Plant (GET)
-    - Params:
-        - plantId: int
-    - Return:
-        - time series of activity
-'''
-def get_activity():
-    pass
 
 # ==== Plant Type Management Endpoints ====
 # Consider if these endpoints are really necessary.

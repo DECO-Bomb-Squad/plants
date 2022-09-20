@@ -1,8 +1,10 @@
 class User {
   final int id;
-  final String name;
+  String name;
+  List<int> ownedPlantIDs;
 
   User.fromJSON(Map<String, dynamic> json)
       : id = json["id"],
-        name = json["name"];
+        name = json["name"],
+        ownedPlantIDs = (json["plantIds"] as List<dynamic>).map((e) => e as int).toList();
 }
