@@ -72,19 +72,19 @@ class ActivityOccurenceModel extends ChangeNotifier {
   DateTime? _lastFertilised;
 
   ActivityOccurenceModel.fromListJSON(List<dynamic> json)
-      : watering = (json.where((element) => element['activityTypeId'] == ActivityTypeId.watering.index))
+      : watering = (json.where((element) => element['activityTypeId'] == ActivityTypeId.watering.dbIndex))
                 .map((e) => DateTime.parse(e["time"]))
                 .toList() ??
             [],
-        repotting = (json.where((element) => element['activityTypeId'] == ActivityTypeId.repotting.index))
+        repotting = (json.where((element) => element['activityTypeId'] == ActivityTypeId.repotting.dbIndex))
                 .map((e) => DateTime.parse(e["time"]))
                 .toList() ??
             [],
-        fertilising = (json.where((element) => element['activityTypeId'] == ActivityTypeId.fertilising.index))
+        fertilising = (json.where((element) => element['activityTypeId'] == ActivityTypeId.fertilising.dbIndex))
                 .map((e) => DateTime.parse(e["time"]))
                 .toList() ??
             [],
-        worshipping = (json.where((element) => element['activityTypeId'] == ActivityTypeId.worshipping.index))
+        worshipping = (json.where((element) => element['activityTypeId'] == ActivityTypeId.worshipping.dbIndex))
                 .map((e) => DateTime.parse(e["time"]))
                 .toList() ??
             [];
