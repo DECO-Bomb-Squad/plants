@@ -1,6 +1,8 @@
+import 'package:app/api/plant_api.dart';
 import 'package:app/utils/activity_calendar.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class PlantCareProfile extends ChangeNotifier {
   int id;
@@ -44,7 +46,7 @@ class PlantInfoModel extends ChangeNotifier {
         ownerName =
             (json["user"] as Map<dynamic, dynamic>).map((key, value) => MapEntry(key as String, value))["username"],
         nickName = json["name"],
-        images = ((json["images"] ?? {}) as Map<dynamic, dynamic>)
+        images = ((json["photos"] ?? {}) as Map<dynamic, dynamic>)
             .map((key, value) => MapEntry(DateTime.parse(key as String), value as String)),
         activities = ActivityOccurenceModel.fromListJSON(json["activities"]),
         careProfile = PlantCareProfile.fromJSON(json["careProfile"]) {
@@ -106,13 +108,13 @@ class PlantInfoModel extends ChangeNotifier {
       );
 
   void addNewImage(String imageURL, DateTime time) {
-    // TODO do api call here
+    GetIt.I<PlantAPI>().addPlantPhoto(imageURL, id);
     images[time] = imageURL;
     notifyListeners(); // trigger rebuild in widgets that share this model
   }
 
   void removeImage(String imageURL) {
-    // TODO do api call here
+    GetIt.I<PlantAPI>().removePlantPhoto(imageURL);
     images.removeWhere((key, value) => value == imageURL);
     notifyListeners();
   }

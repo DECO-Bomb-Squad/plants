@@ -3,9 +3,7 @@ import 'dart:io';
 
 import 'package:app/api/storage.dart';
 import 'package:app/base/user.dart';
-import 'package:app/interfaces/plant_type_info/plant_type_info_model.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
-import 'package:app/plantinstance/test_call.dart';
 import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
 
@@ -104,23 +102,28 @@ class PlantAPI {
     return constructor(json.decode(response.body));
   }
 
-  Future<PlantTypeInfoModel> getPlantTypeInfo(String plantTypeName) {
-    Map<String, String> queryParams = {"plant_type_name": plantTypeName};
-    return getGeneric('test_plant', (j) => PlantTypeInfoModel.fromJSON(j));
-  }
-
   Future<PlantInfoModel> getPlantInfo(int id) =>
       cache.plantInfoCache.putIfAbsent(id, () => AsyncCache(const Duration(days: 1))).fetch(() => _getPlantInfo(id));
 
   Future<PlantInfoModel> _getPlantInfo(int id) {
-    Map<String, dynamic> testJson = jsonDecode(rawJson)[id];
-    PlantInfoModel model = PlantInfoModel.fromJSON(testJson);
-    return Future.delayed(const Duration(seconds: 1), () => model);
+    String path = "/plant/$id";
+    return getGeneric(path, (result) => PlantInfoModel.fromJSON(result));
   }
 
-  // Future<PlantImageGalleryModel> getPlantGallery(int id) {
-  //   Map<String, dynamic> testJson = jsonDecode(galleryJson)[id];
-  //   PlantImageGalleryModel model = PlantImageGalleryModel.fromJSON(testJson);
-  //   return Future.delayed(const Duration(seconds: 1), () => model);
-  // }
+  Future<bool> addPlantPhoto(String imageURL, int plantId) async {
+    String path = "/plant/photos/add";
+
+    http.Response response =
+        await http.post(makePath(path), headers: header, body: {"plantId": plantId.toString(), "uri": imageURL});
+
+    return response.statusCode == 200;
+  }
+
+  Future<bool> removePlantPhoto(String imageURL) async {
+    String path = "/plant/photos/remove";
+
+    http.Response response = await http.delete(makePath(path), headers: header, body: {"uri": imageURL});
+
+    return response.statusCode == 200;
+  }
 }
