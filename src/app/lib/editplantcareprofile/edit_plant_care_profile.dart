@@ -1,17 +1,18 @@
+import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/editplantcareprofile/edit_plant_care_profile_model.dart';
 
 class EditPlantCareProfile extends StatefulWidget {
-  const EditPlantCareProfile({super.key});
+  PlantCareProfile? profile;
+  EditPlantCareProfile({super.key, this.profile});
 
   @override
   State<EditPlantCareProfile> createState() => _EditPlantCareProfileState();
 }
 
 class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
-  var model = EditPlantCareProfileModel.fromEmpty(); // TODO: model = existing model
-  bool isEmpty = true; // added this to prevent initialising controller text as the toString of null
+  late EditPlantCareProfileModel model;
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
@@ -25,14 +26,17 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
   @override
   void initState() {
     super.initState();
-    if (!isEmpty) {
-      _idController.text = model.id.toString();
-      _locationController.text = model.location.toString();
-      _soilTypeController.text = model.soilType.toString();
-      _daysBetweenWateringController.text = model.daysBetweenWatering.toString();
-      _daysBetweenFertilisingController.text = model.daysBetweenFertilising.toString();
-      _daysBetweenRepottingController.text = model.daysBetweenRepotting.toString();
+    if (widget.profile != null) {
+      model = EditPlantCareProfileModel.fromProfile(widget.profile!);
+    } else {
+      model = EditPlantCareProfileModel.fromEmpty();
     }
+    _idController.text = model.id.toString();
+    _locationController.text = model.location.toString();
+    _soilTypeController.text = model.soilType.toString();
+    _daysBetweenWateringController.text = model.daysBetweenWatering.toString();
+    _daysBetweenFertilisingController.text = model.daysBetweenFertilising.toString();
+    _daysBetweenRepottingController.text = model.daysBetweenRepotting.toString();
     //TODO: add listeners? _controller.addListener(_function to update the model)
   }
 
