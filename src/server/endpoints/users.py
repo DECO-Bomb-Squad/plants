@@ -83,7 +83,7 @@ Gets a Users Plants (GET)
     - Params:
         - userId: int
     - Returns:
-        - all user plant information
+        - ids of a user's plants
 '''
 @app.route("/users/<username>/plants", methods = ["GET", "POST"])
 @APICall

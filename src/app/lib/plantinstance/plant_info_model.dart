@@ -1,6 +1,8 @@
+import 'package:app/api/plant_api.dart';
 import 'package:app/utils/activity_calendar.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class PlantCareProfile extends ChangeNotifier {
   int id;
@@ -21,28 +23,32 @@ class PlantCareProfile extends ChangeNotifier {
 }
 
 class PlantInfoModel extends ChangeNotifier {
-  // TODO add "owner" User when properly implemented - need json key changed
   int id;
   String? nickName;
   String plantName; // Common name
   String scientificName; // Botanical name
+  String? description;
+
+  int ownerId;
+  String ownerName;
 
   ActivityOccurenceModel activities; // Map of various activities and the time they occured
   PlantCareProfile careProfile;
-
-  List<String>? tags; // System and user-added info tags
 
   Map<DateTime, String> images;
 
   PlantInfoModel.fromJSON(Map<String, dynamic> json)
       : id = json["id"],
-        plantName = json["plant_name"],
+        plantName = json["common_name"],
         scientificName = json["scientific_name"],
-        tags = (json["tags"] as List<dynamic>).map((e) => e as String).toList(),
-        nickName = json["nickname"],
-        images = ((json["images"] ?? {}) as Map<dynamic, dynamic>)
+        description = json["description"],
+        ownerId = (json["user"] as Map<dynamic, dynamic>).map((key, value) => MapEntry(key as String, value))["userId"],
+        ownerName =
+            (json["user"] as Map<dynamic, dynamic>).map((key, value) => MapEntry(key as String, value))["username"],
+        nickName = json["name"],
+        images = ((json["photos"] ?? {}) as Map<dynamic, dynamic>)
             .map((key, value) => MapEntry(DateTime.parse(key as String), value as String)),
-        activities = ActivityOccurenceModel.fromListJSON(json["activities"]),
+        activities = ActivityOccurenceModel.fromListJSON(json["id"], json["activities"]),
         careProfile = PlantCareProfile.fromJSON(json["careProfile"]) {
     activities.addListener(notifyListeners);
   }
@@ -102,19 +108,27 @@ class PlantInfoModel extends ChangeNotifier {
       );
 
   void addNewImage(String imageURL, DateTime time) {
-    // TODO do api call here
+    GetIt.I<PlantAPI>().addPlantPhoto(imageURL, id);
     images[time] = imageURL;
     notifyListeners(); // trigger rebuild in widgets that share this model
   }
 
   void removeImage(String imageURL) {
-    // TODO do api call here
+    GetIt.I<PlantAPI>().removePlantPhoto(imageURL);
     images.removeWhere((key, value) => value == imageURL);
     notifyListeners();
   }
 }
 
-enum SoilType { smallPot, mediumPot, largePot, windowPlanter, gardenBed, water, fishTank }
+enum SoilType {
+  smallPot,
+  mediumPot,
+  largePot,
+  windowPlanter,
+  gardenBed,
+  water,
+  fishTank,
+}
 
 extension SoilTypeExtension on SoilType {
   String? toHumanString() {
@@ -218,9 +232,27 @@ extension ConditionExtension on ConditionType {
   }
 }
 
-enum ActivityTypeId { watering, repotting, fertilising, worshipping }
+enum ActivityTypeId {
+  watering,
+  repotting,
+  fertilising,
+  worshipping,
+}
 
 extension ActivityColour on ActivityTypeId {
+  int get dbIndex {
+    switch (this) {
+      case ActivityTypeId.watering:
+        return 1;
+      case ActivityTypeId.repotting:
+        return 2;
+      case ActivityTypeId.fertilising:
+        return 3;
+      case ActivityTypeId.worshipping:
+        return 4;
+    }
+  }
+
   Color toColour() {
     switch (index) {
       case 0:

@@ -1,8 +1,10 @@
 import 'dart:math';
 
+import 'package:app/api/plant_api.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 // Basic calendar to plot activities
@@ -62,6 +64,8 @@ SfCalendar calendarMini(ActivityOccurenceModel a) {
 }
 
 class ActivityOccurenceModel extends ChangeNotifier {
+  int plantId;
+
   List<DateTime> watering;
   List<DateTime> repotting;
   List<DateTime> fertilising;
@@ -71,20 +75,20 @@ class ActivityOccurenceModel extends ChangeNotifier {
   DateTime? _lastRepotted;
   DateTime? _lastFertilised;
 
-  ActivityOccurenceModel.fromListJSON(List<dynamic> json)
-      : watering = (json.where((element) => element['activityTypeId'] == ActivityTypeId.watering.index))
+  ActivityOccurenceModel.fromListJSON(this.plantId, List<dynamic> json)
+      : watering = (json.where((element) => element['activityTypeId'] == ActivityTypeId.watering.dbIndex))
                 .map((e) => DateTime.parse(e["time"]))
                 .toList() ??
             [],
-        repotting = (json.where((element) => element['activityTypeId'] == ActivityTypeId.repotting.index))
+        repotting = (json.where((element) => element['activityTypeId'] == ActivityTypeId.repotting.dbIndex))
                 .map((e) => DateTime.parse(e["time"]))
                 .toList() ??
             [],
-        fertilising = (json.where((element) => element['activityTypeId'] == ActivityTypeId.fertilising.index))
+        fertilising = (json.where((element) => element['activityTypeId'] == ActivityTypeId.fertilising.dbIndex))
                 .map((e) => DateTime.parse(e["time"]))
                 .toList() ??
             [],
-        worshipping = (json.where((element) => element['activityTypeId'] == ActivityTypeId.worshipping.index))
+        worshipping = (json.where((element) => element['activityTypeId'] == ActivityTypeId.worshipping.dbIndex))
                 .map((e) => DateTime.parse(e["time"]))
                 .toList() ??
             [];
@@ -126,7 +130,7 @@ class ActivityOccurenceModel extends ChangeNotifier {
 
   void addWatering(DateTime? day) {
     if (day != null) {
-      // TODO do api call here
+      GetIt.I<PlantAPI>().addWatering(day, plantId);
       watering.add(day);
       if (day.isAfter(lastWatered)) {
         _lastWatered = day;
@@ -137,7 +141,7 @@ class ActivityOccurenceModel extends ChangeNotifier {
 
   void addRepotting(DateTime? day) {
     if (day != null) {
-      // TODO do api call here
+      GetIt.I<PlantAPI>().addRepotting(day, plantId);
       repotting.add(day);
       if (day.isAfter(lastRepotted)) {
         _lastRepotted = day;
@@ -148,7 +152,7 @@ class ActivityOccurenceModel extends ChangeNotifier {
 
   void addFertilising(DateTime? day) {
     if (day != null) {
-      // TODO do api call here
+      GetIt.I<PlantAPI>().addFertilising(day, plantId);
       fertilising.add(day);
       if (day.isAfter(lastFertilised)) {
         _lastFertilised = day;

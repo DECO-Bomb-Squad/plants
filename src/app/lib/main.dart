@@ -18,7 +18,7 @@ void runPlantApp() async {
   api.user = User.fromJSON({
     "id": 1,
     "name": "Jay Son",
-    "plantIds": [0, 1, 2, 3],
+    "plantIds": [101, 102, 103, 104],
   });
   GetIt.I.registerSingleton<PlantAppStorage>(PlantAppStorage());
   GetIt.I.registerSingleton<PlantAppCache>(PlantAppCache());
