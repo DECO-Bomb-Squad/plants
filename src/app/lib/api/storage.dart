@@ -1,4 +1,3 @@
-import 'package:app/interfaces/plant_type_info/plant_type_info_model.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:async/async.dart';
 import 'package:flutter/cupertino.dart';
@@ -39,12 +38,10 @@ class PlantAppCache {
 
   factory PlantAppCache() => _instance;
 
-  Map<String, AsyncCache<PlantTypeInfoModel>> plantTypeInfoCache = {};
-
   Map<int, AsyncCache<PlantInfoModel>> plantInfoCache = {};
 
   Future<void> clear() async {
     // If you add a new cache to this class, be sure to invalidate it in here!
-    plantTypeInfoCache.forEach((key, value) => value.invalidate());
+    plantInfoCache.forEach((key, value) => value.invalidate());
   }
 }
