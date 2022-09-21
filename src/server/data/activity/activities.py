@@ -27,7 +27,7 @@ class Activity(DB.BASE):
     def serialize(self):
         return {
             "id": self.id,
-            "time": self.activityTime,
+            "time": self.activityTime.isoformat(),
             "activityTypeId": self.activityTypeId,
             "plantId": self.plantId
         }
