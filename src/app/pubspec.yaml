@@ -46,6 +46,7 @@ dependencies:
   azblob: ^2.3.0
   provider: ^6.0.0
   flutter_typeahead: ^4.1.0
+  dio: ^4.0.6
 
 dev_dependencies:
   flutter_test:

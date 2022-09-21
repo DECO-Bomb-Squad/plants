@@ -26,11 +26,11 @@ class _MainScreenState extends State<MainScreen> {
                   "MY PLANTS",
                   style: mainHeaderStyle,
                 )),
-            ElevatedButton(
+            IconButton(
               onPressed: () => Navigator.of(context, rootNavigator: false)
                   .push(MaterialPageRoute(builder: (context) => PlantAddScreen())),
               style: buttonStyle,
-              child: const Text("++++", style: buttonTextStyle),
+              icon: const Icon(Icons.add),
             )
           ]),
           spacer,

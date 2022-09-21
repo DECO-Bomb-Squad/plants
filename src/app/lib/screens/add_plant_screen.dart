@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:app/api/plant_api.dart';
 import 'package:app/interfaces/plant_type_info/plant_type_info_model.dart';
+import 'package:app/screens/plant_identification_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:app/plantinstance/plant_info_model.dart' as info;
 import 'package:app/utils/colour_scheme.dart';
@@ -87,11 +88,16 @@ class _PlantAddScreenState extends State<PlantAddScreen> {
                               ),
                               spacer,
                               SizedBox(
-                                  //width: MediaQuery.of(context).size.width * 0.9,
+                                  //width: MediaQuery.of(context).size.width * 0.7,
                                   child: TypeAheadFormField(
                                 textFieldConfiguration: TextFieldConfiguration(
                                     controller: this._typeAheadController,
-                                    decoration: InputDecoration(labelText: 'Plant')),
+                                    decoration: InputDecoration(
+                                        labelText: 'Plant',
+                                        suffixIcon: IconButton(
+                                            onPressed: () => showDialog(
+                                                context: context, builder: (_) => PlantIdentificationDialog()),
+                                            icon: Icon(Icons.camera_alt)))),
                                 suggestionsCallback: (pattern) {
                                   PlantTypeInfoModel m = widget.api.getPlantTypes(pattern);
                                   return [m];

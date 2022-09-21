@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:dio/dio.dart';
 
 import 'package:app/api/storage.dart';
 import 'package:app/base/user.dart';
 import 'package:app/interfaces/plant_type_info/plant_type_info_model.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/plantinstance/test_call.dart';
+import 'package:app/screens/plant_identification_screen.dart';
 import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,6 +19,9 @@ const BACKEND_URL_PROD = "TODO_fill_in_later";
 
 const AZURE_BLOB_CONN_STR =
     "DefaultEndpointsProtocol=https;AccountName=bombsquadaloe;AccountKey=GASDIh22FSLmouUeAGYLRThOBdmkBiTr06yDPuVNu8jPUdPw7Nh7M86Af3xBNTd5l5HbcjRZHt48+AStbaK+ew==;EndpointSuffix=core.windows.net";
+
+const PLANTNET_API_KEY = "2b10EBekKsq2B9XbUDp0bzwEO";
+const PLANTNET_URL = "https://my-api.plantnet.org/v2/identify/all?api-key=";
 
 class PlantAPI {
   static final PlantAPI _instance = PlantAPI._internal();
@@ -112,6 +117,20 @@ class PlantAPI {
   PlantTypeInfoModel getPlantTypes(String plantTypeName) {
     return PlantTypeInfoModel.fromJSON(
         {"plant_name": "Rose", "scientific_name": "Scientific", "tags": [], "imageUrls": []});
+  }
+
+  Future<List<IdentifyResult>> getPlantNetResults(List<PlantIdentifyModel> samples) async {
+    var dio = Dio();
+    var formData = FormData();
+    formData.fields.addAll([for (PlantIdentifyModel s in samples) MapEntry("organs", s.organ)]);
+    formData.files
+        .addAll([for (PlantIdentifyModel s in samples) MapEntry("images", MultipartFile.fromFileSync(s.image))]);
+    var response = await dio.post(PLANTNET_URL + PLANTNET_API_KEY, data: formData);
+    List<IdentifyResult> identify = [];
+    for (Map<String, dynamic> r in response.data["results"]) {
+      identify.add(IdentifyResult(r["species"]["scientificNameWithoutAuthor"], r["score"]));
+    }
+    return identify;
   }
 
   Future<PlantInfoModel> getPlantInfo(int id) =>
