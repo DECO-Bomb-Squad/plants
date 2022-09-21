@@ -1,7 +1,7 @@
 from data.constants import TBL_USERS, TBL_POSTS, TBL_COMMENTS
 from data.plants.plantCareProfile import PlantCareProfile
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.sql import func
 
 from flask import jsonify   
@@ -19,7 +19,8 @@ class Comment(DB.BASE):
     created = Column("created", DateTime(timezone=True), server_default=func.now())
 
     parentId = Column(Integer, ForeignKey(f"{TBL_COMMENTS}.id", name=f"fk_parent_{__tablename__}"), nullable=True)
-    parent = relationship("Comment", back_populates="replies")
+    # parent = relationship("Comment", back_populates="replies", remote_side=[id])
+    replies = relationship("Comment", backref=backref("parent", remote_side=[id]), uselist=True)
 
     userId = Column(Integer, ForeignKey(f"{TBL_USERS}.id", name=f"fk_user_id_{__tablename__}"), nullable=False)
     author = relationship("User", back_populates='userComments')
@@ -27,7 +28,6 @@ class Comment(DB.BASE):
     postId = Column(Integer, ForeignKey(f"{TBL_POSTS}.id", name=f"fk_post_id_{__tablename__}"), nullable=False)
     post = relationship("Post", back_populates="comments")
 
-    replies = relationship("Comment", back_populates="replies")
 
     def __init__(self, content, userId, parentId):
 

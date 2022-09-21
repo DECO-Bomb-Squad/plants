@@ -15,7 +15,7 @@ class PostTag(DB.BASE):
     post = relationship("Post", uselist=False, back_populates="tags")
 
     tagId = Column("tagId", Integer, ForeignKey(f"{TBL_TAGS}.id", name=f"fk_tag_id_{__tablename__}"), nullable=False)
-    tag = relationship("Tag", uselist=False, back_populates="plantTypes")
+    tag = relationship("Tag", uselist=False, back_populates="posts")
 
     def __init__(self, postId, tagId):
         self.postId = postId

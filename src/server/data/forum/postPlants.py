@@ -12,7 +12,7 @@ class PostPlant(DB.BASE):
     id = Column(Integer, primary_key=True, autoincrement=True)
 
     plantId = Column(Integer, ForeignKey(f"{TBL_PLANTS}.id", name=f"fk_plant_id_{__tablename__}"), nullable=False)
-    plant = relationship("User", uselist=False, back_populates='posts')
+    plant = relationship("Plant", uselist=False, back_populates='posts')
     # should useList = true here for multiple plants?
 
     postId = Column(Integer, ForeignKey(f"{TBL_POSTS}.id", name=f"fk_post_id_{__tablename__}"), nullable=False)
