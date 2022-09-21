@@ -1,3 +1,4 @@
+import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/editplantcareprofile/edit_plant_care_profile_model.dart';
 
@@ -11,6 +12,8 @@ class EditPlantCareProfile extends StatefulWidget {
 class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
   var model = EditPlantCareProfileModel.fromEmpty(); // TODO: model = existing model
   bool isEmpty = true; // added this to prevent initialising controller text as the toString of null
+
+  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
@@ -46,6 +49,33 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(); // threw this here to stop error. TODO: replace with the widget
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height / 1.5),
+        decoration: dialogComponent,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Form(
+              key: _formKey,
+              child: (Column(
+                children: [
+                  TextFormField(
+                    controller: _idController,
+                    validator: (String? value) {
+                      // check for int
+                    },
+                  )
+                ],
+              )),
+            )
+            // row for submit and discard buttons
+          ],
+        ),
+      ),
+    );
   }
 }
