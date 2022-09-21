@@ -11,6 +11,13 @@ app = Blueprint('plant_endpoints', __name__)
 
 # ===== Personal Plant Management Endpoints ====
 
+@app.route("/planttypes", methods= ["GET"])
+@APICall
+def get_plant_types(session):
+    plantTypes = session.query(PlantType).all()
+    allTypes = [plantType.serialize() for plantType in plantTypes]
+    return jsonify(plantTypes=allTypes)
+
 '''
 Update a personal plant with new nickname and/or description
 '''
