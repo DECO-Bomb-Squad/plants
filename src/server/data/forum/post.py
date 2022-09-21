@@ -1,6 +1,6 @@
 from data.constants import TBL_PLANTS, TBL_USERS, TBL_PLANT_TYPES, TBL_POSTS
 from data.plants.plantCareProfile import PlantCareProfile
-from sqlalchemy import Column, Integer, String, ForeignKey, Enum
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -18,6 +18,7 @@ class Post(DB.BASE):
     title = Column('title', String(255), nullable=False)
     content = Column('content', String(255), nullable=False)
     created = Column("created", DateTime(timezone=True), server_default=func.now())
+    score = Column('score', Integer, nullable=False)
 
 
     userId = Column(Integer, ForeignKey(f"{TBL_USERS}.id", name=f"fk_user_id_{__tablename__}"), nullable=False)
@@ -34,12 +35,14 @@ class Post(DB.BASE):
         self.content = content
         self.userId = userId
         self.created = func.now()
+        self.score = 0
 
     def serialize(self):
         return {
-            "id":              self.id,
+            "postId":          self.id,
             "title":           self.title,
             "content":         self.content,
             "created":         self.created,
-            "userId":          self.userId
+            "userId":          self.userId,
+            "score":           self.score
         }

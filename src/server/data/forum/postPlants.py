@@ -1,4 +1,4 @@
-from data.constants import TBL_PLANTS, TBL_USERS, TBL_PLANT_TYPES, TBL_COMMENTS
+from data.constants import TBL_PLANTS, TBL_POST_PLANTS, TBL_POSTS
 from sqlalchemy import Column, Integer, String, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 
@@ -9,6 +9,7 @@ Forum Post/Plant Association Model for SQLALchemy
 """
 class PostPlant(DB.BASE):
     __tablename__ = TBL_POST_PLANTS
+    id = Column(Integer, primary_key=True, autoincrement=True)
 
     plantId = Column(Integer, ForeignKey(f"{TBL_PLANTS}.id", name=f"fk_plant_id_{__tablename__}"), nullable=False)
     plant = relationship("User", uselist=False, back_populates='posts')

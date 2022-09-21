@@ -1,8 +1,10 @@
-from data.constants import TBL_PLANTS, TBL_USERS, TBL_PLANT_TYPES, TBL_COMMENTS
+from data.constants import TBL_USERS, TBL_POSTS, TBL_COMMENTS
 from data.plants.plantCareProfile import PlantCareProfile
-from sqlalchemy import Column, Integer, String, ForeignKey, Enum
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
-from flask import jsonify
+from sqlalchemy.sql import func
+
+from flask import jsonify   
 import json
 
 import data.DB as DB
