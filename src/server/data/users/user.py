@@ -30,6 +30,10 @@ class User(DB.BASE):
         self.reputation = reputation
         self.startDate = startDate
 
+    def get_plants(self):
+        plantIds = [plant.id for plant in self.userPlants]
+        return jsonify(plantIds)
+
     def get_serialized_plants(self):
         allPlants = [plant.serialize() for plant in self.userPlants]
         return jsonify(userPlants=allPlants)
