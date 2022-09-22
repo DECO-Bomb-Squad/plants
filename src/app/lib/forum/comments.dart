@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:app/forum/comment_model.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';

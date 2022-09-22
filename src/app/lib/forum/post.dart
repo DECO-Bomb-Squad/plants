@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:app/forum/test_call.dart';
+import 'package:app/forum/test_post.dart';
 import 'package:app/screens/post_screen.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:app/forum/post_model.dart';

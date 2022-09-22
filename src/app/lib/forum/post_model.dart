@@ -1,10 +1,10 @@
 class PostInfoModel {
   int postID;       // Post ID in the DB
   int score;        // Reputation at the moment of the call
-  String author;       // Who wrote the post
+  String author;    // Who wrote the post
   String title;     // Post title
   String content;   // Post body - formatting
-  DateTime created;
+  DateTime created; // When the post was written
 
   List<int> attachedPlants; // IDs of attached plants
 

@@ -1,4 +1,4 @@
-String rawJSON = '''
+String rawCommentJSON = '''
 [
   {
     "comment_id": 1,
