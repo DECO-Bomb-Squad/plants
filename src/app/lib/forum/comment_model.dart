@@ -25,17 +25,24 @@ class CommentModel {
   String content;       // Actual comment text
   DateTime created;     // When the comment was posted
 
-  User author;                // User object
+  //User author;                // User object
   List<CommentModel> replies; // Replies to comment
 
   CommentModel.fromJSON(Map<String, dynamic> json)
-      : commentID = json['commentID'],
-        authorID = json['author'],
+      : commentID = json['comment_id'],
+        authorID = json['author_id'],
         score = json['score'],
         content = json['content'],
         created = DateTime.parse(json["created"]),
-        author = User.fromJSON(jsonDecode('{"id": 1, "name": "Test"}')),
-        replies = [];
+        replies = []
+
+        {
+          if (json.containsKey("replies")) {
+            replies = (json["replies"] as List<dynamic>).map((e) => CommentModel.fromJSON(e)).toList();
+          }
+        }
+        //author = User.fromJSON(jsonDecode('{"id": 1, "name": "Test"}')),
+        
   
   String getReadableTimeAgo() {
     Duration delta = DateTime.now().difference(created);

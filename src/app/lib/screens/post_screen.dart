@@ -21,8 +21,7 @@ class _PostScreenState extends State<PostScreen> {
   @override
   Widget build(BuildContext context) {
     CommentManager commentManager = CommentManager(context, 1);
-    //print(jsonDecode(rawJSON));
-    //commentManager.loadComments(jsonDecode(rawJSON));
+    commentManager.loadComments(jsonDecode(rawJSON));
     return Scaffold(
       body: NestedScrollView(
         scrollDirection: Axis.vertical,

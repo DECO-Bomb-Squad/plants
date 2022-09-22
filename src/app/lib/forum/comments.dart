@@ -13,7 +13,7 @@ class CommentManager {
   CommentManager(this.context, this.postID, {Key? key})
       : model = CommentManagerModel(postID);
 
-  void loadComments(List<Map<String, dynamic>> json) {
+  void loadComments(List<dynamic> json) {
     // This should be making an API call, but for now JSON is fine
     for (var comment in json) {
       model.comments.add(CommentModel.fromJSON(comment));
@@ -21,13 +21,13 @@ class CommentManager {
   }
 
   Column getComments() {
-    Column output = Column(crossAxisAlignment: CrossAxisAlignment.center,);
+    List<Column> output = [];
 
     for (CommentModel comment in model.comments) {
-      output.children.add(_getComment(comment));
+      output.add(_getComment(comment));
     }
 
-    return output;
+    return Column(crossAxisAlignment: CrossAxisAlignment.center, children: output);
   }
   
   Column _getComment(CommentModel comment) {
@@ -46,7 +46,7 @@ class CommentManager {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("${comment.authorID}", style: subheaderStyle),
-                  Text(comment.getReadableTimeAgo())
+                  Text("${comment.getReadableTimeAgo()} ago")
                 ],
               )
             )
@@ -77,7 +77,7 @@ class CommentManager {
               flex: 4,
               child: Column(
                 //children: List<Widget>.generate(Random().nextInt(5), (e) => _getCommentReply()),
-                children: comment.replies.map((e) => _getCommentReply(e)) as List<Widget>,
+                children: List<Widget>.from(comment.replies.map((e) => _getCommentReply(e))),
               )
             )
           ],
@@ -87,7 +87,7 @@ class CommentManager {
     );
   }
 
-  Widget _getCommentReply(CommentModel reply) {
+  Widget _getCommentReply(CommentModel comment) {
     return Column(
       children: [
         Row(
@@ -100,9 +100,9 @@ class CommentManager {
               flex: 4,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text("Username", style: subheaderStyle),
-                  Text("15 minutes ago")
+                children: [
+                  Text("${comment.authorID}", style: subheaderStyle),
+                  Text("${comment.getReadableTimeAgo()} ago")
                 ],
               )
             )
@@ -113,18 +113,16 @@ class CommentManager {
             Expanded(
               flex: 1,
               child: Column(
-                children: const [
+                children: [
                   Icon(Icons.arrow_upward),
-                  Text("20", style: textStyle,),
+                  Text("${comment.score}", style: textStyle,),
                   Icon(Icons.arrow_downward)
                 ],
               )
             ),
-            const Expanded(
+            Expanded(
               flex: 4,
-              child: Text(
-              "dfjklskdfsj ksdjhfksdhjfksjdh fkjsdh f kjshdfjk hsdjkfh sdjkfh skdjf ksjdhf ksjdhf kjs dfk hsd kfjh sdkjfh skejdh fiksh j"
-              )
+              child: Text(comment.content)
             )
           ]
         ),
