@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:app/forum/test_comments.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/forum/tags.dart';
@@ -17,7 +20,9 @@ class PostScreen extends StatefulWidget {
 class _PostScreenState extends State<PostScreen> {
   @override
   Widget build(BuildContext context) {
-    CommentManager commentManager = CommentManager(context);
+    CommentManager commentManager = CommentManager(context, 1);
+    //print(jsonDecode(rawJSON));
+    //commentManager.loadComments(jsonDecode(rawJSON));
     return Scaffold(
       body: NestedScrollView(
         scrollDirection: Axis.vertical,
@@ -85,15 +90,7 @@ class _PostScreenState extends State<PostScreen> {
                   ],
                 )
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  commentManager.getComment(),
-                  commentManager.getComment(),
-                  commentManager.getComment(),
-                  commentManager.getComment(),
-                ]
-              )
+              commentManager.getComments()
             ]
           )
         )
