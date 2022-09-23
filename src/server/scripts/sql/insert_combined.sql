@@ -398,3 +398,29 @@ insert into plants (id, plantName, plantDesc, plantTypeId, userId, careProfileId
 insert into activities (activityTime, activityTypeId, plantId) values ('2022-08-18', 1, 104);
 insert into activities (activityTime, activityTypeId, plantId) values ('2022-08-30', 1, 104);
 insert into photos (uri, photoTime, plantId) values ("https://cdn.shopify.com/s/files/1/0046/2467/9000/products/original_4ef6c2c8-df24-40a5-a410-92ade77f3504_2400x.jpg?v=1653960466", "2022-08-20T15:30", 104);
+
+
+/* Additional plant types taken from plantnet database */
+insert into plant_types (id, type, commonName, fullName) values (201, 'Vegetable', 'Corn', 'Zea mays');
+insert into plant_care_profile_default (plantTypeId, soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer) values (201, 'gardenBed', 'fullSun', 9, 40, 40);
+
+insert into plant_types (id, type, commonName, fullName) values (202, 'Rose', 'Bengal rose', 'Rosa chinensis');
+insert into plant_care_profile_default (plantTypeId, soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer) values (202, 'gardenBed', 'partShade', 5, 50, 15);
+
+insert into plant_types (id, type, commonName, fullName) values (203, 'Evergreen', 'Snakeplant', 'Sansevieria trifasciata');
+insert into plant_care_profile_default (plantTypeId, soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer) values (203, 'smallPot', 'fullShade', 12, 61, 78);
+
+insert into plant_types (id, type, commonName, fullName) values (204, 'Herb', 'Wild garlic', 'Allium ursinum');
+insert into plant_care_profile_default (plantTypeId, soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer) values (204, 'largePot', 'fullShade', 5, 80, 71);
+
+insert into plant_types (id, type, commonName, fullName) values (205, 'Houseplant', 'ZZ plant', 'Zamioculcas zamiifolia');
+insert into plant_care_profile_default (plantTypeId, soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer) values (205, 'smallPot', 'indoor', 14, 73, 90);
+
+insert into plant_types (id, type, commonName, fullName) values (206, 'Lily', 'Peace lily', 'Spathiphyllum wallisii');
+insert into plant_care_profile_default (plantTypeId, soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer) values (206, 'smallPot', 'indoor', 6, 80, 14);
+
+insert into plant_types (id, type, commonName, fullName) values (207, 'Houseplant', 'Spider plant', 'Chlorophytum comosum');
+insert into plant_care_profile_default (plantTypeId, soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer) values (207, 'smallPot', 'partShade', 4, 73, 21);
+
+insert into plant_types (id, type, commonName, fullName) values (208, 'Lily', 'Flamingo-lily', 'Anthurium andraeanum');
+insert into plant_care_profile_default (plantTypeId, soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer) values (208, 'mediumPot', 'partShade', 7, 80, 56);
