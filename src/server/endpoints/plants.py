@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 from data import Plant, User, PlantType, PlantCareProfile, PlantCareProfileDefault, Activity, ActivityType, Tag, PlantTag, Photo
 from sqlalchemy.sql.expression import func
-from utils.api import APICall
+from utils.api import APICall, api_auth
 from flask import jsonify
 
 import json
@@ -13,6 +13,7 @@ app = Blueprint('plant_endpoints', __name__)
 
 @app.route("/planttypes", methods= ["GET"])
 @APICall
+@api_auth
 def get_plant_types(session):
     plantTypes = session.query(PlantType).all()
     allTypes = [plantType.serialize() for plantType in plantTypes]
@@ -23,6 +24,7 @@ Update a personal plant with new nickname and/or description
 '''
 @app.route("/plant/update", methods = ["PATCH"])
 @APICall
+@api_auth
 def update_plant(session):
     try:
         plantId: int     = request.form['plantId']
@@ -68,6 +70,7 @@ Adds a PERSONAL plant. (POST)
 #  - Photo saving to Azure
 #  - Plant Tags
 @APICall
+@api_auth
 def add_personal_plant(session):
     try:
         personalName: str = request.form['personalName']
@@ -132,6 +135,7 @@ Gets a PERSONAL Plant (GET)
 '''
 @app.route("/plant/<id>", methods = ["GET"])
 @APICall
+@api_auth
 def get_personal_plant(session, id: str):
     # verify the id
     plant: Plant = session.query(Plant).filter(Plant.id == id).first()
@@ -150,6 +154,7 @@ Deletes a PERSONAL Plant (DELETE)
 '''
 @app.route('/plants/delete', methods = ['DELETE'])
 @APICall
+@api_auth
 def delete_personal_plant(session):
     try:
         plantId: str = request.form['plantId']
@@ -173,6 +178,7 @@ def delete_personal_plant(session):
 # ==== Plant Tags Endpoints ====
 @app.route("/plant/<plantId>/tag", methods = ['POST'])
 @APICall
+@api_auth
 def add_plant_tag(session, plantId):
     try:
         label: str = request.form['label']
@@ -212,6 +218,7 @@ Only removes the tag associated with the plant. The tag remains in the DB.
 '''
 @app.route("/plant/<plantId>/tag", methods = ['DELETE'])
 @APICall
+@api_auth
 def remove_plant_tag(session, plantId):
     try:
         tagId: str = request.form['tagId']
@@ -252,6 +259,7 @@ Add a photo URI to a plant.
 '''
 @app.route("/plant/photos/add", methods = ['POST'])
 @APICall
+@api_auth
 def add_plant_photo(session):
     try:
         plantId: int = request.form['plantId']
@@ -287,6 +295,7 @@ Remove a photo URI from a plant.
 '''
 @app.route("/plant/photos/remove", methods = ['DELETE'])
 @APICall
+@api_auth
 def delete_plant_photo(session):
     try:
         uri: str = request.form['uri']
@@ -317,6 +326,7 @@ Return a collection of photos for a given plant id.
 '''
 @app.route("/plant/photos", methods = ["GET"])
 @APICall
+@api_auth
 def get_plant_photos(session):
     try:
         plantId: int = request.form['plantId']
@@ -344,6 +354,7 @@ Return a map of URL:timestamp, time in ISO-8601
 '''
 @app.route("/plant/photosmap", methods = ["GET"])
 @APICall
+@api_auth
 def get_plant_photo_map(session):
     try:
         plantId: int = request.form['plantId']
