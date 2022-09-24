@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:app/api/storage.dart';
 import 'package:app/base/user.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
+import 'package:app/secrets.dart';
 import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,9 +13,6 @@ import 'package:http/http.dart' as http;
 // Must refer to 10.0.2.2 within emulator - 127.0.0.1 refers to the emulator itself!
 const BACKEND_URL_LOCAL = "10.0.2.2:3000";
 const BACKEND_URL_PROD = "https://peclarke.pythonanywhere.com/";
-
-const AZURE_BLOB_CONN_STR =
-    "DefaultEndpointsProtocol=https;AccountName=bombsquadaloe;AccountKey=GASDIh22FSLmouUeAGYLRThOBdmkBiTr06yDPuVNu8jPUdPw7Nh7M86Af3xBNTd5l5HbcjRZHt48+AStbaK+ew==;EndpointSuffix=core.windows.net";
 
 class PlantAPI {
   static final PlantAPI _instance = PlantAPI._internal();
@@ -35,7 +33,8 @@ class PlantAPI {
 
   User? user;
 
-  Map<String, String> get header => {HttpHeaders.userAgentHeader: user!.id.toString()};
+  // Auth token - back end rejects requests that don't use this header for security reasons
+  Map<String, String> get header => {"api_key": API_KEY};
 
   Future<bool> initialise() async {
     if (user == null) {
