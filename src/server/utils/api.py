@@ -35,7 +35,7 @@ Decorator function for authenticating requests with an API key.
 '''
 def api_auth(func: Callable):
     def inner_auth(*args, **kwargs):
-        api_key = request.headers.get('api_key')
+        api_key = request.headers.get('apiKey')
         
         if is_valid_key(api_key):
             return func(*args, **kwargs)

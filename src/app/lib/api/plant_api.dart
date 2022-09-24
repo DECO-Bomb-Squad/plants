@@ -34,7 +34,7 @@ class PlantAPI {
   User? user;
 
   // Auth token - back end rejects requests that don't use this header for security reasons
-  Map<String, String> get header => {"api_key": API_KEY};
+  Map<String, String> get header => {"apiKey": API_KEY};
 
   Future<bool> initialise() async {
     if (user == null) {
