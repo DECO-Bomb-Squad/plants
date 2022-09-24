@@ -1,5 +1,5 @@
 import 'package:app/api/plant_api.dart';
-import 'package:app/screens/add_plant_screen.dart';
+import 'package:app/screens/add_plant/add_plant_screen.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/plantinstance/plant_info.dart';

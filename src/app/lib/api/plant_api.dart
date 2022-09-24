@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:app/screens/add_plant/plant_type_model.dart';
 import 'package:dio/dio.dart';
 
 import 'package:app/api/storage.dart';
 import 'package:app/base/user.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/plantinstance/test_call.dart';
-import 'package:app/screens/plant_identification_screen.dart';
+import 'package:app/screens/add_plant/plant_identification_screen.dart';
 import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
 
@@ -31,7 +32,7 @@ class PlantAPI {
 
   // IMPORTANT! use local if the pythonanywhere deployment doesn't match what the front end model expects!
   // Change this "false" to a "true" to use prod deployment
-  final _baseAddress = false ? BACKEND_URL_PROD : BACKEND_URL_LOCAL;
+  final _baseAddress = true ? BACKEND_URL_PROD : BACKEND_URL_LOCAL;
 
   PlantAppStorage store = PlantAppStorage();
   PlantAppCache cache = PlantAppCache();
@@ -108,14 +109,24 @@ class PlantAPI {
     return constructor(json.decode(response.body));
   }
 
-  Future<PlantTypeInfoModel> getPlantTypeInfo(String plantTypeName) {
-    Map<String, String> queryParams = {"plant_type_name": plantTypeName};
-    return getGeneric('test_plant', (j) => PlantTypeInfoModel.fromJSON(j));
-  }
+  Future<List<PlantTypeModel>> getPlantTypes() async {
+    http.Response response;
+    try {
+      response = await http.get(makePath('/planttype'));
+    } on Exception catch (e, st) {
+      print(e);
+      print(st);
+      return [];
+    }
 
-  PlantTypeInfoModel getPlantTypes(String plantTypeName) {
-    return PlantTypeInfoModel.fromJSON(
-        {"plant_name": "Rose", "scientific_name": "Scientific", "tags": [], "imageUrls": []});
+    if (response.statusCode == 200) {
+      Map<String, dynamic> result = json.decode(response.body);
+      List<PlantTypeModel> types = [for (Map<String, dynamic> t in result['plantTypes']) PlantTypeModel.fromJSON(t)];
+      types.sort((a, b) => a.commonName.compareTo(b.commonName));
+      return types;
+    } else {
+      return [];
+    }
   }
 
   Future<List<IdentifyResult>> getPlantNetResults(List<PlantIdentifyModel> samples) async {

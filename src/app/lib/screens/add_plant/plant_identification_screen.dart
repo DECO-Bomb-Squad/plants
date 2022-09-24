@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:app/api/plant_api.dart';
-import 'package:app/interfaces/plant_type_info/plant_type_info_model.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
