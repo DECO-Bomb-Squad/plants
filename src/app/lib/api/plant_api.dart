@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 
 // Must refer to 10.0.2.2 within emulator - 127.0.0.1 refers to the emulator itself!
 const BACKEND_URL_LOCAL = "10.0.2.2:3000";
-const BACKEND_URL_PROD = "https://peclarke.pythonanywhere.com/";
+const BACKEND_URL_PROD = "peclarke.pythonanywhere.com";
 
 class PlantAPI {
   static final PlantAPI _instance = PlantAPI._internal();
@@ -23,7 +23,7 @@ class PlantAPI {
 
   // IMPORTANT! use local if the pythonanywhere deployment doesn't match what the front end model expects!
   // Change this "false" to a "true" to use prod deployment
-  final _baseAddress = false ? BACKEND_URL_PROD : BACKEND_URL_LOCAL;
+  final _baseAddress = true ? BACKEND_URL_PROD : BACKEND_URL_LOCAL;
 
   PlantAppStorage store = PlantAppStorage();
   PlantAppCache cache = PlantAppCache();
