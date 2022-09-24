@@ -25,6 +25,7 @@ def APICall(func: Callable):
     return inner
 
 def is_valid_key(key):
+    load_dotenv()
     API_KEY = os.getenv('API_KEY')
     return key == API_KEY
 
@@ -34,7 +35,6 @@ Decorator function for authenticating requests with an API key.
 '''
 def api_auth(func: Callable):
     def inner_auth(*args, **kwargs):
-        load_dotenv()
         api_key = request.headers.get('api_key')
         
         if is_valid_key(api_key):
