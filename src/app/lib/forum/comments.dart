@@ -54,13 +54,7 @@ class CommentManager {
           children: [
             Expanded(
               flex: 1,
-              child: Column(
-                children: [
-                  Icon(Icons.arrow_upward),
-                  Text("${comment.score}", style: textStyle,),
-                  Icon(Icons.arrow_downward)
-                ],
-              )
+              child: _getVoteComponent(comment.score)
             ),
             Expanded(
               flex: 4,
@@ -110,13 +104,7 @@ class CommentManager {
           children: [
             Expanded(
               flex: 1,
-              child: Column(
-                children: [
-                  Icon(Icons.arrow_upward),
-                  Text("${comment.score}", style: textStyle,),
-                  Icon(Icons.arrow_downward)
-                ],
-              )
+              child: _getVoteComponent(comment.score)
             ),
             Expanded(
               flex: 4,
@@ -140,13 +128,33 @@ class CommentManager {
           child: ElevatedButton(
             onPressed: () {
               Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const ReplyPostScreen(1)));
+              MaterialPageRoute(builder: (context) => ReplyPostScreen(1)));
             },
             style: smallButtonStyle,
             child: const Text("Write a response...", style: smallButtonTextStyle)
           )
         )
       ]
+    );
+  }
+
+  Widget _getVoteComponent(int score) {
+    int voted = 0;
+    return Column(
+      children: [
+        InkWell(
+          child: const Icon(Icons.arrow_upward),
+          onTap: () {
+          } 
+        ),
+        Text("$score", style: textStyle,),
+        InkWell(
+          child: const Icon(Icons.arrow_downward),
+          onTap: () {
+           
+          },
+        )
+      ],
     );
   }
 }
