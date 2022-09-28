@@ -6,9 +6,8 @@ from utils.api import APICall, api_auth
 from flask import jsonify
 
 app = Blueprint('forum_endpoints', __name__)
-# session = DB.SESSION()
 
-# ===== Major User Endpoints ====
+# ===== Major Forum Endpoints ====
 
 '''
 Adds a post (POST (lol))
@@ -140,6 +139,9 @@ def add_comment(session):
 
     return "The comment was added successfully", 200
 
+'''
+Gets information about a post (GET)
+'''
 @app.route("/forum/post/<id>", methods=["GET"])
 @APICall
 @api_auth
@@ -150,3 +152,26 @@ def get_post(session, id):
         return f"This post with id [{id}] does not exist.", 400
 
     return post.serialize(), 200
+
+@app.route('/forum/post/updatescore', methods=["PATCH"])
+@APICall
+@api_auth
+def update_score(session):
+    try:
+        postId = request.form['postId']
+        score  = request.form['score']
+
+        post = session.query(Post).filter(Post.id == postId).first()
+        if not post:
+            return f"This post with id [{postId}] does not exist.", 400
+
+    except KeyError as e:
+        return "Needs postId: int, score: int"
+
+    try:
+        post.score = score
+        session.commit()
+    except Exception as e:
+        return "An unknown error occurred", 500
+    
+    return "Score updated successfully", 200
