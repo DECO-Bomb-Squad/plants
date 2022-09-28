@@ -21,7 +21,7 @@ class Post(DB.BASE):
     score = Column('score', Integer, nullable=False)
 
 
-    userId = Column(Integer, ForeignKey(f"{TBL_USERS}.id", name=f"fk_user_id_{__tablename__}"), nullable=False)
+    userId = Column("userId", Integer, ForeignKey(f"{TBL_USERS}.id", name=f"fk_user_post_id_{__tablename__}"), nullable=False)
     author = relationship("User", back_populates='userPosts')
 
     comments = relationship("Comment", back_populates='post')
