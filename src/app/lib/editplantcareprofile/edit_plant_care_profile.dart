@@ -52,11 +52,14 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
 
   @override
   Widget build(BuildContext context) {
-    String submitText;
-    if (!model.wasInitiallyAssigned && model.assignedPlant == null) {
+    String submitText = "Save";
+    if (model.isNew) {
       submitText = "Create";
-    } else {
-      submitText = "Save";
+    }
+
+    bool editMode = false;
+    if (model.wasInitiallyAssigned) {
+      editMode = true;
     }
 
     return Dialog(
@@ -74,6 +77,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
               child: (Column(
                 children: [
                   TextFormField(
+                    readOnly: editMode,
                     controller: _idController,
                     validator: (String? value) {
                       if (value == null || value.isEmpty || double.tryParse(value) == null) {
@@ -83,6 +87,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                     },
                   ),
                   TextFormField(
+                    readOnly: editMode,
                     controller: _locationController,
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
@@ -92,6 +97,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                     },
                   ),
                   TextFormField(
+                    readOnly: editMode,
                     controller: _soilTypeController,
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
@@ -101,6 +107,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                     },
                   ),
                   TextFormField(
+                    readOnly: editMode,
                     controller: _daysBetweenWateringController,
                     validator: (String? value) {
                       if (value == null || value.isEmpty || double.tryParse(value) == null) {
@@ -110,6 +117,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                     },
                   ),
                   TextFormField(
+                    readOnly: editMode,
                     controller: _daysBetweenFertilisingController,
                     validator: (String? value) {
                       if (value == null || value.isEmpty || double.tryParse(value) == null) {
@@ -119,6 +127,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                     },
                   ),
                   TextFormField(
+                    readOnly: editMode,
                     controller: _daysBetweenRepottingController,
                     validator: (String? value) {
                       if (value == null || value.isEmpty || double.tryParse(value) == null) {

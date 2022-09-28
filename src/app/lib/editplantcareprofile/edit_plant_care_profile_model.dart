@@ -24,5 +24,5 @@ class EditPlantCareProfileModel extends ChangeNotifier {
         daysBetweenRepotting = profile.daysBetweenRepotting,
         isNew = false,
         assignedPlant = plant,
-        wasInitiallyAssigned = plant == null ? false : true;
+        wasInitiallyAssigned = plant == null ? false : true; // if plant null, false, if plant, true
 }
