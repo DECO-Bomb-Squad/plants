@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "394891833741",
+    "project_id": "aloe-6047f",
+    "storage_bucket": "aloe-6047f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:394891833741:android:71b00415fa69a8a8188dc4",
+        "android_client_info": {
+          "package_name": "com.example.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "394891833741-l442e0vjcj41s2hvtl1vc87aslbhrf3a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUhRoOpg0A_5YCI3LMnb5drZ_3EnfXxeM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "394891833741-l442e0vjcj41s2hvtl1vc87aslbhrf3a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

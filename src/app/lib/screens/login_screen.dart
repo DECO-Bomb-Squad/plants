@@ -1,5 +1,6 @@
 import 'package:app/api/plant_api.dart';
 import 'package:app/base/root_widget.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -34,6 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            if (token != null) Text(token!),
             usernameField,
             submitButton,
           ],
@@ -48,7 +50,19 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
   Widget get submitButton => ElevatedButton(
-        onPressed: () {},
+        onPressed: onLoginClicked,
         child: const Text("Log in"),
       );
+
+  String? token;
+
+  void onLoginClicked() async {
+    String username = cont.text;
+    PlantAPI api = GetIt.I<PlantAPI>();
+    await api.login(username);
+    token = await api.fbMessaging.getToken();
+    setState(() {});
+    print(token);
+    print(api.user!.id);
+  }
 }

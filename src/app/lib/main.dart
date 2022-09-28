@@ -2,6 +2,7 @@ import 'package:app/api/plant_api.dart';
 import 'package:app/api/storage.dart';
 import 'package:app/base/root_widget.dart';
 import 'package:app/base/user.dart';
+import 'package:app/firebase_options.dart';
 import 'package:app/screens/login_screen.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -15,20 +16,12 @@ void main() {
 
 void runPlantApp() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // TEMP: until we begin properly initialising users w/ login, etc
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   PlantAPI api = PlantAPI();
-  api.user = User.fromJSON({
-    "userId": 1,
-    "username": "Jay Son",
-    "email": "email@plantnet.com",
-    "reputation": 0,
-    "bio": "skill issue",
-    "plantIds": [101, 102, 103, 104],
-  });
+  api.fbMessaging.requestPermission(sound: true, badge: true, alert: true, provisional: false);
+  api.fbMessaging.setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true);
   bool loggedIn = await api.initUserFromStorage();
   GetIt.I.registerSingleton<PlantAPI>(api);
-
-  await Firebase.initializeApp();
 
   runApp(PlantApp(loggedIn));
 }

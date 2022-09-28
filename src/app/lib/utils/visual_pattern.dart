@@ -64,24 +64,12 @@ const tagTextStyle = TextStyle(
   color: lightColour,
 );
 
-const inputTitleStyle = TextStyle(
-  fontSize: 24,
-  fontWeight: FontWeight.w300,
-  fontStyle: FontStyle.italic,
-  color: darkColour
-);
+const inputTitleStyle =
+    TextStyle(fontSize: 24, fontWeight: FontWeight.w300, fontStyle: FontStyle.italic, color: darkColour);
 
-const inputStyle = TextStyle(
-  fontSize: 20,
-  fontWeight: FontWeight.w300,
-  fontStyle: FontStyle.italic,
-  color: darkColour
-);
+const inputStyle = TextStyle(fontSize: 20, fontWeight: FontWeight.w300, fontStyle: FontStyle.italic, color: darkColour);
 
-BoxDecoration tagComponent = BoxDecoration(
-  color: darkColour,
-  borderRadius: BorderRadius.circular(smallRadius)
-);
+BoxDecoration tagComponent = BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(smallRadius));
 
 // Decorations for individual plant elements
 BoxDecoration smallPlantComponent = BoxDecoration(
@@ -100,38 +88,29 @@ BoxDecoration dialogComponent = BoxDecoration(
 );
 
 BoxDecoration inputComponent = BoxDecoration(
-  border: Border.all(
-    color: lightHighlight,
-    width: 2.0
-  ),
+  border: Border.all(color: lightHighlight, width: 2.0),
   borderRadius: BorderRadius.circular(smallRadius),
 );
 
 // Button styling
 // Standard button
 ButtonStyle buttonStyle = ButtonStyle(
-  backgroundColor: MaterialStateProperty.all<Color>(secondaryAccent),
-  shadowColor: MaterialStateProperty.all<Color>(Colors.black45),
-  shape: MaterialStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(smallRadius)
-  ))
-);
+    backgroundColor: MaterialStateProperty.all<Color>(secondaryAccent),
+    shadowColor: MaterialStateProperty.all<Color>(Colors.black45),
+    shape: MaterialStateProperty.all<OutlinedBorder>(
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(smallRadius))));
 
 // Water-related button
 ButtonStyle waterButtonStyle = ButtonStyle(
-  backgroundColor: MaterialStateProperty.all<Color>(darkHighlight),
-  shadowColor: MaterialStateProperty.all<Color>(Colors.black45),
-  shape: MaterialStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(smallRadius)
-  ))
-);
+    backgroundColor: MaterialStateProperty.all<Color>(darkHighlight),
+    shadowColor: MaterialStateProperty.all<Color>(Colors.black45),
+    shape: MaterialStateProperty.all<OutlinedBorder>(
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(smallRadius))));
 
 // Small button
 ButtonStyle smallButtonStyle = ButtonStyle(
-  backgroundColor: MaterialStateProperty.all<Color>(darkColour),
-  shadowColor: MaterialStateProperty.all<Color>(Colors.black45),
-  shape: MaterialStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(smallRadius)
-  ))
-);
+    backgroundColor: MaterialStateProperty.all<Color>(darkColour),
+    shadowColor: MaterialStateProperty.all<Color>(Colors.black45),
+    shape: MaterialStateProperty.all<OutlinedBorder>(
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(smallRadius))));
 // Helper functions for generating common components

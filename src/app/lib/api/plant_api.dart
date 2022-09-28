@@ -6,6 +6,7 @@ import 'package:app/base/user.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/secrets.dart';
 import 'package:async/async.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 
 //final AsyncCache<T> _getXCache = AsyncCache(const Duration(days: 1));
@@ -23,10 +24,12 @@ class PlantAPI {
 
   // IMPORTANT! use local if the pythonanywhere deployment doesn't match what the front end model expects!
   // Change this "false" to a "true" to use prod deployment
-  final _baseAddress = true ? BACKEND_URL_PROD : BACKEND_URL_LOCAL;
+  final _baseAddress = false ? BACKEND_URL_PROD : BACKEND_URL_LOCAL;
 
   PlantAppStorage store = PlantAppStorage();
   PlantAppCache cache = PlantAppCache();
+
+  FirebaseMessaging fbMessaging = FirebaseMessaging.instance;
 
   Uri makePath(String subPath, {Map<String, dynamic>? queryParams}) =>
       Uri.http(_baseAddress, subPath, queryParams ?? {});
@@ -54,6 +57,7 @@ class PlantAPI {
         String userDetails = (await store.get(user_store_name))!;
         Map<String, dynamic> decodedUserDetails = jsonDecode(userDetails);
         user = User.fromJSON(decodedUserDetails);
+        user!.ownedPlantIDs = await getUserPlants(user!.username);
         return true;
       } else {
         return false;
@@ -64,15 +68,18 @@ class PlantAPI {
   }
 
   // Handles user json sent by back end - Adds to local device storage and sets up the user object singleton
-  Future<void> setUserData(Map<String, dynamic> data) async {
+  Future<User> setUserData(Map<String, dynamic> data) async {
     await store.set(user_store_name, jsonEncode(data));
     user = User.fromJSON(data);
+    user!.ownedPlantIDs = await getUserPlants(user!.username);
+    return user!;
   }
 
   Future<bool> login(String username) async {
+    String path = "/users/$username";
     http.Response response;
     try {
-      response = await http.get(makePath('/login', queryParams: {"username": username}));
+      response = await http.get(makePath(path), headers: header);
     } on Exception catch (e, st) {
       print(e);
       print(st);
@@ -90,6 +97,7 @@ class PlantAPI {
   Future<void> logout() async {
     await store.clear();
     cache.clear();
+    user = null;
   }
 
   Future<T> getGeneric<T>(String path, T Function(dynamic) constructor, {Map<String, dynamic>? queryParams}) async {
@@ -146,5 +154,14 @@ class PlantAPI {
 
     List<dynamic> res = json.decode(response.body);
     return res.map((e) => e as int).toList();
+  }
+
+  // Posts firebase messaging token to back end to be used for current user
+  Future<bool> postTokenForUser(String token, String username) async {
+    String path = "/users/$username/token";
+
+    http.Response response = await http.post(makePath(path), headers: header, body: {"token": token});
+
+    return response.statusCode == 200;
   }
 }

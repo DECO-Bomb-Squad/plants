@@ -1,6 +1,6 @@
+import 'package:app/base/header_sliver.dart';
 import 'package:app/base/nav_bar.dart';
 import 'package:app/screens/my_plants_screen.dart';
-import 'package:app/utils/colour_scheme.dart';
 import 'package:app/screens/main_screen.dart';
 import 'package:app/screens/layout_test_screen.dart';
 import 'package:flutter/material.dart';
@@ -52,30 +52,7 @@ class _RootWidgetState extends State<RootWidget> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) => Scaffold(
         body: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                SliverAppBar(
-                  backgroundColor: lightColour,
-                  shadowColor: lightColour,
-                  pinned: false,
-                  floating: true,
-                  forceElevated: innerBoxIsScrolled,
-                  iconTheme: const IconThemeData(color: darkHighlight, size: 35),
-                  actions: [
-                    IconButton(
-                      icon: const Icon(Icons.person),
-                      tooltip: 'Add new entry',
-                      onPressed: () {/* ... */},
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.notifications),
-                      tooltip: 'Add new entry',
-                      onPressed: () {/* ... */},
-                    ),
-                  ],
-                ),
-              ];
-            },
+            headerSliverBuilder: StandardHeaderBuilder,
             body: TabBarView(
               controller: controller!,
               children: navItems!.map((e) => e.child).toList(),
