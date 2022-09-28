@@ -1,7 +1,9 @@
-import 'package:app/api/plant_api.dart';
+import 'package:app/screens/create_post_screen.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/plantinstance/plant_info.dart';
+import 'package:app/forum/post.dart';
+import 'package:app/api/plant_api.dart';
 import 'package:get_it/get_it.dart';
 
 class MainScreen extends StatefulWidget {
@@ -46,7 +48,9 @@ class _MainScreenState extends State<MainScreen> {
             const Text("HOT QUESTIONS", style: mainHeaderStyle),
             IconButton(
               icon: const Icon(Icons.add),
-              onPressed: () => null,
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const CreatePostScreen()));
+              },
             )
           ]),
           Flexible(
@@ -58,29 +62,7 @@ class _MainScreenState extends State<MainScreen> {
                       childAspectRatio: 3 / 1,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20),
-                  children: List<Widget>.generate(
-                      10,
-                      (int idx) => DecoratedBox(
-                          decoration: smallPostComponent,
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                spacer,
-                                Container(
-                                    padding: const EdgeInsets.all(5),
-                                    child: Text(
-                                      questions[idx % 3],
-                                      style: subheaderStyle,
-                                    )),
-                                spacer,
-                                Container(
-                                    padding: const EdgeInsets.all(5),
-                                    child: Text(
-                                      questionsFurther[idx % 3],
-                                      style: textStyle,
-                                    )),
-                              ]))))),
+                  children: List<Widget>.generate(10, (int idx) => PostSmallWidget()))),
         ],
       ));
 

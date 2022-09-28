@@ -1,5 +1,6 @@
 import 'package:app/api/plant_api.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
+import 'package:app/secrets.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/image_gallery.dart';
 import 'package:app/utils/visual_pattern.dart';
