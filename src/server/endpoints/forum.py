@@ -83,7 +83,7 @@ def add_post(session):
     except Exception as e:
         print("An unknown error occurred:", e)
 
-    return 'The post was added successfully', 200
+    return newPost.serialize(), 200
 
 '''
 Adds a comment to a post (POST)
@@ -137,7 +137,7 @@ def add_comment(session):
     except Exception as e:
         return f"An unknown exception occurred: {e}", 500
 
-    return "The comment was added successfully", 200
+    return comment.serialize(), 200
 
 '''
 Gets information about a post (GET)
