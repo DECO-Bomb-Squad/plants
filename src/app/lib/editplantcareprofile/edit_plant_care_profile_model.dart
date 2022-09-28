@@ -9,14 +9,20 @@ class EditPlantCareProfileModel extends ChangeNotifier {
   int? daysBetweenFertilising;
   int? daysBetweenRepotting;
   bool isNew;
+  bool wasInitiallyAssigned;
+  PlantInfoModel? assignedPlant;
 
-  EditPlantCareProfileModel.fromEmpty() : isNew = true;
-  EditPlantCareProfileModel.fromProfile(PlantCareProfile profile)
+  EditPlantCareProfileModel.fromEmpty()
+      : isNew = true,
+        wasInitiallyAssigned = false;
+  EditPlantCareProfileModel.fromProfile(PlantCareProfile profile, {PlantInfoModel? plant})
       : id = profile.id,
         location = profile.location,
         soilType = profile.soilType,
         daysBetweenWatering = profile.daysBetweenWatering,
         daysBetweenFertilising = profile.daysBetweenFertilising,
         daysBetweenRepotting = profile.daysBetweenRepotting,
-        isNew = false;
+        isNew = false,
+        assignedPlant = plant,
+        wasInitiallyAssigned = plant == null ? false : true;
 }

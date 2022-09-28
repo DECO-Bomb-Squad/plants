@@ -14,7 +14,7 @@ class EditPlantCareProfile extends StatefulWidget {
 class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
   late EditPlantCareProfileModel model;
 
-  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
@@ -37,7 +37,6 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
     _daysBetweenWateringController.text = model.daysBetweenWatering.toString();
     _daysBetweenFertilisingController.text = model.daysBetweenFertilising.toString();
     _daysBetweenRepottingController.text = model.daysBetweenRepotting.toString();
-    //TODO: add listeners? _controller.addListener(_function to update the model)
   }
 
   @override
@@ -53,6 +52,13 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
 
   @override
   Widget build(BuildContext context) {
+    String submitText;
+    if (!model.wasInitiallyAssigned && model.assignedPlant == null) {
+      submitText = "Create";
+    } else {
+      submitText = "Save";
+    }
+
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
@@ -70,13 +76,78 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                   TextFormField(
                     controller: _idController,
                     validator: (String? value) {
-                      // check for int
+                      if (value == null || value.isEmpty || double.tryParse(value) == null) {
+                        return 'Please enter a valid ID';
+                      }
+                      return null;
                     },
-                  )
+                  ),
+                  TextFormField(
+                    controller: _locationController,
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a valid location';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: _soilTypeController,
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a valid soil type';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: _daysBetweenWateringController,
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty || double.tryParse(value) == null) {
+                        return 'Please enter a valid number';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: _daysBetweenFertilisingController,
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty || double.tryParse(value) == null) {
+                        return 'Please enter a valid number';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: _daysBetweenRepottingController,
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty || double.tryParse(value) == null) {
+                        return 'Please enter a valid number';
+                      }
+                      return null;
+                    },
+                  ),
                 ],
               )),
-            )
-            // row for submit and discard buttons
+              // plant assign here
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // navigator.ofcontext pop
+                // discard -> pop widget USE TEXT BUTTON
+                // submit -> json stuff ELEVATED BUTTONS print contents of model to console
+                // model update method by passing profile in, changing values etc. use method
+
+                const TextButton(
+                  onPressed: null, // replace with discard
+                  child: Text("Discard"),
+                ),
+                ElevatedButton(
+                    onPressed: null, // replace with submit
+                    child: Text(submitText)),
+              ],
+            ),
           ],
         ),
       ),
