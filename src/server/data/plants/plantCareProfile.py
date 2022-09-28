@@ -12,7 +12,7 @@ class PlantCareProfile(DB.BASE):
     __tablename__ = TBL_PLANT_CARE_PROFILE
     id = Column("id", Integer, primary_key=True, autoincrement=True)
 
-    plantId = Column("plantId", Integer, ForeignKey(f"{TBL_PLANTS}.id", name=f"fk_plant_id_{__tablename__}"), nullable=False)
+    # plantId = Column("plantId", Integer, ForeignKey(f"{TBL_PLANTS}.id", name=f"fk_plant_id_{__tablename__}"), nullable=False)
     # plant = relationship("Plant", back_populates="careProfile") # NOT 1-1    
 
     soilType = Column('soilType', String(100), nullable=False)
@@ -22,8 +22,7 @@ class PlantCareProfile(DB.BASE):
     daysBetweenRepotting = Column('daysBetweenRepotting', Integer, nullable=True)
     daysBetweenFertilizer = Column('daysBetweenFertilizer', Integer, nullable=True)
     
-    def __init__(self, plantId, soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer):
-        self.plantId = plantId
+    def __init__(self, soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer):
         self.soilType = soilType
         self.plantLocation = plantLocation
         self.daysBetweenWatering = daysBetweenWatering
@@ -33,7 +32,6 @@ class PlantCareProfile(DB.BASE):
     def serialize(self):
         return {
             "id": self.id,
-            "plantId": self.plantId,
             "soilType": self.soilType,
             "plantLocation": self.plantLocation,
             "daysBetweenWatering": self.daysBetweenWatering,

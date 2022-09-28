@@ -1,8 +1,8 @@
 String rawJson = '''[
   { 
     "id": 0,
-    "nickname": "Teddy",
-    "plant_name": "Common Monstera",
+    "name": "Teddy",
+    "common_name": "Common Monstera",
     "scientific_name": "Monstera Deliciosa",
     "tags": [
         "Test tag"
@@ -54,12 +54,16 @@ String rawJson = '''[
             "plantId": 2,
             "time": "2022-08-20T15:30"
         }
-    ]
+    ],
+    "user": {
+        "userId": 1,
+        "username": "Ted Kaczynski"
+    }
   },
   { 
     "id": 1,
-    "nickname": "Spicy",
-    "plant_name": "Bird's Eye Chili",
+    "name": "Spicy",
+    "common_name": "Bird's Eye Chili",
     "scientific_name": "Capsicum Annuum",
     "owner": "Dr Kaczynski",
     "tags": [
@@ -107,12 +111,16 @@ String rawJson = '''[
             "plantId": 2,
             "time": "2022-08-20T15:30"
         }
-    ]
+    ],
+    "user": {
+        "userId": 1,
+        "username": "Ted Kaczynski"
+    }
   },
   { 
     "id": 2,
-    "nickname": "Greenie",
-    "plant_name": "House Pothos",
+    "name": "Greenie",
+    "common_name": "House Pothos",
     "scientific_name": "Epipremnum Aureum",
     "tags": [
         "Test tag"
@@ -159,12 +167,16 @@ String rawJson = '''[
             "plantId": 2,
             "time": "2022-08-20T15:30"
         }
-    ]
+    ],
+    "user": {
+        "userId": 1,
+        "username": "Ted Kaczynski"
+    }
   },
   { 
     "id": 3,
-    "nickname": "Jelly",
-    "plant_name": "Aloe",
+    "name": "Jelly",
+    "common_name": "Aloe",
     "scientific_name": "Aloe Vera",
     "tags": [
         "Test tag"
@@ -211,6 +223,10 @@ String rawJson = '''[
             "plantId": 2,
             "time": "2022-08-20T15:30"
         }
-    ]
+    ],
+    "user": {
+        "userId": 1,
+        "username": "Ted Kaczynski"
+    }
   }
 ]''';

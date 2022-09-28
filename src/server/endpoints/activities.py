@@ -1,6 +1,6 @@
 from flask import Blueprint, request
-from data import Plant, User, PlantType, ActivityType, Activity
-from utils.api import APICall
+from data import Plant, ActivityType, Activity
+from utils.api import APICall, api_auth
 from flask import jsonify
 
 import json
@@ -17,6 +17,7 @@ Adds an Activity to a Plant (POST)
 '''
 @app.route('/activity', methods = ['POST'])
 @APICall
+@api_auth
 def add_activity(session):
     try:
         plantId = request.form['plantId']
@@ -62,6 +63,7 @@ Gets Activity of a Plant (GET)
 '''
 @app.route('/activity/<plantId>', methods = ['GET', 'POST'])
 @APICall
+@api_auth
 def get_activity(session, plantId):
     # verify the ids
     plant: Plant = session.query(Plant).filter(Plant.id == plantId).first()
