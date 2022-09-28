@@ -29,20 +29,27 @@ class Comment(DB.BASE):
     post = relationship("Post", back_populates="comments")
 
 
-    def __init__(self, content, userId, parentId):
+    def __init__(self, content, userId, postId, parentId):
 
         self.content = content
+        self.created = func.now()
         self.userId = userId
-        self.parentId = parentId # check in endpoint that this is valid.
+        self.parentId = parentId # the parent id will be None
+        self.postId = postId
+
+    def serialize_replies(self):
+        allReplies = [reply.serialize() for reply in self.replies]
+        return allReplies
 
 
     def serialize(self):
         return {
             "id":              self.id,
             "content":         self.content,
-            "parentId":        self.parentId if self.parentId == 0 else "No parent",
+            "created":         self.created,
+            "parentId":        self.parentId,
             "userId":          self.userId,
-            "replies":         self.replies
+            "replies":         self.serialize_replies()
         }
 
     # will need to add more methods here for getting info and setting info of the user

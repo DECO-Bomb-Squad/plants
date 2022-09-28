@@ -37,12 +37,27 @@ class Post(DB.BASE):
         self.created = func.now()
         self.score = 0
 
+    def get_serialized_linked_plants(self):
+        allPlants = [plant.serialize() for plant in self.plants]
+        return allPlants
+
+    def get_serialized_post_tags(self):
+        allTags = [tag.serialize() for tag in self.tags]
+        return allTags
+
+    def get_serialized_comments(self):
+        allComments = [comment.serialize() for comment in self.comments if not comment.parentId]
+        return allComments
+
     def serialize(self):
         return {
-            "postId":          self.id,
-            "title":           self.title,
-            "content":         self.content,
-            "created":         self.created,
-            "userId":          self.userId,
-            "score":           self.score
+            "postId":         self.id,
+            "title":          self.title,
+            "content":        self.content,
+            "created":        self.created,
+            "userId":         self.userId,
+            "score":          self.score,
+            "linkedPlants":   self.get_serialized_linked_plants(),
+            "postTags":       self.get_serialized_post_tags(),
+            "comments":       self.get_serialized_comments()
         }

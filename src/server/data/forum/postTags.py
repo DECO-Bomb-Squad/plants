@@ -23,7 +23,8 @@ class PostTag(DB.BASE):
 
     def serialize(self):
         return {
-            "plantTagId": self.id,
-            "plantTypeId": self.plantTypeId,
+            "id": self.id,
+            "postId": self.postId,
+            "tagId": self.tagId,
             "tagLabel": self.tag.label
         }

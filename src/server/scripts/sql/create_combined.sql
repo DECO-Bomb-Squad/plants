@@ -145,19 +145,27 @@ CREATE TABLE `posts` (
     ON DELETE CASCADE
     ON UPDATE CASCADE);
 
-CREATE TABLE `comments` (
+CREATE TABLE `plants`.`comments` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `userId` INT NOT NULL,
+  `content` VARCHAR(255) NOT NULL,
   `created` DATETIME NOT NULL,
-  `title` VARCHAR(255) NOT NULL,
-  `content` VARCHAR(1023) NOT NULL,
-  `score` INT NOT NULL,
+  `parentId` INT NULL,
+  `userId` INT NOT NULL,
+  `postId` INT NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `commentAuthor`
+  INDEX `comments_to_user_idx` (`userId` ASC) VISIBLE,
+  INDEX `comments_to_post_idx` (`postId` ASC) VISIBLE,
+  CONSTRAINT `comments_to_user`
     FOREIGN KEY (`userId`)
     REFERENCES `plants`.`users` (`id`)
     ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `comments_to_post`
+    FOREIGN KEY (`postId`)
+    REFERENCES `plants`.`posts` (`id`)
+    ON DELETE CASCADE
     ON UPDATE CASCADE);
+
     
 CREATE TABLE `post_tags` (
   `id` INT NOT NULL AUTO_INCREMENT,

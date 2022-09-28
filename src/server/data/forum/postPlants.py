@@ -19,8 +19,13 @@ class PostPlant(DB.BASE):
     post = relationship("Post", uselist=False, back_populates="plants")
 
     def __init__(self, plantId, postId):
-
         self.plantId = plantId
         self.postId = postId
+
+    def serialize(self):
+        return {
+            "plantId": self.plantId,
+            "postId": self.postId
+        }
 
     # will need to add more methods here for getting info and setting info of the user

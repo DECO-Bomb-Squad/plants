@@ -16,6 +16,8 @@ Adds a post (POST (lol))
         - userId:  int
         - title:   string
         - content: string
+        - plantIds: [str]
+        - tagIds: [str]
 '''
 @app.route("/forum/post", methods = ['POST'])
 @APICall
@@ -84,3 +86,67 @@ def add_post(session):
 
     return 'The post was added successfully', 200
 
+'''
+Adds a comment to a post (POST)
+    - Params
+        - postId: int
+        - content: string
+        - parentId: int (OPTIONAL)
+        - userId: int
+'''
+@app.route("/forum/comment", methods=["POST"])
+@APICall
+@api_auth
+def add_comment(session):
+    try:
+        userId:   int = request.form['userId']
+        content:  str = request.form['content']
+        parentId: int = request.form.get('parentId') # this will silently fail, since it's optional
+        postId:   int = request.form['postId'] # encoded in JSON
+
+        # check if all is good
+        if (not userId or
+            not content or
+            not postId):
+            raise KeyError
+
+        # confirm the existence of the post
+        post: Post = session.query(Post).filter(Post.id == postId).first()
+        if not post:
+            return f"The post with id [{postId}] could not be found", 400
+
+        # confirm the existence of the user
+        user: User = session.query(User).filter(User.id == userId).first()
+        if not user:
+            return f"The user with id [{userId}] could not be found", 400
+
+        # if the user has given a parentId, check if that comment exists
+        if parentId:
+            parent: Comment = session.query(Comment).filter(Comment.id == parentId).first()
+            if not parent:
+                return f"The parent comment does not exist with id [{parentId}]", 400
+
+    except KeyError as e:
+        return "Invalid request. NEED to provide userId: int, postId: int, content: str. OPTIONALLY include parentId: int.", 400
+    except Exception as e:
+        return f"An error occurred: {e}", 500
+
+    try:
+        comment: Comment = Comment(content, userId, postId, parentId)
+        session.add(comment)
+        session.commit()
+    except Exception as e:
+        return f"An unknown exception occurred: {e}", 500
+
+    return "The comment was added successfully", 200
+
+@app.route("/forum/post/<id>", methods=["GET"])
+@APICall
+@api_auth
+def get_post(session, id):
+    # confirm the post exists
+    post: Post = session.query(Post).filter(Post.id == id).first()
+    if not post:
+        return f"This post with id [{id}] does not exist.", 400
+
+    return post.serialize(), 200
