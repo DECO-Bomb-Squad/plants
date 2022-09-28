@@ -2,7 +2,9 @@ import 'package:app/api/plant_api.dart';
 import 'package:app/api/storage.dart';
 import 'package:app/base/root_widget.dart';
 import 'package:app/base/user.dart';
+import 'package:app/screens/login_screen.dart';
 import 'package:app/utils/colour_scheme.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter/services.dart';
@@ -16,19 +18,25 @@ void runPlantApp() async {
   // TEMP: until we begin properly initialising users w/ login, etc
   PlantAPI api = PlantAPI();
   api.user = User.fromJSON({
-    "id": 1,
-    "name": "Jay Son",
-    "plantIds": [0, 1, 2, 3],
+    "userId": 1,
+    "username": "Jay Son",
+    "email": "email@plantnet.com",
+    "reputation": 0,
+    "bio": "skill issue",
+    "plantIds": [101, 102, 103, 104],
   });
-  GetIt.I.registerSingleton<PlantAppStorage>(PlantAppStorage());
-  GetIt.I.registerSingleton<PlantAppCache>(PlantAppCache());
+  bool loggedIn = await api.initUserFromStorage();
   GetIt.I.registerSingleton<PlantAPI>(api);
 
-  runApp(const PlantApp());
+  await Firebase.initializeApp();
+
+  runApp(PlantApp(loggedIn));
 }
 
 class PlantApp extends StatelessWidget {
-  const PlantApp({super.key});
+  final bool loggedIn;
+
+  const PlantApp(this.loggedIn, {super.key});
 
   // This widget is the root of your application.
   @override
@@ -40,19 +48,10 @@ class PlantApp extends StatelessWidget {
     return MaterialApp(
       title: 'Plant App',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
         scaffoldBackgroundColor: lightColour, // This sets the default background colour of the app
+        primaryColor: accent,
       ),
-      home: const RootWidget(),
+      home: loggedIn ? const RootWidget() : const LoginScreen(),
     );
   }
 }

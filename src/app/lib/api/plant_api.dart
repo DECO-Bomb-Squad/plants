@@ -41,7 +41,7 @@ class PlantAPI {
 
   Future<bool> initialise() async {
     if (user == null) {
-      return initUserIfRequired();
+      return initUserFromStorage();
     }
     return true;
   }
@@ -50,7 +50,7 @@ class PlantAPI {
 
   // Returns true if user could be constructed
   // Returns false if login is required
-  Future<bool> initUserIfRequired() async {
+  Future<bool> initUserFromStorage() async {
     if (user == null) {
       if (await store.has(user_store_name)) {
         // We have user details stored, extract them and initialise the user
@@ -66,9 +66,10 @@ class PlantAPI {
     }
   }
 
+  // Handles user json sent by back end - Adds to local device storage and sets up the user object singleton
   Future<void> setUserData(Map<String, dynamic> data) async {
-    await store.set(user_store_name, jsonEncode(data["user"]));
-    user = User.fromJSON(data["user"]);
+    await store.set(user_store_name, jsonEncode(data));
+    user = User.fromJSON(data);
   }
 
   Future<bool> login(String username) async {
@@ -95,8 +96,6 @@ class PlantAPI {
   }
 
   Future<T> getGeneric<T>(String path, T Function(dynamic) constructor, {Map<String, dynamic>? queryParams}) async {
-    if (!await initUserIfRequired()) throw Exception("User not initialised!");
-
     http.Response response = await http.get(makePath(path, queryParams: queryParams), headers: header);
     if (response.statusCode != 200) {
       throw Exception(response.statusCode.toString());
@@ -118,9 +117,16 @@ class PlantAPI {
     return Future.delayed(const Duration(seconds: 1), () => model);
   }
 
-  // Future<PlantImageGalleryModel> getPlantGallery(int id) {
-  //   Map<String, dynamic> testJson = jsonDecode(galleryJson)[id];
-  //   PlantImageGalleryModel model = PlantImageGalleryModel.fromJSON(testJson);
-  //   return Future.delayed(const Duration(seconds: 1), () => model);
-  // }
+  Future<bool> addWatering(DateTime day, int plantId) => addPlantActivity(day, ActivityTypeId.watering, plantId);
+  Future<bool> addRepotting(DateTime day, int plantId) => addPlantActivity(day, ActivityTypeId.repotting, plantId);
+  Future<bool> addFertilising(DateTime day, int plantId) => addPlantActivity(day, ActivityTypeId.fertilising, plantId);
+
+  Future<List<int>> getUserPlants(String username) async {
+    String path = "/users/$username/plants";
+
+    http.Response response = await http.get(makePath(path), headers: header);
+
+    List<dynamic> res = json.decode(response.body);
+    return res.map((e) => e as int).toList();
+  }
 }
