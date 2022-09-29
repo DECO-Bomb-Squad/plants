@@ -20,6 +20,7 @@ def APICall(func: Callable):
     def inner(*args, **kwargs):
         session = DB.SESSION()
         res = func(session, *args, **kwargs)
+        session.close()
         return res
     inner.__name__ = func.__name__
     return inner
