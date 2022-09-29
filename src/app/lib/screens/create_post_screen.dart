@@ -26,13 +26,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
           children: [
             SizedBox(
               width: MediaQuery.of(context).size.width - (padding * 2),
-              child: DecoratedBox(
-                decoration: inputComponent,
-                child: Padding (
-                  padding: EdgeInsets.all(padding),
-                  child: Text("Write a descriptive title...", style: inputTitleStyle)
-                ),
-              )
+              child: Padding (
+                padding: EdgeInsets.all(padding),
+                child: Text("Write a descriptive title...", style: inputTitleStyle)
+              ),
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.15,
@@ -56,19 +53,15 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.30,
-              child: 
-                DecoratedBox(
-                  decoration: inputComponent,
-                  child: Padding(
-                    padding: EdgeInsets.all(padding),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("Write your question here. Make sure to include plenty of detail...", style: inputStyle,)
-                      ],
-                    ),
-                  )
+              child: Padding(
+                padding: EdgeInsets.all(padding),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text("Write your question here. Make sure to include plenty of detail...", style: inputStyle,)
+                  ],
+                ),
               )
             ),
             SizedBox(

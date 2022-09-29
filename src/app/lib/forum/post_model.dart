@@ -1,21 +1,27 @@
 class PostInfoModel {
   int postID;       // Post ID in the DB
   int score;        // Reputation at the moment of the call
-  String author;    // Who wrote the post
+  int authorID;    // Who wrote the post
   String title;     // Post title
   String content;   // Post body - formatting
   DateTime created; // When the post was written
 
-  List<int> attachedPlants; // IDs of attached plants
+  List<dynamic> attachedPlants; // IDs of attached plants
+  List<dynamic> tags;
+  List<dynamic> comments;
 
   PostInfoModel.fromJSON(Map<String, dynamic> json)
-      : author = json["author"],
-        postID = json["post_id"],
+      : authorID = json["userId"],
+        postID = json["postId"],
         score = json["score"],
         title = json["title"],
         content = json["content"],
         created = DateTime.parse(json["created"]),
-        attachedPlants = (json["attached_plants"] as List<dynamic>).map((e) => e as int).toList();
+        //attachedPlants = (json["linkedPlants"] as List<dynamic>).map((e) => e as int).toList(),
+        attachedPlants = json["linkedPlants"],
+        tags = json["postTags"],
+        comments = json["comments"];
+        
 
   String getReadableTimeAgo() {
     Duration delta = DateTime.now().difference(created);

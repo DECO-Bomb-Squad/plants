@@ -37,6 +37,12 @@ const textStyle = TextStyle(
   color: darkColour,
 );
 
+const lightTextStyle = TextStyle(
+  fontSize: 20,
+  fontWeight: FontWeight.w400,
+  color: lightColour
+);
+
 // Small, clear text for buttons or other UI elements
 const buttonTextStyle = TextStyle(
   fontSize: 14,
@@ -99,12 +105,24 @@ BoxDecoration dialogComponent = BoxDecoration(
   borderRadius: BorderRadius.circular(radius),
 );
 
-BoxDecoration inputComponent = BoxDecoration(
-  border: Border.all(
-    color: lightHighlight,
-    width: 2.0
+BoxDecoration quoteComponent = BoxDecoration(
+  color: lightHighlight,
+  borderRadius: BorderRadius.circular(radius),
+);
+
+BoxDecoration voteComponent = BoxDecoration(
+  color: darkColour,
+  borderRadius: BorderRadius.circular(radius)
+);
+
+InputDecoration replyInputComponent = InputDecoration(
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(smallRadius),
   ),
-  borderRadius: BorderRadius.circular(smallRadius),
+  hintText: "Write your response here. Make sure to include plenty of detail...",
+  hintStyle: inputStyle,
+  hintMaxLines: 2,
+  focusColor: lightHighlight
 );
 
 // Button styling

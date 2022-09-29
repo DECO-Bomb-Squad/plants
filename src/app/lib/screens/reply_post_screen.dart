@@ -41,27 +41,29 @@ class _ReplyPostScreenState extends State<ReplyPostScreen> {
             children: [
               SizedBox(
                 width: MediaQuery.of(context).size.width - (padding * 2),
-                child: Padding (
-                  padding: EdgeInsets.all(padding),
-                  child: Text(model.content, style: textStyle)
+                child: Padding(
+                  padding: const EdgeInsets.only(top: padding, bottom: padding * 3),
+                  child: DecoratedBox(
+                    decoration: quoteComponent,
+                    child: Padding(
+                      padding: const EdgeInsets.all(padding),
+                      child: Text(model.content, style: textStyle),
+                    ),
+                  ),
                 )
               ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.30,
-                child: 
-                  DecoratedBox(
-                    decoration: inputComponent,
-                    child: Padding(
-                      padding: EdgeInsets.all(padding),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          TextField(controller: textController, style: textStyle,)
-                        ],
-                      ),
-                    )
-                )
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  TextField(
+                    controller: textController, 
+                    style: textStyle, 
+                    decoration: replyInputComponent,
+                    minLines: 2,
+                    maxLines: null,
+                  )
+                ],
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.10,
@@ -69,12 +71,12 @@ class _ReplyPostScreenState extends State<ReplyPostScreen> {
                 child:  Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: const [
                     Text("Attach plants/photos", style: sectionHeaderStyle)
                   ]
                 ) 
               ),
-              MakePostWidget()
+              const MakePostWidget()
             ]
           )
         )

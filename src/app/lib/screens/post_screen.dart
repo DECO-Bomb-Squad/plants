@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app/forum/post.dart';
 import 'package:app/forum/post_model.dart';
 import 'package:app/forum/test_comments.dart';
 import 'package:app/forum/test_post.dart';
@@ -41,12 +42,15 @@ class _PostScreenState extends State<PostScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Flexible(child: Text(model.title, style: mainHeaderStyle)),                          
-                      const Icon(Icons.question_answer, size: 40,)
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Flexible(child: Text(model.title, style: mainHeaderStyle)),                          
+                        const Icon(Icons.question_answer, size: 40,)
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 40,
@@ -56,7 +60,8 @@ class _PostScreenState extends State<PostScreen> {
                       controller: ScrollController(),
                       itemBuilder: ((context, index) => tagItemBuilder(context, index))            
                     )
-                  )
+                  ),
+                  PostVoteComponent(model.score)
                 ]
               ),
               spacer,

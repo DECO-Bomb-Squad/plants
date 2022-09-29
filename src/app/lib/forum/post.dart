@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:app/forum/test_post.dart';
 import 'package:app/screens/post_screen.dart';
+import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:app/forum/post_model.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,7 @@ class _PostSmallState extends State<PostSmallWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(model.title, style: sectionHeaderStyle),
-                    Text("${model.author} - ${model.getReadableTimeAgo()} ago", style: modalTextStyle)
+                    Text("${model.authorID} - ${model.getReadableTimeAgo()} ago", style: modalTextStyle)
                     ],
                   )
               ),
@@ -76,6 +77,70 @@ class MakePostWidget extends StatelessWidget {
           child: const Text("Save as draft", style: buttonTextStyle),
         ),
       ],
+    );
+  }
+}
+
+class PostVoteComponent extends StatefulWidget {
+  int voted = 0;
+  int score;
+
+  PostVoteComponent(this.score, {super.key}); 
+
+  @override 
+  State<PostVoteComponent> createState() => _PostVoteComponentState();
+}
+
+class _PostVoteComponentState extends State<PostVoteComponent> {
+  
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: DecoratedBox(
+        decoration: voteComponent,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            InkWell(
+              child: 
+                Icon(Icons.arrow_upward, 
+                color: (widget.voted == 1) ? accent : lightColour,
+                size: 30,),
+              onTap: () {
+                if (widget.voted != 1) {
+                  widget.score += 1 - widget.voted;
+                  widget.voted = 1;
+                } else {
+                  widget.score -= 1;
+                  widget.voted = 0;
+                }
+                setState(() {widget.voted;}); // Rebuild self
+              } 
+            ),
+            Text("${widget.score}", style: tagTextStyle,),
+            InkWell(
+              child: 
+                Icon(
+                  Icons.arrow_downward,
+                  color: (widget.voted == -1) ? accent : lightColour,
+                  size: 30,
+                ),
+              onTap: () {
+                if (widget.voted != -1) {
+                  widget.score -= 1 + widget.voted;
+                  widget.voted = -1;
+                } else {
+                  widget.score += 1;
+                  widget.voted = 0;
+                }
+          
+                setState(() {widget.voted;}); // Rebuild self
+              },
+            )
+          ],
+        ),
+      ),
     );
   }
 }
