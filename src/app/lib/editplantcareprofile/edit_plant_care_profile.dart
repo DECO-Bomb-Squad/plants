@@ -57,9 +57,9 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
       submitText = "Create";
     }
 
-    bool editMode = false;
-    if (model.wasInitiallyAssigned) {
-      editMode = true;
+    bool editMode = true;
+    if (!model.wasInitiallyAssigned && !model.isNew) {
+      editMode = false;
     }
 
     return Dialog(
@@ -77,7 +77,6 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
               child: (Column(
                 children: [
                   TextFormField(
-                    readOnly: editMode,
                     controller: _idController,
                     validator: (String? value) {
                       if (value == null || value.isEmpty || double.tryParse(value) == null) {
@@ -87,7 +86,6 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                     },
                   ),
                   TextFormField(
-                    readOnly: editMode,
                     controller: _locationController,
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
@@ -97,7 +95,6 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                     },
                   ),
                   TextFormField(
-                    readOnly: editMode,
                     controller: _soilTypeController,
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
@@ -107,7 +104,6 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                     },
                   ),
                   TextFormField(
-                    readOnly: editMode,
                     controller: _daysBetweenWateringController,
                     validator: (String? value) {
                       if (value == null || value.isEmpty || double.tryParse(value) == null) {
@@ -117,7 +113,6 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                     },
                   ),
                   TextFormField(
-                    readOnly: editMode,
                     controller: _daysBetweenFertilisingController,
                     validator: (String? value) {
                       if (value == null || value.isEmpty || double.tryParse(value) == null) {
@@ -127,7 +122,6 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                     },
                   ),
                   TextFormField(
-                    readOnly: editMode,
                     controller: _daysBetweenRepottingController,
                     validator: (String? value) {
                       if (value == null || value.isEmpty || double.tryParse(value) == null) {
@@ -136,24 +130,37 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                       return null;
                     },
                   ),
+                  Container(
+                    child: editMode == false
+                        ? DropdownButton<PlantInfoModel>(
+                            // not sure what type should be will need to sort out
+                            value: null,
+                            items: null, // get user plants
+                            onChanged: (PlantInfoModel? plant) {
+                              setState(() {
+                                // update value with plant info
+                                model.assignedPlant = plant;
+                              });
+                              editMode = plant == null ? false : true;
+                            },
+                          )
+                        : null,
+                  ),
                 ],
               )),
-              // plant assign here
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // navigator.ofcontext pop
-                // discard -> pop widget USE TEXT BUTTON
                 // submit -> json stuff ELEVATED BUTTONS print contents of model to console
                 // model update method by passing profile in, changing values etc. use method
 
-                const TextButton(
-                  onPressed: null, // replace with discard
-                  child: Text("Discard"),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text("Discard"),
                 ),
                 ElevatedButton(
-                    onPressed: null, // replace with submit
+                    onPressed: editMode == false ? null : () {}, // replace with submit
                     child: Text(submitText)),
               ],
             ),
