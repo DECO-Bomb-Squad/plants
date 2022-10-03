@@ -1,6 +1,5 @@
 import 'package:app/api/plant_api.dart';
 import 'package:app/base/root_widget.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -13,29 +12,14 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   late Future<bool> loggedInFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    // Returns false if user info was not in device's local storage
-    loggedInFuture = GetIt.I<PlantAPI>().initUserFromStorage();
-    loggedInFuture.then((bool loggedIn) {
-      if (loggedIn) {
-        navigateToHome();
-      }
-    });
-  }
-
-  void navigateToHome() async {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const RootWidget()));
-  }
+  String? errorMessage;
 
   @override
   Widget build(BuildContext context) => Scaffold(
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (token != null) Text(token!),
+            if (errorMessage != null) Text(errorMessage!),
             usernameField,
             submitButton,
           ],
@@ -54,15 +38,26 @@ class _LoginScreenState extends State<LoginScreen> {
         child: const Text("Log in"),
       );
 
-  String? token;
-
   void onLoginClicked() async {
     String username = cont.text;
     PlantAPI api = GetIt.I<PlantAPI>();
-    await api.login(username);
-    token = await api.fbMessaging.getToken();
-    setState(() {});
-    print(token);
-    print(api.user!.id);
+    // Login makes API call and stores all user info in local storage.
+    bool loginSuccess = await api.login(username);
+    if (loginSuccess) {
+      // Post the device token to the server to enable it to send notifications
+      String? token = await api.fbMessaging.getToken();
+      api.postTokenForUser(token!, username);
+      // Navigate to the home screen now that we have the relevant user info
+      navigateToHome();
+    } else {
+      // Display error message if user couldnt be logged in
+      setState(() {
+        errorMessage = "User $username not found!";
+      });
+    }
+  }
+
+  void navigateToHome() async {
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const RootWidget()));
   }
 }

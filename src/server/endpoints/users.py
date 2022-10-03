@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from flask import Blueprint,request
 from sqlalchemy import update
 from data import User
@@ -164,6 +164,15 @@ def add_token(session, username: str):
             raise KeyError
     except KeyError as e:
         return "To add a user's token, you must provide: token: str", 400
+    
+    existing_token: Optional[Token] = session.query(Token) \
+        .filter(Token.userId == user.id) \
+        .filter(Token.token == token) \
+        .first()
+    
+    if (existing_token is not None):
+        # Don't need to add new token object, but still a success
+        return "Token already exists - up to date", 200
     
     try:
         new_token: Token = Token(user.id, token)

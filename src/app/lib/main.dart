@@ -1,7 +1,5 @@
 import 'package:app/api/plant_api.dart';
-import 'package:app/api/storage.dart';
 import 'package:app/base/root_widget.dart';
-import 'package:app/base/user.dart';
 import 'package:app/firebase_options.dart';
 import 'package:app/screens/login_screen.dart';
 import 'package:app/utils/colour_scheme.dart';
@@ -17,10 +15,24 @@ void main() {
 void runPlantApp() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Initialise the API singleton
   PlantAPI api = PlantAPI();
+  // Firebase messaging setup, to enable device notifications
   api.fbMessaging.requestPermission(sound: true, badge: true, alert: true, provisional: false);
   api.fbMessaging.setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true);
+  // Try to automatically initialise user from stored user data
   bool loggedIn = await api.initUserFromStorage();
+  if (loggedIn) {
+    // Get firebase messaging token and send to server
+    api.fbMessaging.getToken().then((token) {
+      api.postTokenForUser(token!, api.user!.username);
+    });
+    api.fbMessaging.onTokenRefresh.listen((token) {
+      api.postTokenForUser(token, api.user!.username);
+    });
+  }
+  // Register API as singleton to be accessed anywhere
   GetIt.I.registerSingleton<PlantAPI>(api);
 
   runApp(PlantApp(loggedIn));
@@ -39,7 +51,7 @@ class PlantApp extends StatelessWidget {
           statusBarColor: lightColour, statusBarBrightness: Brightness.light, statusBarIconBrightness: Brightness.dark),
     ); // This ensures that the phones status bar is the same colour as the app background and the icons are visible
     return MaterialApp(
-      title: 'Plant App',
+      title: 'Aloe',
       theme: ThemeData(
         scaffoldBackgroundColor: lightColour, // This sets the default background colour of the app
         primaryColor: accent,
