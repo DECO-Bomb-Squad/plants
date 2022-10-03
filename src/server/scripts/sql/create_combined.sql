@@ -13,8 +13,8 @@ CREATE TABLE `plant_types` (
   `startDate` DATETIME NOT NULL,
   `reputation` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE,
-  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE);
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC),
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC));
 
 CREATE TABLE `plant_care_profile` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -34,10 +34,10 @@ CREATE TABLE `plant_care_profile_default` (
   `daysBetweenRepotting` INT NULL,
   `daysBetweenFertilizer` INT NULL,
   PRIMARY KEY (`id`),
-  INDEX `pcp_default_plantTypeId_idx` (`plantTypeId` ASC) VISIBLE,
+  INDEX `pcp_default_plantTypeId_idx` (`plantTypeId` ASC),
   CONSTRAINT `pcp_default_plantTypeId`
     FOREIGN KEY (`plantTypeId`)
-    REFERENCES `plants`.`plant_types` (`id`)
+    REFERENCES `plant_types` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE);
 
@@ -49,22 +49,22 @@ CREATE TABLE `plants` (
   `userId` INT NOT NULL,
   `careProfileId` INT NOT NULL,
   PRIMARY KEY (`id`, `plantTypeId`, `userId`, `careProfileId`),
-  INDEX `plant_to_type_idx` (`plantTypeId` ASC) VISIBLE,
-  INDEX `plant_to_user_idx` (`userId` ASC) VISIBLE,
-  INDEX `plant_to_profile_idx` (`careProfileId` ASC) VISIBLE,
+  INDEX `plant_to_type_idx` (`plantTypeId` ASC),
+  INDEX `plant_to_user_idx` (`userId` ASC),
+  INDEX `plant_to_profile_idx` (`careProfileId` ASC),
   CONSTRAINT `plant_to_type`
     FOREIGN KEY (`plantTypeId`)
-    REFERENCES `plants`.`plant_types` (`id`)
+    REFERENCES `plant_types` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `plant_to_user`
     FOREIGN KEY (`userId`)
-    REFERENCES `plants`.`users` (`id`)
+    REFERENCES `users` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `plant_to_profile`
     FOREIGN KEY (`careProfileId`)
-    REFERENCES `plants`.`plant_care_profile` (`id`)
+    REFERENCES `plant_care_profile` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE);
 
@@ -81,16 +81,16 @@ CREATE TABLE `activities` (
   `activityTypeId` INT NOT NULL,
   `plantId` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `activityType_idx` (`activityTypeId` ASC) VISIBLE,
-  INDEX `plant_idx` (`plantId` ASC) VISIBLE,
+  INDEX `activityType_idx` (`activityTypeId` ASC),
+  INDEX `plant_idx` (`plantId` ASC),
   CONSTRAINT `activityType`
     FOREIGN KEY (`activityTypeId`)
-    REFERENCES `plants`.`activity_types` (`id`)
+    REFERENCES `activity_types` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `plant`
     FOREIGN KEY (`plantId`)
-    REFERENCES `plants`.`plants` (`id`)
+    REFERENCES `plants` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE);
 
@@ -100,10 +100,10 @@ CREATE TABLE `activities` (
   `photoTime` DATETIME NOT NULL,
   `plantId` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `plant_idx` (`plantId` ASC) VISIBLE,
+  INDEX `plant_idx` (`plantId` ASC),
   CONSTRAINT `photoPlant`
     FOREIGN KEY (`plantId`)
-    REFERENCES `plants`.`plants` (`id`)
+    REFERENCES `plants` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE);
 
@@ -117,15 +117,15 @@ CREATE TABLE `plant_tags` (
   `plantTypeId` INT NOT NULL,
   `tagId` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `plant_type_to_plant_tag_idx` (`plantTypeId` ASC) VISIBLE,
-  INDEX `tag_id_to_plant_tag_idx` (`tagId` ASC) VISIBLE,
+  INDEX `plant_type_to_plant_tag_idx` (`plantTypeId` ASC),
+  INDEX `tag_id_to_plant_tag_idx` (`tagId` ASC),
   CONSTRAINT `plant_type_to_plant_tag`
     FOREIGN KEY (`plantTypeId`)
-    REFERENCES `plants`.`plant_types` (`id`)
+    REFERENCES `plant_types` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `tag_id_to_plant_tag`
     FOREIGN KEY (`tagId`)
-    REFERENCES `plants`.`tags` (`id`)
+    REFERENCES `tags` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE);

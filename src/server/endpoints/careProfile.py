@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from utils.api import APICall
+from utils.api import APICall, api_auth
 from flask import jsonify
 
 from data import PlantCareProfile, Plant
@@ -11,6 +11,7 @@ Get a plant care profile from id
 '''
 @app.route('/careprofile/<id>', methods=['GET'])
 @APICall
+@api_auth
 def get_plant_care_profile(session, id):
     try:
         careProfile: PlantCareProfile = session.query(PlantCareProfile).filter(PlantCareProfile.id == id).first()
@@ -26,6 +27,7 @@ Assign a care profile to a plant
 '''
 @app.route('/careprofile/assign', methods=['POST'])
 @APICall
+@api_auth
 def assign_care_profile(session):
     try:
         careProfileId: int = request.form['careProfileId']
@@ -60,6 +62,7 @@ Create an ORPHANED care profile
 '''
 @app.route("/careprofile/add", methods = ["POST"])
 @APICall
+@api_auth
 def create_care_profile(session):
     try:
         soilType: str = request.form['soilType']
@@ -98,6 +101,7 @@ Update a personal plant careprofile
 '''
 @app.route("/careprofile/update", methods = ["PATCH"])
 @APICall
+@api_auth
 def update_care_profile(session):
     try:
         careProfileId: int = request.form['careProfileId']
