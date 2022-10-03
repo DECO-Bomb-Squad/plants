@@ -22,10 +22,10 @@ def create_app() -> Flask:
     db = SQLAlchemy(app)
     db.init_app(app)
 
+    # Initialise firebase admin
     dirname = os.path.dirname(__file__)
     cred = firebase_admin.credentials.Certificate(os.path.join(dirname, "firebase_admin.json"))
     fb_admin = firebase_admin.initialize_app(cred)
-    print(fb_admin.name)
 
     return app
 

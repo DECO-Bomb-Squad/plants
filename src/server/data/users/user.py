@@ -58,3 +58,9 @@ class User(DB.BASE):
     
     def get_tokens(self) -> List[String]:
         return [t.token for t in self.tokens]
+
+    def get_plants_needing_water(self, session):
+        plants: List[Plant] = self.userPlants
+        need_water: List[Plant] = list(filter(lambda p: p.needs_watering(session), plants))
+        return need_water
+        
