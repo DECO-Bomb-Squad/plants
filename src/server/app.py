@@ -1,8 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-
 from endpoints import get_blueprints
 from data.DB import CONNECTION_STRING, SESSION
+
+import firebase_admin
+import os
 from data import User, Plant, PlantType
 
 def create_app() -> Flask:
@@ -19,6 +21,11 @@ def create_app() -> Flask:
 
     db = SQLAlchemy(app)
     db.init_app(app)
+
+    dirname = os.path.dirname(__file__)
+    cred = firebase_admin.credentials.Certificate(os.path.join(dirname, "firebase_admin.json"))
+    fb_admin = firebase_admin.initialize_app(cred)
+    print(fb_admin.name)
 
     return app
 

@@ -3,3 +3,4 @@ __pycache__
 src/app/pubspec.lock
 .env
 secrets.dart
+firebase_admin.json

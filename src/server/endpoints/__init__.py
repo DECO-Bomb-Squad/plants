@@ -5,13 +5,15 @@ from . import users
 from . import plants
 from . import activities
 from . import careProfile
+from . import notifications
 
 def get_blueprints() -> List[Blueprint]:
     return [
         users.app,
         plants.app,
         activities.app,
-        careProfile.app
+        careProfile.app,
+        notifications.app
     ]
 
     
