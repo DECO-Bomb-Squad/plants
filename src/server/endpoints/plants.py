@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Blueprint, request
 from data import Plant, User, PlantType, PlantCareProfile, PlantCareProfileDefault, Activity, ActivityType, Tag, PlantTag, Photo
 from sqlalchemy.sql.expression import func
@@ -119,6 +120,10 @@ def add_personal_plant(session):
             daysBetweenRepotting=default.daysBetweenRepotting)
 
         session.add(profile)
+        session.commit()
+
+        # Add a plant activity instance for each activity type - we assume a newly added plant is freshly watered, repotted etc
+        session.add_all([Activity(datetime.now(), 1, plant.id), Activity(datetime.now(), 2, plant.id), Activity(datetime.now(), 3, plant.id)])
         session.commit()
 
     except Exception as e:
