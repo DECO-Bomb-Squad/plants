@@ -1,4 +1,4 @@
-from data.constants import TBL_PLANTS, TBL_USERS, TBL_PLANT_TYPES
+from data.constants import TBL_PLANTS, TBL_USERS, TBL_PLANT_TYPES, TBL_PLANT_CARE_PROFILE
 from data.plants.plantCareProfile import PlantCareProfile
 from sqlalchemy import Column, Integer, String, ForeignKey, Enum
 from sqlalchemy.orm import relationship
@@ -22,23 +22,25 @@ class Plant(DB.BASE):
     userId = Column(Integer, ForeignKey(f"{TBL_USERS}.id", name=f"fk_user_id_{__tablename__}"), nullable=False)
     user = relationship("User", back_populates='userPlants')
 
+    careProfileId = Column("careProfileId", Integer, ForeignKey(f"{TBL_PLANT_CARE_PROFILE}.id", name=f"fk_plant_care_profile_id_{__tablename__}"), nullable=False)
+    careProfile = relationship("PlantCareProfile", uselist=False, backref="plant_care_profile")
+
     # individual relationships
     activities = relationship("Activity", back_populates='plant')
     # tags = relationship("PlantTag", back_populates="plant") # access through plantType
 
-    careProfile = relationship("PlantCareProfile", uselist=False, backref="plant_care_profile")
-
     photos = relationship("Photo", back_populates="plant")
 
     def get_serialized_photos(self):
-        allPhotos = [photo.serialize() for photo in self.photos]
+        allPhotos = {p.photoTime.isoformat():p.uri for p in self.photos}
         return allPhotos
 
-    def __init__(self, plantName, plantDesc, plantTypeId, userId):
+    def __init__(self, plantName, plantDesc, plantTypeId, userId, careProfileId):
         self.plantName = plantName
         self.plantDesc = plantDesc
         self.plantTypeId = plantTypeId
         self.userId = userId
+        self.careProfileId = careProfileId
 
     def get_serialized_activities(self):
         allActivities = [activity.serialize() for activity in self.activities]
@@ -52,6 +54,7 @@ class Plant(DB.BASE):
         return {
             "id":              self.id,
             "name":            self.plantName,
+            "common_name":     self.plantType.commonName,
             "scientific_name": self.plantType.fullName,
             "description":     self.plantDesc,
             "plantTypeId":     self.plantTypeId,
