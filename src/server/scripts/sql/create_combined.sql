@@ -129,3 +129,12 @@ CREATE TABLE `plant_tags` (
     REFERENCES `tags` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE);
+
+CREATE TABLE `user_tokens` (
+	`id` INT NOT NULL AUTO_INCREMENT,
+  `userId` INT NOT NULL,
+  `token` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `userToken`
+		FOREIGN KEY (`userId`)
+    REFERENCES `users` (`id`));

@@ -1,3 +1,4 @@
+from typing import List
 from flask import jsonify
 from data.constants import TBL_USERS
 from data.plants import Plant, PlantType
@@ -22,6 +23,7 @@ class User(DB.BASE):
 
     # relationships
     userPlants = relationship("Plant", back_populates="user")
+    tokens = relationship("Token", back_populates='user')
 
     def __init__(self, username, email, bio=None, reputation=0, startDate=func.now()) -> None:
         self.username = username
@@ -53,6 +55,6 @@ class User(DB.BASE):
             "reputation": self.reputation,
             "bio": self.bio if self.bio else ""
         }
-        
-
-    # will need to add more methods here for getting info and setting info of the user
+    
+    def get_tokens(self) -> List[String]:
+        return [t.token for t in self.tokens]

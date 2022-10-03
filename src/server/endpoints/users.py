@@ -4,6 +4,7 @@ from sqlalchemy import update
 from data import User
 import json
 from data.constants import TBL_USERS
+from data.users.token import Token
 from utils.api import APICall, api_auth
 from flask import jsonify
 
@@ -143,3 +144,32 @@ def set_user_bio(session):
         return "There was an error updating the entry:", e, 400
 
     return "The bio was updated successfully", 200
+
+'''
+Add user token
+    - Params:
+        -token: string
+'''
+@app.route("/users/<username>/token", methods=["POST"])
+@APICall
+@api_auth
+def add_token(session, username: str):
+    user: User = session.query(User).filter(User.username == username).first()
+    if user is None:
+        return "User not found", 404
+    try:
+        token: str = request.form['token']
+
+        if token is None:
+            raise KeyError
+    except KeyError as e:
+        return "To add a user's token, you must provide: token: str", 400
+    
+    try:
+        new_token: Token = Token(user.id, token)
+        session.add(new_token)
+        session.commit()
+    except Exception as e:
+        return f"Error adding new token to database: {e}", 500
+    
+    return "Successfully added user token", 200
