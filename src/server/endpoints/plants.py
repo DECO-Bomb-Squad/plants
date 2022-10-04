@@ -384,6 +384,13 @@ def get_plant_photo_map(session):
 
 # ==== Miscellaneous Plant Endpoints ====
 
+'''
+Misc endpoint to make sure the API is running and okay
+'''
+@app.route("/status", methods=["GET", "POST"])
+@APICall
+def status(session):
+    return "API is running and OK", 200
 
 
 # ==== Plant Type Management Endpoints ====

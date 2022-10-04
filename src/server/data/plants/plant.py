@@ -31,6 +31,8 @@ class Plant(DB.BASE):
 
     photos = relationship("Photo", back_populates="plant")
 
+    posts = relationship("PostPlant", back_populates='plant')
+
     def get_serialized_photos(self):
         allPhotos = {p.photoTime.isoformat():p.uri for p in self.photos}
         return allPhotos
