@@ -4,6 +4,7 @@ from typing import Callable
 from data import DB
 from flask import request
 from dotenv import load_dotenv
+from sqlalchemy.orm import close_all_sessions
 
 '''
 Decorator function for creating an 
@@ -19,8 +20,11 @@ def example_thingo(session):
 def APICall(func: Callable):
     def inner(*args, **kwargs):
         session = DB.SESSION()
-        res = func(session, *args, **kwargs)
-        session.close()
+        try:
+            res = func(session, *args, **kwargs)
+        finally:
+            session.close()
+            close_all_sessions()
         return res
     inner.__name__ = func.__name__
     return inner
