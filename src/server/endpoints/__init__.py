@@ -4,14 +4,16 @@ from flask import Blueprint
 from . import users
 from . import plants
 from . import activities
+from . import forum
 from . import careProfile
 
 def get_blueprints() -> List[Blueprint]:
     return [
         users.app,
         plants.app,
+        careProfile.app,
         activities.app,
-        careProfile.app
+        forum.app
     ]
 
     
