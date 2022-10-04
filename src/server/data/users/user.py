@@ -53,7 +53,7 @@ class User(DB.BASE):
             "userId": self.id,
             "username": self.username,
             "email": self.email,
-            "startDate": self.startDate,
+            "startDate": self.startDate.isoformat(),
             "reputation": self.reputation,
             "bio": self.bio if self.bio else ""
         }

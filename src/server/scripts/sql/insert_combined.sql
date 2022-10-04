@@ -429,7 +429,7 @@ insert into plant_care_profile_default (plantTypeId, soilType, plantLocation, da
 insert into users (id, username, email, bio, startDate, reputation) values (251, 'milesdavis', 'milesdavis@jazz.com', 'A kind of blue...', '2022-08-22 15:30:53', 10);
 insert into users (id, username, email, bio, startDate, reputation) values (123, 'coolDude', 'dudethatscool@cool.net', 'look, I know im cool alright', '2022-07-15 12:30:53', 5);
 
-insert into posts (id, title, content, created, userId) values (20, 'Help, why is my plant doing this?', 'Could someone please help me? This is a really weird plant behaviour...', '2022-11-14 18:20:23', 666);
+insert into posts (id, title, content, created, score, userId) values (20, 'Help, why is my plant doing this?', 'Could someone please help me? This is a really weird plant behaviour...', '2022-11-14 18:20:23', 8, 666);
 
 insert into post_plants (id, plantId, postId) values (1, 1, 20);
 insert into post_plants (id, plantId, postId) values (2, 2, 20);

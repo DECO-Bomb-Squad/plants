@@ -50,7 +50,7 @@ class Comment(DB.BASE):
             "id":              self.id,
             "score":           self.score,
             "content":         self.content,
-            "created":         self.created,
+            "created":         self.created.isoformat(),
             "parentId":        self.parentId,
             "userId":          self.userId,
             "replies":         self.serialize_replies()
