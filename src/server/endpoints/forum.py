@@ -153,6 +153,12 @@ def get_post(session, id):
 
     return post.serialize(), 200
 
+'''
+Updates the score of a POST
+    Requires:
+        - postId: int
+        - score: int
+'''
 @app.route('/forum/post/updatescore', methods=["PATCH"])
 @APICall
 @api_auth
@@ -172,6 +178,35 @@ def update_score(session):
         post.score = score
         session.commit()
     except Exception as e:
-        return "An unknown error occurred", 500
+        return f"An unknown error occurred: {e}", 500
     
     return "Score updated successfully", 200
+
+'''
+Updates the score of a COMMENT
+    Requires:
+        - postId: int
+        - score: int
+'''
+@app.route('/forum/comment/updatescore', methods=["PATCH"])
+@APICall
+@api_auth
+def update_score_comment(session):
+    try:
+        commentId = request.form['commentId']
+        score  = request.form['score']
+
+        comment = session.query(Comment).filter(Comment.id == commentId).first()
+        if not comment:
+            return f"This post with id [{commentId}] does not exist.", 400
+
+    except KeyError as e:
+        return "Needs commentId: int, score: int"
+
+    try:
+        comment.score = score
+        session.commit()
+    except Exception as e:
+        return f"An unknown error occurred: {e}", 500
+    
+    return f"Score updated successfully on comment id: [{commentId}]", 200

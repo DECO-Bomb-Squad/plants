@@ -28,6 +28,8 @@ class Comment(DB.BASE):
     postId = Column(Integer, ForeignKey(f"{TBL_POSTS}.id", name=f"fk_post_id_{__tablename__}"), nullable=False)
     post = relationship("Post", back_populates="comments")
 
+    score = Column("score", Integer, nullable=False)
+
 
     def __init__(self, content, userId, postId, parentId):
 
@@ -36,6 +38,7 @@ class Comment(DB.BASE):
         self.userId = userId
         self.parentId = parentId # the parent id will be None
         self.postId = postId
+        self.score = 0
 
     def serialize_replies(self):
         allReplies = [reply.serialize() for reply in self.replies]
@@ -45,6 +48,7 @@ class Comment(DB.BASE):
     def serialize(self):
         return {
             "id":              self.id,
+            "score":           self.score,
             "content":         self.content,
             "created":         self.created,
             "parentId":        self.parentId,

@@ -152,6 +152,7 @@ CREATE TABLE `plants`.`comments` (
   `parentId` INT NULL,
   `userId` INT NOT NULL,
   `postId` INT NOT NULL,
+  `score` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `comments_to_user_idx` (`userId` ASC) VISIBLE,
   INDEX `comments_to_post_idx` (`postId` ASC) VISIBLE,
