@@ -1,6 +1,7 @@
 from flask import Blueprint, request
 from data import Plant, User, PlantType, PlantCareProfile, PlantCareProfileDefault, Activity, ActivityType, Tag, PlantTag, Photo
 from sqlalchemy.sql.expression import func
+from sqlalchemy.orm import close_all_sessions
 from utils.api import APICall, api_auth
 from flask import jsonify
 
@@ -391,6 +392,16 @@ Misc endpoint to make sure the API is running and okay
 @APICall
 def status(session):
     return "API is running and OK", 200
+
+@app.route("/killoffconnections", methods=["POST"])
+@APICall
+@api_auth
+def killoff(session):
+    try:
+        close_all_sessions()
+        return "All sessions closed", 200
+    except Exception as e:
+        return f"Something went wrong: {e}", 500
 
 
 # ==== Plant Type Management Endpoints ====
