@@ -393,7 +393,7 @@ insert into photos (uri, photoTime, plantId) values ("https://www.bolster.eu/med
 
 insert into plant_types (id, type, commonName, fullName) values (104, 'Pothos', "House Pothos", 'Epipremnum Aureum');
 insert into plant_care_profile_default (plantTypeId, soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer) values (104, 'fishTank', 'indoor', 10, 50, 70);
-insert into plant_care_profile (id, soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer) values (104, 'fishTank', 'indoor', 10, 50, 70);
+insert into plant_care_profile (id, soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer, linkedComment) values (104, 'fishTank', 'indoor', 10, 50, 70, 20);
 insert into plants (id, plantName, plantDesc, plantTypeId, userId, careProfileId) values (104, 'Caspar', 'Needs special care', 104, 666, 104);
 insert into activities (activityTime, activityTypeId, plantId) values ('2022-08-18', 1, 104);
 insert into activities (activityTime, activityTypeId, plantId) values ('2022-08-30', 1, 104);
