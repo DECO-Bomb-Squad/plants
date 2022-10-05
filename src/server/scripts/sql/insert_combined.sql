@@ -431,8 +431,8 @@ insert into users (id, username, email, bio, startDate, reputation) values (123,
 
 insert into posts (id, title, content, created, score, userId) values (20, 'Help, why is my plant doing this?', 'Could someone please help me? This is a really weird plant behaviour...', '2022-11-14 18:20:23', 8, 666);
 
-insert into post_plants (id, plantId, postId) values (1, 1, 20);
-insert into post_plants (id, plantId, postId) values (2, 2, 20);
+insert into post_plants (id, plantId, postId) values (1, 101, 20);
+insert into post_plants (id, plantId, postId) values (2, 102, 20);
 
 insert into tags (id, label) values (877, 'Unhealthy');
 insert into tags (id, label) values (894, 'Spots');
