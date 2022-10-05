@@ -16,7 +16,7 @@ PRT = "3306"
 CONNECTION_STRING = f"{DBM}://{USR}:{PWD}@{HST}:{PRT}/{DTB}"
 
 # Setup the engine which allows SQLAlchemy to be used with MySQL
-ENGINE = create_engine(CONNECTION_STRING)
+ENGINE = create_engine(CONNECTION_STRING, pool_recycle = 280)
 BASE = declarative_base()
 SESSION = sessionmaker(bind = ENGINE)
 

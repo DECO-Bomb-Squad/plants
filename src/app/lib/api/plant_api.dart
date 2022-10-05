@@ -15,7 +15,7 @@ import 'package:http/http.dart' as http;
 
 // Must refer to 10.0.2.2 within emulator - 127.0.0.1 refers to the emulator itself!
 const BACKEND_URL_LOCAL = "10.0.2.2:3000";
-const BACKEND_URL_PROD = "https://peclarke.pythonanywhere.com/";
+const BACKEND_URL_PROD = "peclarke.pythonanywhere.com";
 
 const PLANTNET_API_KEY = "2b10EBekKsq2B9XbUDp0bzwEO";
 const PLANTNET_URL = "https://my-api.plantnet.org/v2/identify/all?api-key=";
