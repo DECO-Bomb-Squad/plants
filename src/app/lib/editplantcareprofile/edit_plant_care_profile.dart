@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +80,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                     items: SoilType.values.map((SoilType soilType) {
                       return DropdownMenuItem<SoilType>(
                         value: soilType,
-                        child: Text(soilType.toString()), // need to fix
+                        child: Text(soilType.toHumanString()!),
                       );
                     }).toList(),
                   ),
@@ -96,7 +94,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                     items: LocationType.values.map((LocationType location) {
                       return DropdownMenuItem<LocationType>(
                         value: location,
-                        child: Text(location.toString()),
+                        child: Text(location.toHumanString()!),
                       );
                     }).toList(),
                   ),
@@ -155,21 +153,23 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // submit -> json stuff ELEVATED BUTTONS print contents of model to console
-                // model update method by passing profile in, changing values etc. use method
                 TextButton(
+                  style: buttonStyle,
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text("Discard"),
+                  child: const Text("Discard", style: buttonTextStyle),
                 ),
                 ElevatedButton(
+                    style: buttonStyle,
                     onPressed: editMode == false
                         ? null
                         : () {
                             if (_formKey.currentState!.validate()) {
+                              // create new plant
                               model.assignedPlant?.careProfile.updatePlantCareProfile(model);
+                              Navigator.of(context).pop();
                             }
                           },
-                    child: Text(submitText)),
+                    child: Text(submitText, style: buttonTextStyle)),
               ],
             ),
           ],
