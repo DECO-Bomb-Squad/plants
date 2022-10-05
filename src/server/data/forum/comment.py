@@ -58,6 +58,7 @@ class Comment(DB.BASE):
             "created":         self.created.isoformat(),
             "parentId":        self.parentId,
             "userId":          self.userId,
+            "username":        self.author.username,
             "replies":         self.serialize_replies(),
             "careProfiles":    self.serialize_care_profiles()
         }
