@@ -93,8 +93,8 @@ def add_personal_plant(session):
         # # foreign key check
         # print(userId)
         userCount: int = session.query(User).filter(User.id == userId).count()
-        typeCount: int = session.query(PlantType).filter(PlantType.id == plantTypeId).count()
-        if (userCount == 0 or typeCount == 0):
+        plantType: PlantType = session.query(PlantType).filter(PlantType.id == plantTypeId).first()
+        if (userCount == 0 or not plantType):
             return "Invalid user or plant type information", 400
 
     except KeyError as e:
@@ -104,15 +104,13 @@ def add_personal_plant(session):
 
     # add to DB
     try:
-        plant: Plant = Plant(plantName=personalName, plantDesc=description, plantTypeId=plantTypeId, userId=userId)
-
         default: PlantCareProfileDefault = session.query(PlantCareProfileDefault).filter(PlantCareProfileDefault.plantTypeId == plantTypeId).first()
         if default is None:
             raise Exception("The default plant care profile could not be found for this plant type")
 
-        session.add(plant)
-        session.flush()
-        session.refresh(plant)
+        # session.add(plant)
+        # session.flush()
+        # session.refresh(plant)
 
         profile = PlantCareProfile(
             soilType=default.soilType, plantLocation=default.plantLocation,
@@ -120,6 +118,13 @@ def add_personal_plant(session):
             daysBetweenRepotting=default.daysBetweenRepotting)
 
         session.add(profile)
+        session.flush()
+        session.refresh(profile)
+
+        plant: Plant = Plant(plantName=personalName, plantDesc=description, plantTypeId=plantTypeId, userId=int(userId), careProfileId=profile.id)
+        plant.plantType = plantType
+
+        session.add(plant)
         session.commit()
 
     except Exception as e:
