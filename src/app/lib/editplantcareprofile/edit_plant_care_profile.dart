@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +18,6 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _idController = TextEditingController();
-  final TextEditingController _locationController = TextEditingController();
-  final TextEditingController _soilTypeController = TextEditingController();
   final TextEditingController _daysBetweenWateringController = TextEditingController();
   final TextEditingController _daysBetweenFertilisingController = TextEditingController();
   final TextEditingController _daysBetweenRepottingController = TextEditingController();
@@ -28,23 +27,19 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
     super.initState();
     if (widget.profile != null) {
       model = EditPlantCareProfileModel.fromProfile(widget.profile!);
+      _daysBetweenWateringController.text = model.daysBetweenWatering.toString();
+      _daysBetweenFertilisingController.text = model.daysBetweenFertilising.toString();
+      _daysBetweenRepottingController.text = model.daysBetweenRepotting.toString();
     } else {
       model = EditPlantCareProfileModel.fromEmpty();
     }
-    _idController.text = model.id.toString();
-    _locationController.text = model.location.toString();
-    _soilTypeController.text = model.soilType.toString();
-    _daysBetweenWateringController.text = model.daysBetweenWatering.toString();
-    _daysBetweenFertilisingController.text = model.daysBetweenFertilising.toString();
-    _daysBetweenRepottingController.text = model.daysBetweenRepotting.toString();
+    model.soilType ??= SoilType.smallPot;
+    model.location ??= LocationType.indoor; // defaults if new plant
   }
 
   @override
   void dispose() {
     super.dispose();
-    _idController.dispose();
-    _locationController.dispose();
-    _soilTypeController.dispose();
     _daysBetweenWateringController.dispose();
     _daysBetweenFertilisingController.dispose();
     _daysBetweenRepottingController.dispose();
@@ -61,6 +56,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
     if (!model.wasInitiallyAssigned && !model.isNew) {
       editMode = false;
     }
+    bool editModeInitialBool = editMode;
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -76,62 +72,69 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
               key: _formKey,
               child: (Column(
                 children: [
-                  TextFormField(
-                    controller: _idController,
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty || double.tryParse(value) == null) {
-                        return 'Please enter a valid ID';
-                      }
-                      return null;
+                  DropdownButton<SoilType>(
+                    value: model.soilType!,
+                    onChanged: (SoilType? newType) {
+                      setState(() {
+                        model.soilType = newType;
+                      });
                     },
+                    items: SoilType.values.map((SoilType soilType) {
+                      return DropdownMenuItem<SoilType>(
+                        value: soilType,
+                        child: Text(soilType.toString()), // need to fix
+                      );
+                    }).toList(),
                   ),
-                  TextFormField(
-                    controller: _locationController,
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a valid location';
-                      }
-                      return null;
+                  DropdownButton<LocationType>(
+                    value: model.location!,
+                    onChanged: (LocationType? newLocation) {
+                      setState(() {
+                        model.location = newLocation;
+                      });
                     },
-                  ),
-                  TextFormField(
-                    controller: _soilTypeController,
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a valid soil type';
-                      }
-                      return null;
-                    },
+                    items: LocationType.values.map((LocationType location) {
+                      return DropdownMenuItem<LocationType>(
+                        value: location,
+                        child: Text(location.toString()),
+                      );
+                    }).toList(),
                   ),
                   TextFormField(
                     controller: _daysBetweenWateringController,
                     validator: (String? value) {
                       if (value == null || value.isEmpty || double.tryParse(value) == null) {
                         return 'Please enter a valid number';
+                      } else {
+                        model.daysBetweenWatering = int.parse(value);
+                        return null;
                       }
-                      return null;
                     },
                   ),
                   TextFormField(
                     controller: _daysBetweenFertilisingController,
                     validator: (String? value) {
-                      if (value == null || value.isEmpty || double.tryParse(value) == null) {
+                      if (value == null || value.isEmpty || int.tryParse(value) == null) {
                         return 'Please enter a valid number';
+                      } else {
+                        model.daysBetweenFertilising = int.parse(value);
+                        return null;
                       }
-                      return null;
                     },
                   ),
                   TextFormField(
                     controller: _daysBetweenRepottingController,
                     validator: (String? value) {
-                      if (value == null || value.isEmpty || double.tryParse(value) == null) {
+                      if (value == null || value.isEmpty || int.tryParse(value) == null) {
                         return 'Please enter a valid number';
+                      } else {
+                        model.daysBetweenRepotting = int.parse(value);
+                        return null;
                       }
-                      return null;
                     },
                   ),
                   Container(
-                    child: editMode == false
+                    child: editModeInitialBool == false
                         ? DropdownButton<PlantInfoModel>(
                             // not sure what type should be will need to sort out
                             value: null,
@@ -154,13 +157,18 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
               children: [
                 // submit -> json stuff ELEVATED BUTTONS print contents of model to console
                 // model update method by passing profile in, changing values etc. use method
-
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Text("Discard"),
                 ),
                 ElevatedButton(
-                    onPressed: editMode == false ? null : () {}, // replace with submit
+                    onPressed: editMode == false
+                        ? null
+                        : () {
+                            if (_formKey.currentState!.validate()) {
+                              model.assignedPlant?.careProfile.updatePlantCareProfile(model);
+                            }
+                          },
                     child: Text(submitText)),
               ],
             ),

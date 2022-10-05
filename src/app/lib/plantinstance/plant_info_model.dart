@@ -4,6 +4,8 @@ import 'package:app/utils/colour_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
+import 'package:app/editplantcareprofile/edit_plant_care_profile_model.dart';
+
 class PlantCareProfile extends ChangeNotifier {
   int id;
   LocationType location;
@@ -20,6 +22,15 @@ class PlantCareProfile extends ChangeNotifier {
         daysBetweenWatering = json["daysBetweenWatering"],
         daysBetweenFertilising = json["daysBetweenFertilizer"],
         daysBetweenRepotting = json["daysBetweenRepotting"];
+
+  void updatePlantCareProfile(EditPlantCareProfileModel model) {
+    location = model.location!;
+    soilType = model.soilType!;
+    daysBetweenWatering = model.daysBetweenWatering!;
+    daysBetweenFertilising = model.daysBetweenFertilising!;
+    daysBetweenRepotting = model.daysBetweenRepotting!;
+    notifyListeners();
+  }
 }
 
 class PlantInfoModel extends ChangeNotifier {
