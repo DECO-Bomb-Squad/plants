@@ -393,7 +393,7 @@ insert into photos (uri, photoTime, plantId) values ("https://www.bolster.eu/med
 
 insert into plant_types (id, type, commonName, fullName) values (104, 'Pothos', "House Pothos", 'Epipremnum Aureum');
 insert into plant_care_profile_default (plantTypeId, soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer) values (104, 'fishTank', 'indoor', 10, 50, 70);
-insert into plant_care_profile (id, soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer) values (104, 'fishTank', 'indoor', 10, 50, 70);
+insert into plant_care_profile (id, soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer, linkedComment) values (104, 'fishTank', 'indoor', 10, 50, 70, 20);
 insert into plants (id, plantName, plantDesc, plantTypeId, userId, careProfileId) values (104, 'Caspar', 'Needs special care', 104, 666, 104);
 insert into activities (activityTime, activityTypeId, plantId) values ('2022-08-18', 1, 104);
 insert into activities (activityTime, activityTypeId, plantId) values ('2022-08-30', 1, 104);
@@ -424,3 +424,27 @@ insert into plant_care_profile_default (plantTypeId, soilType, plantLocation, da
 
 insert into plant_types (id, type, commonName, fullName) values (208, 'Lily', 'Flamingo-lily', 'Anthurium andraeanum');
 insert into plant_care_profile_default (plantTypeId, soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer) values (208, 'mediumPot', 'partShade', 7, 80, 56);
+
+/* second rendition of mocking data */
+insert into users (id, username, email, bio, startDate, reputation) values (251, 'milesdavis', 'milesdavis@jazz.com', 'A kind of blue...', '2022-08-22 15:30:53', 10);
+insert into users (id, username, email, bio, startDate, reputation) values (123, 'coolDude', 'dudethatscool@cool.net', 'look, I know im cool alright', '2022-07-15 12:30:53', 5);
+
+insert into posts (id, title, content, created, score, userId) values (20, 'Help, why is my plant doing this?', 'Could someone please help me? This is a really weird plant behaviour...', '2022-11-14 18:20:23', 8, 666);
+
+insert into post_plants (id, plantId, postId) values (1, 1, 20);
+insert into post_plants (id, plantId, postId) values (2, 2, 20);
+
+insert into tags (id, label) values (877, 'Unhealthy');
+insert into tags (id, label) values (894, 'Spots');
+insert into tags (id, label) values (838, 'Tropical');
+
+insert into post_tags (id, postId, tagId) values (1, 20, 877);
+insert into post_tags (id, postId, tagId) values (2, 20, 894);
+insert into post_tags (id, postId, tagId) values (3, 20, 838);
+
+/* comments to post */
+insert into comments (id, content, created, parentId, userId, postId, score) values (1, 'Hmm, im not entirely sure. Thats weird!', '2022-11-15 08:20:10', null, 251, 20, 0);
+insert into comments (id, content, created, parentId, userId, postId, score) values (2, 'You might need to move your plant into the shade. Especially in your climate.', '2022-11-15 22:40:53', null, 123, 20, 5);
+
+/* replies to comments */
+insert into comments (id, content, created, parentId, userId, postId, score) values (3, 'Thank you! This solved it!!', '2022-03-30 08:20:10', 2, 666, 20, 2);

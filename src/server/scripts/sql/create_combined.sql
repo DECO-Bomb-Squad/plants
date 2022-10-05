@@ -23,6 +23,7 @@ CREATE TABLE `plant_care_profile` (
   `daysBetweenWatering` INT NOT NULL,
   `daysBetweenRepotting` INT NULL,
   `daysBetweenFertilizer` INT NULL,
+  `linkedComment` INT NULL,
   PRIMARY KEY (`id`));
 
 CREATE TABLE `plant_care_profile_default` (
