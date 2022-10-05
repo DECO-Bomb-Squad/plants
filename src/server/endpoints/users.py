@@ -4,7 +4,7 @@ from sqlalchemy import update
 from data import User
 import json
 from data.constants import TBL_USERS
-from utils.api import APICall
+from utils.api import APICall, api_auth
 from flask import jsonify
 
 app = Blueprint('user_endpoints', __name__)
@@ -20,6 +20,7 @@ Adds a User (POST)
 '''
 @app.route("/user", methods = ['POST'])
 @APICall
+@api_auth
 def add_user(session):
     try:
         username: str = request.form['username']
@@ -57,6 +58,7 @@ Gets ALL Users (GET)
 '''
 @app.route("/users/", methods = ['GET', 'POST'])
 @APICall
+@api_auth
 def get_all_users(sesh):
     users: List[User] = sesh.query(User).all()
     allUsers = [user.serialize() for user in users]
@@ -71,6 +73,7 @@ Gets a User (GET)
 '''
 @app.route("/users/<username>", methods = ['GET', 'POST'])
 @APICall
+@api_auth
 def get_user(session, username: str):
     user: User = session.query(User).filter(User.username == username).first()
     if user:
@@ -87,6 +90,7 @@ Gets a Users Plants (GET)
 '''
 @app.route("/users/<username>/plants", methods = ["GET", "POST"])
 @APICall
+@api_auth
 def get_user_plants(session, username: str):
     user: User = session.query(User).filter(User.username == username).first()
 
@@ -112,6 +116,7 @@ Set User Bio
 '''
 @app.route("/users/setbio", methods = ['POST'])
 @APICall
+@api_auth
 def set_user_bio(session):
     try:
         username: str = request.form['username']

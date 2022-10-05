@@ -24,6 +24,14 @@ class PlantType(DB.BASE):
         allTags = [tag.serialize() for tag in self.tags]
         return allTags
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "type": self.type,
+            "commonName": self.commonName,
+            "fullName": self.fullName
+        }
+
     def __init__(self, type, commonName, fullName):
         self.type = type
         self.commonName = commonName
