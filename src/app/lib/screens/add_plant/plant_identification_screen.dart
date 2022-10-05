@@ -60,16 +60,13 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
             spacer,
             sampleAdder(),
             spacer,
-            Container(
+            SizedBox(
               height: MediaQuery.of(context).size.height / 5,
               child: GridView(
                   padding: EdgeInsets.zero,
                   scrollDirection: Axis.vertical,
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.9,
-                      childAspectRatio: 6 / 1,
-                      crossAxisSpacing: 5,
-                      mainAxisSpacing: 5),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 1, childAspectRatio: 6, mainAxisSpacing: widget.samples.isNotEmpty ? 5 : 0),
                   children: widget.samples.map((e) => sampleItem(e)).toList()),
             ),
             widget.res.isEmpty
@@ -80,7 +77,7 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
                   ),
             widget.res.isEmpty
                 ? spacer
-                : Container(
+                : SizedBox(
                     height: MediaQuery.of(context).size.height / 6,
                     child: GridView(
                         padding: EdgeInsets.zero,
@@ -120,7 +117,7 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
 
   SizedBox get spacer => const SizedBox(height: 10, width: 10);
 
-  Widget sampleAdder() => Container(
+  Widget sampleAdder() => SizedBox(
       height: 50,
       child: DecoratedBox(
           decoration: smallPostComponent,
@@ -147,7 +144,7 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
                               currentAddition.organ = organs[index];
                             }),
                         isSelected: organSelection)),
-                Container(
+                SizedBox(
                     height: 30,
                     width: 30,
                     child: IconButton(
@@ -160,7 +157,7 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
                         icon: Icon(Icons.refresh, color: darkColour))),
                 widget.samples.length >= 5
                     ? spacer
-                    : Container(
+                    : SizedBox(
                         height: 30,
                         width: 30,
                         child: IconButton(
@@ -178,8 +175,8 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
               ])));
 
   Widget unchosenImage() => Row(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.max, children: [
-        Container(height: 50, width: 50, child: imageGetter("Camera", Icons.camera_alt, ImageSource.camera)),
-        Container(height: 50, width: 50, child: imageGetter("Gallery", Icons.photo, ImageSource.gallery)),
+        SizedBox(height: 50, width: 50, child: imageGetter("Camera", Icons.camera_alt, ImageSource.camera)),
+        SizedBox(height: 50, width: 50, child: imageGetter("Gallery", Icons.photo, ImageSource.gallery)),
       ]);
 
   Widget chosenImage(String path) => Container(
@@ -187,27 +184,23 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
       width: 50,
       decoration: BoxDecoration(image: DecorationImage(image: FileImage(File(path)), fit: BoxFit.fitWidth)));
 
-  Widget imageGetter(String subtitleText, IconData icon, ImageSource source) => Expanded(
-        child: Container(
-          decoration: smallPostComponent,
-          child: Column(
-            children: [
-              Expanded(
-                child: FittedBox(
-                  fit: BoxFit.fill,
-                  child: IconButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () => addImage(source),
-                    icon: Icon(icon),
-                  ),
-                ),
+  Widget imageGetter(String subtitleText, IconData icon, ImageSource source) => Container(
+        decoration: smallPostComponent,
+        child: Column(
+          children: [
+            FittedBox(
+              fit: BoxFit.fill,
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                onPressed: () => addImage(source),
+                icon: Icon(icon),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
 
-  Widget sampleItem(PlantIdentifyModel m) => Container(
+  Widget sampleItem(PlantIdentifyModel m) => SizedBox(
       height: 50,
       child: DecoratedBox(
           decoration: smallPlantComponent,
@@ -223,7 +216,7 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
                       "${m.organ.toUpperCase()}",
                       style: buttonTextStyle,
                     )),
-                Container(
+                SizedBox(
                     height: 30,
                     width: 30,
                     child: IconButton(
@@ -231,32 +224,34 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
                         onPressed: () => setState(() {
                               widget.samples.remove(m);
                             }),
-                        icon: Icon(Icons.delete, color: darkColour))),
+                        icon: const Icon(Icons.delete, color: darkColour))),
               ])));
 
-  Widget resultItem(IdentifyResult m) => Container(
-      height: 50,
-      child: DecoratedBox(
-          decoration: smallPlantComponent,
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                    width: 100,
-                    alignment: Alignment.center,
-                    child: Text(
-                      "${m.science}",
-                      style: buttonTextStyle,
-                    )),
-                Container(
-                    width: 100,
-                    alignment: Alignment.center,
-                    child: Text(
-                      "${m.score * 100}%",
-                      style: buttonTextStyle,
-                    )),
-              ])));
+  Widget resultItem(IdentifyResult m) => GestureDetector(
+      onTap: () => Navigator.pop(context, m.science.toLowerCase()),
+      child: SizedBox(
+          height: 50,
+          child: DecoratedBox(
+              decoration: smallPlantComponent,
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                        width: 100,
+                        alignment: Alignment.center,
+                        child: Text(
+                          "${m.science}",
+                          style: buttonTextStyle,
+                        )),
+                    Container(
+                        width: 100,
+                        alignment: Alignment.center,
+                        child: Text(
+                          "${double.parse((m.score * 100).toStringAsFixed(1))}%",
+                          style: buttonTextStyle,
+                        )),
+                  ]))));
 
   void addImage(ImageSource source) async {
     // get Image from imagepicker

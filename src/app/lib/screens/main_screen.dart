@@ -28,7 +28,7 @@ class _MainScreenState extends State<MainScreen> {
                 )),
             IconButton(
               onPressed: () => Navigator.of(context, rootNavigator: false)
-                  .push(MaterialPageRoute(builder: (context) => PlantAddScreen())),
+                  .push(MaterialPageRoute(builder: (context) => PlantAddEmpty())),
               style: buttonStyle,
               icon: const Icon(Icons.add),
             )

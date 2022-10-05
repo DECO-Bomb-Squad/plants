@@ -10,9 +10,9 @@ class PlantTypeModel {
         fullName = json['fullName'],
         type = json['type'];
 
-  PlantTypeModel.empty(String common)
+  PlantTypeModel.empty(String common, String science)
       : id = null,
         commonName = common,
-        fullName = "$common $common",
+        fullName = science,
         type = "";
 }
