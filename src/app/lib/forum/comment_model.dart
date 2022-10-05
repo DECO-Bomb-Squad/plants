@@ -14,16 +14,15 @@ class CommentManagerModel {
   int postID;
   List<CommentModel> comments;
 
-  CommentManagerModel(this.postID)
-      : comments = [];
+  CommentManagerModel(this.postID) : comments = [];
 }
 
 class CommentModel {
-  int commentID;        // Comment ID
-  int authorID;         // UserID of author
-  int score;            // Point score
-  String content;       // Actual comment text
-  DateTime created;     // When the comment was posted
+  int commentID; // Comment ID
+  int authorID; // UserID of author
+  int score; // Point score
+  String content; // Actual comment text
+  DateTime created; // When the comment was posted
 
   //User author;                // User object
   List<CommentModel> replies; // Replies to comment
@@ -34,16 +33,13 @@ class CommentModel {
         score = json['score'],
         content = json['content'],
         created = DateTime.parse(json["created"]),
-        replies = []
+        replies = [] {
+    if (json.containsKey("replies")) {
+      replies = (json["replies"] as List<dynamic>).map((e) => CommentModel.fromJSON(e)).toList();
+    }
+  }
+  //author = User.fromJSON(jsonDecode('{"id": 1, "name": "Test"}')),
 
-        {
-          if (json.containsKey("replies")) {
-            replies = (json["replies"] as List<dynamic>).map((e) => CommentModel.fromJSON(e)).toList();
-          }
-        }
-        //author = User.fromJSON(jsonDecode('{"id": 1, "name": "Test"}')),
-        
-  
   String getReadableTimeAgo() {
     Duration delta = DateTime.now().difference(created);
     if (delta.inMinutes < 60) {

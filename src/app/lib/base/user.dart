@@ -1,10 +1,15 @@
 class User {
   final int id;
-  String name;
-  List<int> ownedPlantIDs;
+  String username;
+  String email;
+  int reputation;
+  String? bio;
+  List<int>? ownedPlantIDs;
 
   User.fromJSON(Map<String, dynamic> json)
-      : id = json["id"],
-        name = json["name"],
-        ownedPlantIDs = (json["plantIds"] as List<dynamic>).map((e) => e as int).toList();
+      : id = json["userId"],
+        username = json["username"],
+        email = json["email"],
+        reputation = json["reputation"],
+        bio = json["bio"] == "" ? null : json["bio"];
 }

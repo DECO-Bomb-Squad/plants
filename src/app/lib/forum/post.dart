@@ -19,8 +19,7 @@ class _PostSmallState extends State<PostSmallWidget> {
     PostInfoModel model = PostInfoModel.fromJSON(jsonDecode(rawJSON));
     return InkWell(
       onTap: () {
-        Navigator.push(context,
-        MaterialPageRoute(builder: (context) => const PostScreen(1)));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const PostScreen(1)));
       },
       child: DecoratedBox(
         decoration: smallPostComponent,
@@ -30,24 +29,20 @@ class _PostSmallState extends State<PostSmallWidget> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
-                flex: 3,
-                child: Column (
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(model.title, style: sectionHeaderStyle),
-                    Text("${model.author} - ${model.getReadableTimeAgo()} ago", style: modalTextStyle)
+                  flex: 3,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(model.title, style: sectionHeaderStyle),
+                      Text("${model.author} - ${model.getReadableTimeAgo()} ago", style: modalTextStyle)
                     ],
-                  )
-              ),
-              const Expanded(
-                flex: 1,
-                child: Icon(Icons.check_circle, size: 50)  
-              )
+                  )),
+              const Expanded(flex: 1, child: Icon(Icons.check_circle, size: 50))
             ],
           ),
-        )
-      )
+        ),
+      ),
     );
   }
 }
@@ -61,7 +56,7 @@ class MakePostWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-         ElevatedButton(
+        ElevatedButton(
           onPressed: () {
             Navigator.pop(context);
           },
