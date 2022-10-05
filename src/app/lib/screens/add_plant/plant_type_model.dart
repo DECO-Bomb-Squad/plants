@@ -1,5 +1,5 @@
 class PlantTypeModel {
-  int? id;
+  int id;
   String commonName;
   String fullName; // This is the SCIENTIFIC NAME
   String type;
@@ -11,7 +11,7 @@ class PlantTypeModel {
         type = json['type'];
 
   PlantTypeModel.empty(String common, String science)
-      : id = null,
+      : id = 0,
         commonName = common,
         fullName = science,
         type = "";

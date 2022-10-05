@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:app/screens/add_plant/plant_type_model.dart';
 import 'package:dio/dio.dart';
 
@@ -17,7 +16,6 @@ import 'package:http/http.dart' as http;
 const BACKEND_URL_LOCAL = "10.0.2.2:3000";
 const BACKEND_URL_PROD = "peclarke.pythonanywhere.com";
 
-const PLANTNET_API_KEY = "2b10EBekKsq2B9XbUDp0bzwEO";
 const PLANTNET_URL = "https://my-api.plantnet.org/v2/identify/all?api-key=";
 
 class PlantAPI {
@@ -110,7 +108,7 @@ class PlantAPI {
   Future<List<PlantTypeModel>> getPlantTypes() async {
     http.Response response;
     try {
-      response = await http.get(makePath('/planttype'));
+      response = await http.get(makePath('/planttypes'), headers: header);
     } on Exception catch (e, st) {
       print(e);
       print(st);
@@ -139,6 +137,29 @@ class PlantAPI {
       identify.add(IdentifyResult(r["species"]["scientificNameWithoutAuthor"], r["score"]));
     }
     return identify;
+  }
+
+  Future<PlantInfoModel?> addPlant(int plantTypeId, String name, String description) async {
+    http.Response response;
+    try {
+      response = await http.post(makePath('/plant'), headers: header, body: {
+        "userId": user?.id.toString(),
+        "plantTypeId": plantTypeId.toString(),
+        "desc": description,
+        "personalName": name
+      });
+    } on Exception catch (e, st) {
+      print(e);
+      print(st);
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> result = json.decode(response.body);
+      return PlantInfoModel.fromJSON(result);
+    } else {
+      return null;
+    }
   }
 
   Future<PlantInfoModel> getPlantInfo(int id) =>

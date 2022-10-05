@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:app/api/plant_api.dart';
 import 'package:app/screens/add_plant/plant_type_model.dart';
 import 'package:app/screens/add_plant/plant_identification_screen.dart';
@@ -44,6 +42,8 @@ class _PlantAddScreenState extends State<PlantAddScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _typeAheadController = TextEditingController();
   final TextEditingController _dateInput = TextEditingController(text: DateFormat("yyyy-MM-dd").format(DateTime.now()));
+  final TextEditingController _nicknameController = TextEditingController();
+  final TextEditingController _descController = TextEditingController();
   String soil = "small pot";
   PlantTypeModel model = PlantTypeModel.empty("", "");
 
@@ -63,7 +63,6 @@ class _PlantAddScreenState extends State<PlantAddScreen> {
 
   @override
   Widget build(BuildContext context) {
-    widget.listTypes.add(PlantTypeModel.empty("Hibiscus", "Hibiscus rosa-sinensis"));
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: NestedScrollView(
@@ -151,9 +150,10 @@ class _PlantAddScreenState extends State<PlantAddScreen> {
                                   model = suggestion;
                                 },
                                 validator: (value) {
-                                  if (value == "" || value == null) {
+                                  if (value == "" || value == null || model.id == 0) {
                                     return 'Please select a plant';
                                   }
+                                  return null;
                                 },
                               )),
                               spacer,
@@ -178,6 +178,19 @@ class _PlantAddScreenState extends State<PlantAddScreen> {
                                         _dateInput.text = formattedDate; //set output date to TextField value.
                                       });
                                     } else {}
+                                  },
+                                  validator: (value) {
+                                    DateFormat format = DateFormat("yyyy-MM-dd");
+                                    if (value == "" || value == null) {
+                                      return "Select a Date";
+                                    }
+                                    try {
+                                      format.parseStrict(value);
+                                    } catch (e) {
+                                      return "Date must be yyyy-MM-dd";
+                                    }
+
+                                    return null;
                                   }),
                               spacer,
                               const Text(
@@ -192,11 +205,35 @@ class _PlantAddScreenState extends State<PlantAddScreen> {
                                       .toList(),
                                   onChanged: ((value) => setState(() => soil = value!))),
                               spacer,
+                              const Text(
+                                "with a nickname",
+                                style: mainHeaderStyle,
+                              ),
+                              spacer,
+                              TextFormField(
+                                controller: _nicknameController,
+                              ),
+                              spacer,
+                              const Text(
+                                "with some notes",
+                                style: mainHeaderStyle,
+                              ),
+                              spacer,
+                              TextFormField(
+                                controller: _descController,
+                              ),
+                              spacer,
                               SizedBox(
                                   width: double.infinity,
                                   height: MediaQuery.of(context).size.height * 0.05,
                                   child: TextButton(
-                                      onPressed: () => Navigator.pop(context),
+                                      onPressed: () async {
+                                        if (_formKey.currentState!.validate()) {
+                                          await widget.api
+                                              .addPlant(model.id, _nicknameController.text, _descController.text);
+                                          Navigator.of(context).pop;
+                                        }
+                                      },
                                       style: buttonStyle,
                                       child: const Text(
                                         "Add Plant",
