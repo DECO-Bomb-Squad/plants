@@ -10,6 +10,8 @@ import json
 
 app = Blueprint('plant_endpoints', __name__)
 
+VERSION = '5.6.9'
+
 # ===== Personal Plant Management Endpoints ====
 
 @app.route("/planttypes", methods= ["GET"])
@@ -396,7 +398,7 @@ Misc endpoint to make sure the API is running and okay
 @app.route("/status", methods=["GET", "POST"])
 @APICall
 def status(session):
-    return "API is running and OK", 200
+    return f"API is running and OK. Version: {VERSION}", 200
 
 @app.route("/killoffconnections", methods=["POST"])
 @APICall
