@@ -1,4 +1,5 @@
 import 'package:app/forum/comment_model.dart';
+import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/screens/reply_post_screen.dart';
@@ -54,13 +55,7 @@ class CommentManager {
           children: [
             Expanded(
               flex: 1,
-              child: Column(
-                children: [
-                  Icon(Icons.arrow_upward),
-                  Text("${comment.score}", style: textStyle,),
-                  Icon(Icons.arrow_downward)
-                ],
-              )
+              child: CommentVoteComponent(comment.score)
             ),
             Expanded(
               flex: 4,
@@ -110,13 +105,7 @@ class CommentManager {
           children: [
             Expanded(
               flex: 1,
-              child: Column(
-                children: [
-                  Icon(Icons.arrow_upward),
-                  Text("${comment.score}", style: textStyle,),
-                  Icon(Icons.arrow_downward)
-                ],
-              )
+              child: CommentVoteComponent(comment.score)
             ),
             Expanded(
               flex: 4,
@@ -140,13 +129,65 @@ class CommentManager {
           child: ElevatedButton(
             onPressed: () {
               Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const ReplyPostScreen(1)));
+              MaterialPageRoute(builder: (context) => ReplyPostScreen(1)));
             },
             style: smallButtonStyle,
             child: const Text("Write a response...", style: smallButtonTextStyle)
           )
         )
       ]
+    );
+  }
+}
+
+class CommentVoteComponent extends StatefulWidget {
+  int voted = 0;
+  int score;
+
+  CommentVoteComponent(this.score, {super.key}); 
+
+  @override 
+  State<CommentVoteComponent> createState() => _CommentVoteComponentState();
+}
+
+class _CommentVoteComponentState extends State<CommentVoteComponent> {
+  
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        InkWell(
+          child: 
+            Icon(Icons.arrow_upward, color: (widget.voted == 1) ? accent : darkColour),
+          onTap: () {
+            if (widget.voted != 1) {
+              widget.score += 1 - widget.voted;
+              widget.voted = 1;
+            } else {
+              widget.score -= 1;
+              widget.voted = 0;
+            }
+            setState(() {widget.voted;}); // Rebuild self
+          } 
+        ),
+        Text("${widget.score}", style: textStyle,),
+        InkWell(
+          child: 
+            Icon(Icons.arrow_downward, color: (widget.voted == -1) ? accent : darkColour
+            ),
+          onTap: () {
+            if (widget.voted != -1) {
+              widget.score -= 1 + widget.voted;
+              widget.voted = -1;
+            } else {
+              widget.score += 1;
+              widget.voted = 0;
+            }
+
+            setState(() {widget.voted;}); // Rebuild self
+          },
+        )
+      ],
     );
   }
 }

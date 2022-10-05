@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:app/forum/post.dart';
+import 'package:app/forum/post_model.dart';
 import 'package:app/forum/test_comments.dart';
+import 'package:app/forum/test_post.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/forum/tags.dart';
@@ -18,10 +21,14 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
+
   @override
   Widget build(BuildContext context) {
-    CommentManager commentManager = CommentManager(context, 1);
+    PostInfoModel model = PostInfoModel.fromJSON(jsonDecode(rawJSON));
+
+    CommentManager commentManager = CommentManager(context, widget.id);
     commentManager.loadComments(jsonDecode(rawCommentJSON));
+
     return Scaffold(
       body: NestedScrollView(
         scrollDirection: Axis.vertical,
@@ -30,34 +37,37 @@ class _PostScreenState extends State<PostScreen> {
         body: Padding(
           padding: const EdgeInsets.all(10.0),
           child: ListView(
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.15,
-                child:  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: const [
-                          Text("Question title", style: mainHeaderStyle),
-                          Icon(Icons.question_answer, size: 40,)
-                        ],
-                      ),
-                      SizedBox(
-                        height: 40,
-                        child: ListView.builder(
-                          itemCount: 10,
-                          scrollDirection: Axis.horizontal,
-                          controller: ScrollController(),
-                          itemBuilder: ((context, index) => tagItemBuilder(context, index))            
-                        )
-                      )
-                    ]
+            children: [   
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Flexible(child: Text(model.title, style: mainHeaderStyle)),                          
+                        const Icon(Icons.question_answer, size: 40,)
+                      ],
+                    ),
                   ),
-                ),
-              const Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Text("Question text", style: textStyle,)
+                  SizedBox(
+                    height: 40,
+                    child: ListView.builder(
+                      itemCount: 10,
+                      scrollDirection: Axis.horizontal,
+                      controller: ScrollController(),
+                      itemBuilder: ((context, index) => tagItemBuilder(context, index))            
+                    )
+                  ),
+                  PostVoteComponent(model.score)
+                ]
+              ),
+              spacer,
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(model.content, style: textStyle,)
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.28,
@@ -81,7 +91,7 @@ class _PostScreenState extends State<PostScreen> {
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const ReplyPostScreen(1)));
+                        MaterialPageRoute(builder: (context) => ReplyPostScreen(1)));
                       },
                       style: buttonStyle,
                       child: const Text("Write a response...", style: buttonTextStyle)
