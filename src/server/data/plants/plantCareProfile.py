@@ -1,4 +1,4 @@
-from data.constants import TBL_PLANT_CARE_PROFILE, TBL_PLANT_CARE_PROFILE_DEFAULT, TBL_PLANTS, TBL_PLANT_TYPES
+from data.constants import TBL_PLANT_CARE_PROFILE, TBL_PLANT_CARE_PROFILE_DEFAULT, TBL_PLANTS, TBL_PLANT_TYPES, TBL_COMMENTS
 from sqlalchemy import Column, Integer, String, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 from flask import jsonify
@@ -21,6 +21,10 @@ class PlantCareProfile(DB.BASE):
 
     daysBetweenRepotting = Column('daysBetweenRepotting', Integer, nullable=True)
     daysBetweenFertilizer = Column('daysBetweenFertilizer', Integer, nullable=True)
+
+    linkedComment = Column('linkedComment', Integer, ForeignKey(f"{TBL_COMMENTS}.id", name=f"fk_comments_{__tablename__}"), nullable=True)
+    comment = relationship("Comment", back_populates="careProfiles")
+
     
     def __init__(self, soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer):
         self.soilType = soilType
@@ -28,6 +32,7 @@ class PlantCareProfile(DB.BASE):
         self.daysBetweenWatering = daysBetweenWatering
         self.daysBetweenRepotting = daysBetweenRepotting
         self.daysBetweenFertilizer = daysBetweenFertilizer
+        self.linkedComment = None
 
     def serialize(self):
         return {
@@ -36,7 +41,8 @@ class PlantCareProfile(DB.BASE):
             "plantLocation": self.plantLocation,
             "daysBetweenWatering": self.daysBetweenWatering,
             "daysBetweenRepotting": self.daysBetweenRepotting if self.daysBetweenRepotting else -1,
-            "daysBetweenFertilizer": self.daysBetweenFertilizer if self.daysBetweenFertilizer else -1
+            "daysBetweenFertilizer": self.daysBetweenFertilizer if self.daysBetweenFertilizer else -1,
+            "linkedComment": self.linkedComment
         }
 
 """

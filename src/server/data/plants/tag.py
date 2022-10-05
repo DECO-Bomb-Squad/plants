@@ -12,9 +12,8 @@ class Tag(DB.BASE):
     id = Column(Integer, primary_key=True, autoincrement=True)
     label = Column('label', String(255), nullable=False)
 
-    # one relationship will be needed for post tags as well
     plantTypes = relationship("PlantTag", back_populates="tag")
-    # tags = relationship("PlantTag", back_populates="plantType")
+    posts = relationship("PostTag", back_populates="tag")
 
     def __init__(self, label):
         self.label = label

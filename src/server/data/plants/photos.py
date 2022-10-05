@@ -28,7 +28,7 @@ class Photo(DB.BASE):
         return {
             "photoId": self.id,
             "uri": self.uri,
-            "timestamp": self.photoTime,
+            "timestamp": self.photoTime.isoformat(),
             "plantId": self.plantId
         }
 
@@ -37,5 +37,5 @@ class Photo(DB.BASE):
         return {
             "photoId": self.id,
             "uri": self.uri,
-            "timestamp": self.photoTime
+            "timestamp": self.photoTime.isoformat()
         }

@@ -25,6 +25,10 @@ class User(DB.BASE):
     userPlants = relationship("Plant", back_populates="user")
     tokens = relationship("Token", back_populates='user')
 
+    userPosts = relationship("Post", back_populates="author")
+
+    userComments = relationship("Comment", back_populates="author")
+
     def __init__(self, username, email, bio=None, reputation=0, startDate=func.now()) -> None:
         self.username = username
         self.email = email
@@ -51,7 +55,7 @@ class User(DB.BASE):
             "userId": self.id,
             "username": self.username,
             "email": self.email,
-            "startDate": self.startDate,
+            "startDate": self.startDate.isoformat(),
             "reputation": self.reputation,
             "bio": self.bio if self.bio else ""
         }

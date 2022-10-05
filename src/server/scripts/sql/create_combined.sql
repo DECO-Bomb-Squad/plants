@@ -23,6 +23,7 @@ CREATE TABLE `plant_care_profile` (
   `daysBetweenWatering` INT NOT NULL,
   `daysBetweenRepotting` INT NULL,
   `daysBetweenFertilizer` INT NULL,
+  `linkedComment` INT NULL,
   PRIMARY KEY (`id`));
 
 CREATE TABLE `plant_care_profile_default` (
@@ -129,6 +130,79 @@ CREATE TABLE `plant_tags` (
     REFERENCES `tags` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE);
+  
+CREATE TABLE `posts` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `userId` INT NOT NULL,
+  `created` DATETIME NOT NULL,
+  `title` VARCHAR(255) NOT NULL,
+  `content` VARCHAR(1023) NOT NULL,
+  `score` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `postAuthor`
+    FOREIGN KEY (`userId`)
+    REFERENCES `plants`.`users` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+
+CREATE TABLE `plants`.`comments` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `content` VARCHAR(255) NOT NULL,
+  `created` DATETIME NOT NULL,
+  `parentId` INT NULL,
+  `userId` INT NOT NULL,
+  `postId` INT NOT NULL,
+  `score` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `comments_to_user_idx` (`userId` ASC) VISIBLE,
+  INDEX `comments_to_post_idx` (`postId` ASC) VISIBLE,
+  CONSTRAINT `comments_to_user`
+    FOREIGN KEY (`userId`)
+    REFERENCES `plants`.`users` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `comments_to_post`
+    FOREIGN KEY (`postId`)
+    REFERENCES `plants`.`posts` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+
+    
+CREATE TABLE `post_tags` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `postId` INT NOT NULL,
+  `tagId` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `post_to_post_tag_idx` (`postId` ASC) VISIBLE,
+  INDEX `tag_id_to_post_tag_idx` (`tagId` ASC) VISIBLE,
+  CONSTRAINT `post_to_post_tag`
+    FOREIGN KEY (`postId`)
+    REFERENCES `plants`.`posts` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `tag_id_to_post_tag`
+    FOREIGN KEY (`tagId`)
+    REFERENCES `plants`.`tags` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+
+CREATE TABLE `post_plants` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `postId` INT NOT NULL,
+  `plantId` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `post_to_post_plant_idx` (`postId` ASC) VISIBLE,
+  INDEX `plant_id_to_post_plant_idx` (`plantId` ASC) VISIBLE,
+  CONSTRAINT `post_to_post_plant`
+    FOREIGN KEY (`postId`)
+    REFERENCES `plants`.`posts` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `plant_id_to_post_plant`
+    FOREIGN KEY (`plantId`)
+    REFERENCES `plants`.`plants` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
 
 CREATE TABLE `user_tokens` (
 	`id` INT NOT NULL AUTO_INCREMENT,
@@ -137,4 +211,4 @@ CREATE TABLE `user_tokens` (
   PRIMARY KEY (`id`),
   CONSTRAINT `userToken`
 		FOREIGN KEY (`userId`)
-    REFERENCES `users` (`id`));
+    REFERENCES `users` (`id`));    
