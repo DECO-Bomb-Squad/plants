@@ -47,7 +47,7 @@ class _MainScreenState extends State<MainScreen> {
                 gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 200, childAspectRatio: 1, crossAxisSpacing: 20, mainAxisSpacing: 20),
                 children:
-                    GetIt.I<PlantAPI>().user!.ownedPlantIDs.map((id) => PlantInfoEmpty(id, isSmall: true)).toList(),
+                    GetIt.I<PlantAPI>().user!.ownedPlantIDs!.map((id) => PlantInfoEmpty(id, isSmall: true)).toList(),
               ),
             ),
           ),

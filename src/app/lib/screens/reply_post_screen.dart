@@ -15,53 +15,42 @@ class ReplyPostScreen extends StatefulWidget {
 class _ReplyPostScreenState extends State<ReplyPostScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
-    body: NestedScrollView(
-      headerSliverBuilder: StandardHeaderBuilder,
-      body: Padding(
-        padding: EdgeInsets.all(padding),
-        child: 
-          Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width - (padding * 2),
-              child: Padding (
-                padding: EdgeInsets.all(padding),
-                child: Text("Existing question/comment, blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah ", style: textStyle)
-              )
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.30,
-              child: 
-                DecoratedBox(
-                  decoration: inputComponent,
-                  child: Padding(
-                    padding: EdgeInsets.all(padding),
+      body: NestedScrollView(
+          headerSliverBuilder: StandardHeaderBuilder,
+          body: Padding(
+              padding: EdgeInsets.all(padding),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                SizedBox(
+                    width: MediaQuery.of(context).size.width - (padding * 2),
+                    child: Padding(
+                        padding: EdgeInsets.all(padding),
+                        child: Text(
+                            "Existing question/comment, blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah ",
+                            style: textStyle))),
+                SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.30,
+                    child: DecoratedBox(
+                        decoration: inputComponent,
+                        child: Padding(
+                          padding: EdgeInsets.all(padding),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Write your response here. Make sure to include plenty of detail...",
+                                style: inputStyle,
+                              )
+                            ],
+                          ),
+                        ))),
+                SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.10,
+                    width: MediaQuery.of(context).size.width - (padding * 2),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("Write your response here. Make sure to include plenty of detail...", style: inputStyle,)
-                      ],
-                    ),
-                  )
-              )
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.10,
-              width: MediaQuery.of(context).size.width - (padding * 2),
-              child:  Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Attach plants/photos", style: sectionHeaderStyle)
-                ]
-              ) 
-            ),
-            MakePostWidget()
-          ]
-        )
-      )
-    )
-  );
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [Text("Attach plants/photos", style: sectionHeaderStyle)])),
+                MakePostWidget()
+              ]))));
 }

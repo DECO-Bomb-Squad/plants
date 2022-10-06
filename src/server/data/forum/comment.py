@@ -30,6 +30,8 @@ class Comment(DB.BASE):
 
     score = Column("score", Integer, nullable=False)
 
+    careProfiles = relationship("PlantCareProfile", back_populates="comment")
+
 
     def __init__(self, content, userId, postId, parentId):
 
@@ -44,16 +46,21 @@ class Comment(DB.BASE):
         allReplies = [reply.serialize() for reply in self.replies]
         return allReplies
 
+    def serialize_care_profiles(self):
+        allCareProfiles = [profile.serialize() for profile in self.careProfiles]
+        return allCareProfiles
 
     def serialize(self):
         return {
             "id":              self.id,
             "score":           self.score,
             "content":         self.content,
-            "created":         self.created,
+            "created":         self.created.isoformat(),
             "parentId":        self.parentId,
             "userId":          self.userId,
-            "replies":         self.serialize_replies()
+            "username":        self.author.username,
+            "replies":         self.serialize_replies(),
+            "careProfiles":    self.serialize_care_profiles()
         }
 
     # will need to add more methods here for getting info and setting info of the user

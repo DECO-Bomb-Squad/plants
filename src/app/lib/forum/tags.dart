@@ -6,15 +6,10 @@ tagItemBuilder(BuildContext context, int index) {
   return Column(
     children: [
       Padding(
-        padding: const EdgeInsets.all(3.0), 
-        child: DecoratedBox(
-          decoration: tagComponent,
-          child: const Padding(
-            padding: EdgeInsets.all(5),
-            child: Text("Post tag", style: tagTextStyle)
-          )
-        )
-      )
+          padding: const EdgeInsets.all(3.0),
+          child: DecoratedBox(
+              decoration: tagComponent,
+              child: const Padding(padding: EdgeInsets.all(5), child: Text("Post tag", style: tagTextStyle))))
     ],
   );
 }

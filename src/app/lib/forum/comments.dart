@@ -8,8 +8,7 @@ class CommentManager {
   final int postID; // The ID of the post to get comments from
   CommentManagerModel model;
 
-  CommentManager(this.context, this.postID, {Key? key})
-      : model = CommentManagerModel(postID);
+  CommentManager(this.context, this.postID, {Key? key}) : model = CommentManagerModel(postID);
 
   void loadComments(List<dynamic> json) {
     // This should be making an API call, but for now JSON is fine
@@ -27,18 +26,19 @@ class CommentManager {
 
     return Column(crossAxisAlignment: CrossAxisAlignment.center, children: output);
   }
-  
+
   Column _getComment(CommentModel comment) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            const Expanded (
+        Row(children: [
+          const Expanded(
               flex: 1,
-              child: Icon(Icons.account_circle, size: 40,)
-            ),
-            Expanded (
+              child: Icon(
+                Icons.account_circle,
+                size: 40,
+              )),
+          Expanded(
               flex: 4,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,38 +46,32 @@ class CommentManager {
                   Text("${comment.authorID}", style: subheaderStyle),
                   Text("${comment.getReadableTimeAgo()} ago")
                 ],
-              )
-            )
-          ]
-        ),
-        Row(
-          children: [
-            Expanded(
+              ))
+        ]),
+        Row(children: [
+          Expanded(
               flex: 1,
               child: Column(
                 children: [
                   Icon(Icons.arrow_upward),
-                  Text("${comment.score}", style: textStyle,),
+                  Text(
+                    "${comment.score}",
+                    style: textStyle,
+                  ),
                   Icon(Icons.arrow_downward)
                 ],
-              )
-            ),
-            Expanded(
-              flex: 4,
-              child: Text(comment.content)
-            )
-          ]
-        ),
+              )),
+          Expanded(flex: 4, child: Text(comment.content))
+        ]),
         Row(
           children: [
             Expanded(flex: 1, child: Container()),
             Expanded(
-              flex: 4,
-              child: Column(
-                //children: List<Widget>.generate(Random().nextInt(5), (e) => _getCommentReply()),
-                children: List<Widget>.from(comment.replies.map((e) => _getCommentReply(e))),
-              )
-            )
+                flex: 4,
+                child: Column(
+                  //children: List<Widget>.generate(Random().nextInt(5), (e) => _getCommentReply()),
+                  children: List<Widget>.from(comment.replies.map((e) => _getCommentReply(e))),
+                ))
           ],
         ),
         _getReplyButton()
@@ -88,13 +82,14 @@ class CommentManager {
   Widget _getCommentReply(CommentModel comment) {
     return Column(
       children: [
-        Row(
-          children: [
-            const Expanded (
+        Row(children: [
+          const Expanded(
               flex: 1,
-              child: Icon(Icons.account_circle, size: 40,)
-            ),
-            Expanded (
+              child: Icon(
+                Icons.account_circle,
+                size: 40,
+              )),
+          Expanded(
               flex: 4,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,51 +97,41 @@ class CommentManager {
                   Text("${comment.authorID}", style: subheaderStyle),
                   Text("${comment.getReadableTimeAgo()} ago")
                 ],
-              )
-            )
-          ]
-        ),
-        Row(
-          children: [
-            Expanded(
+              ))
+        ]),
+        Row(children: [
+          Expanded(
               flex: 1,
               child: Column(
                 children: [
                   Icon(Icons.arrow_upward),
-                  Text("${comment.score}", style: textStyle,),
+                  Text(
+                    "${comment.score}",
+                    style: textStyle,
+                  ),
                   Icon(Icons.arrow_downward)
                 ],
-              )
-            ),
-            Expanded(
-              flex: 4,
-              child: Text(comment.content)
-            )
-          ]
-        ),
+              )),
+          Expanded(flex: 4, child: Text(comment.content))
+        ]),
       ],
     );
   }
 
   Widget _getReplyButton() {
-    return Row(
-      children: [
-        Expanded(
-          flex: 1,
-          child: Container(),
-        ),
-        Expanded(
+    return Row(children: [
+      Expanded(
+        flex: 1,
+        child: Container(),
+      ),
+      Expanded(
           flex: 4,
           child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const ReplyPostScreen(1)));
-            },
-            style: smallButtonStyle,
-            child: const Text("Write a response...", style: smallButtonTextStyle)
-          )
-        )
-      ]
-    );
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const ReplyPostScreen(1)));
+              },
+              style: smallButtonStyle,
+              child: const Text("Write a response...", style: smallButtonTextStyle)))
+    ]);
   }
 }
