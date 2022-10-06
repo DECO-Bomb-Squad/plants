@@ -31,6 +31,16 @@ class PlantCareProfile extends ChangeNotifier {
     daysBetweenRepotting = model.daysBetweenRepotting!;
     notifyListeners();
   }
+
+  PlantCareProfile.newCareProfile(EditPlantCareProfileModel model)
+      : id = 0, // placeholder vallue
+        location = model.location!,
+        soilType = model.soilType!,
+        daysBetweenWatering = model.daysBetweenWatering!,
+        daysBetweenFertilising = model.daysBetweenFertilising!,
+        daysBetweenRepotting = model.daysBetweenRepotting!;
+
+  // Widget get dropdownWidget
 }
 
 class PlantInfoModel extends ChangeNotifier {

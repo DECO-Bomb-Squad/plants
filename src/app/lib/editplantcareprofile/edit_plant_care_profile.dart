@@ -6,7 +6,8 @@ import 'package:app/editplantcareprofile/edit_plant_care_profile_model.dart';
 
 class EditPlantCareProfile extends StatefulWidget {
   PlantCareProfile? profile;
-  EditPlantCareProfile({super.key, this.profile});
+  PlantInfoModel? plant;
+  EditPlantCareProfile({super.key, this.profile, this.plant});
 
   @override
   State<EditPlantCareProfile> createState() => _EditPlantCareProfileState();
@@ -25,15 +26,13 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
   void initState() {
     super.initState();
     if (widget.profile != null) {
-      model = EditPlantCareProfileModel.fromProfile(widget.profile!);
+      model = EditPlantCareProfileModel.fromProfile(widget.profile!, widget.plant);
       _daysBetweenWateringController.text = model.daysBetweenWatering.toString();
       _daysBetweenFertilisingController.text = model.daysBetweenFertilising.toString();
       _daysBetweenRepottingController.text = model.daysBetweenRepotting.toString();
     } else {
       model = EditPlantCareProfileModel.fromEmpty();
     }
-    model.soilType ??= SoilType.smallPot;
-    model.location ??= LocationType.indoor; // defaults if new plant
   }
 
   @override
@@ -80,7 +79,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                       width: MediaQuery.of(context).size.width * 0.75,
                       child: Column(children: [
                         DropdownButton<SoilType>(
-                          value: model.soilType!,
+                          value: model.soilType,
                           onChanged: (SoilType? newType) {
                             setState(() {
                               model.soilType = newType;
@@ -94,7 +93,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                           }).toList(),
                         ),
                         DropdownButton<LocationType>(
-                          value: model.location!,
+                          value: model.location,
                           onChanged: (LocationType? newLocation) {
                             setState(() {
                               model.location = newLocation;
@@ -183,16 +182,14 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                     Container(
                       child: editModeInitialBool == false
                           ? DropdownButton<PlantInfoModel>(
-                              // not sure what type should be will need to sort out
-                              value: null,
-                              items: null, // get user plants
+                              value: model.assignedPlant,
                               onChanged: (PlantInfoModel? plant) {
                                 setState(() {
-                                  // update value with plant info
                                   model.assignedPlant = plant;
                                 });
                                 editMode = plant == null ? false : true;
                               },
+                              items: null, // get user plants
                             )
                           : null,
                     ),
@@ -222,8 +219,13 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                               ? null
                               : () {
                                   if (_formKey.currentState!.validate()) {
-                                    // create new plant
-                                    model.assignedPlant?.careProfile.updatePlantCareProfile(model);
+                                    if (model.isNew) {
+                                      PlantCareProfile newProfile = PlantCareProfile.newCareProfile(model);
+                                      print(newProfile.daysBetweenFertilising);
+                                      print(newProfile.location.toHumanString());
+                                    } else {
+                                      model.assignedPlant?.careProfile.updatePlantCareProfile(model);
+                                    }
                                     Navigator.of(context).pop();
                                   }
                                 },

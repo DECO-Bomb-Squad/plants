@@ -15,7 +15,7 @@ class EditPlantCareProfileModel extends ChangeNotifier {
   EditPlantCareProfileModel.fromEmpty()
       : isNew = true,
         wasInitiallyAssigned = false;
-  EditPlantCareProfileModel.fromProfile(PlantCareProfile profile, {PlantInfoModel? plant})
+  EditPlantCareProfileModel.fromProfile(PlantCareProfile profile, PlantInfoModel? plant)
       : id = profile.id,
         location = profile.location,
         soilType = profile.soilType,
