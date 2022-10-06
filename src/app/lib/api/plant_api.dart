@@ -156,10 +156,13 @@ class PlantAPI {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> result = json.decode(response.body);
-      return PlantInfoModel.fromJSON(result);
+      PlantInfoModel m = PlantInfoModel.fromJSON(result);
+      user?.ownedPlantIDs.add(m.id);
+      cache.plantInfoCache.putIfAbsent(m.id, () => AsyncCache(const Duration(days: 1)));
     } else {
       return null;
     }
+    return null;
   }
 
   Future<PlantInfoModel> getPlantInfo(int id) =>

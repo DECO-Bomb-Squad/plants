@@ -1,8 +1,8 @@
 import 'package:app/api/plant_api.dart';
+import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/screens/add_plant/plant_type_model.dart';
 import 'package:app/screens/add_plant/plant_identification_screen.dart';
 import 'package:app/utils/loading_builder.dart';
-import 'package:intl/intl.dart';
 import 'package:app/plantinstance/plant_info_model.dart' as info;
 import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/visual_pattern.dart';
@@ -34,19 +34,13 @@ class PlantAddScreen extends StatefulWidget {
   State<PlantAddScreen> createState() => _PlantAddScreenState();
 }
 
-final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-final TextEditingController _typeAheadController = TextEditingController();
-final TextEditingController _dateInput = TextEditingController(text: DateFormat("yyyy-MM-dd").format(DateTime.now()));
-
 class _PlantAddScreenState extends State<PlantAddScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _typeAheadController = TextEditingController();
-  final TextEditingController _dateInput = TextEditingController(text: DateFormat("yyyy-MM-dd").format(DateTime.now()));
-  final TextEditingController _nicknameController = TextEditingController();
-  final TextEditingController _descController = TextEditingController();
   String soil = "small pot";
   PlantTypeModel model = PlantTypeModel.empty("", "");
-
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _typeAheadController = TextEditingController();
+  final TextEditingController _nicknameController = TextEditingController();
+  final TextEditingController _descController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -63,6 +57,7 @@ class _PlantAddScreenState extends State<PlantAddScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _typeAheadController.text = model.fullName;
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: NestedScrollView(
@@ -73,6 +68,8 @@ class _PlantAddScreenState extends State<PlantAddScreen> {
                       IconButton(icon: const Icon(Icons.arrow_back), onPressed: (() => Navigator.of(context).pop())),
                   backgroundColor: lightColour,
                   shadowColor: lightColour,
+                  title: const Text("Add Plant", style: mainHeaderStyle),
+                  centerTitle: true,
                   pinned: false,
                   floating: true,
                   forceElevated: innerBoxIsScrolled,
@@ -108,7 +105,6 @@ class _PlantAddScreenState extends State<PlantAddScreen> {
                               ),
                               spacer,
                               SizedBox(
-                                  //width: MediaQuery.of(context).size.width * 0.7,
                                   child: TypeAheadFormField(
                                 textFieldConfiguration: TextFieldConfiguration(
                                     controller: _typeAheadController,
@@ -119,11 +115,12 @@ class _PlantAddScreenState extends State<PlantAddScreen> {
                                               showDialog(context: context, builder: (_) => PlantIdentificationDialog())
                                                   .then((value) => {
                                                         value != null
-                                                            ? model = widget.listTypes.firstWhere(
-                                                                (element) =>
-                                                                    element.fullName.toLowerCase().contains(value),
-                                                                orElse: () =>
-                                                                    model = PlantTypeModel.empty("value", "value"),
+                                                            ? setState(
+                                                                (() => model = widget.listTypes.firstWhere(
+                                                                    (element) =>
+                                                                        element.fullName.toLowerCase().contains(value),
+                                                                    orElse: () => model =
+                                                                        PlantTypeModel.empty("value", "value"))),
                                                               )
                                                             : null
                                                       });
@@ -158,42 +155,6 @@ class _PlantAddScreenState extends State<PlantAddScreen> {
                               )),
                               spacer,
                               const Text(
-                                "planted on",
-                                style: mainHeaderStyle,
-                              ),
-                              TextFormField(
-                                  controller: _dateInput,
-                                  onTap: () async {
-                                    DateTime? pickedDate = await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(1950),
-                                        //DateTime.now() - not to allow to choose before today.
-                                        lastDate: DateTime.now());
-
-                                    if (pickedDate != null) {
-                                      String formattedDate = DateFormat("yyyy-MM-dd").format(pickedDate);
-                                      print(formattedDate); //formatted date output using intl package =>  2021-03-16
-                                      setState(() {
-                                        _dateInput.text = formattedDate; //set output date to TextField value.
-                                      });
-                                    } else {}
-                                  },
-                                  validator: (value) {
-                                    DateFormat format = DateFormat("yyyy-MM-dd");
-                                    if (value == "" || value == null) {
-                                      return "Select a Date";
-                                    }
-                                    try {
-                                      format.parseStrict(value);
-                                    } catch (e) {
-                                      return "Date must be yyyy-MM-dd";
-                                    }
-
-                                    return null;
-                                  }),
-                              spacer,
-                              const Text(
                                 "in a",
                                 style: mainHeaderStyle,
                               ),
@@ -221,7 +182,10 @@ class _PlantAddScreenState extends State<PlantAddScreen> {
                               spacer,
                               TextFormField(
                                 controller: _descController,
+                                minLines: 1,
+                                maxLines: 5,
                               ),
+                              spacer,
                               spacer,
                               SizedBox(
                                   width: double.infinity,
@@ -229,9 +193,9 @@ class _PlantAddScreenState extends State<PlantAddScreen> {
                                   child: TextButton(
                                       onPressed: () async {
                                         if (_formKey.currentState!.validate()) {
-                                          await widget.api
+                                          PlantInfoModel? result = await widget.api
                                               .addPlant(model.id, _nicknameController.text, _descController.text);
-                                          Navigator.of(context).pop;
+                                          Navigator.of(context).pop();
                                         }
                                       },
                                       style: buttonStyle,

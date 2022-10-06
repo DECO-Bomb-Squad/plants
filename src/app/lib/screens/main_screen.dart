@@ -5,7 +5,6 @@ import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/plantinstance/plant_info.dart';
 import 'package:app/forum/post.dart';
-import 'package:app/api/plant_api.dart';
 import 'package:get_it/get_it.dart';
 
 class MainScreen extends StatefulWidget {
@@ -30,8 +29,8 @@ class _MainScreenState extends State<MainScreen> {
                   style: mainHeaderStyle,
                 )),
             IconButton(
-              onPressed: () => Navigator.of(context, rootNavigator: false)
-                  .push(MaterialPageRoute(builder: (context) => PlantAddEmpty())),
+              onPressed: () => (Navigator.of(context, rootNavigator: false)
+                  .push(MaterialPageRoute(builder: (context) => PlantAddEmpty()))).then((value) => setState((() {}))),
               style: buttonStyle,
               icon: const Icon(Icons.add),
             )

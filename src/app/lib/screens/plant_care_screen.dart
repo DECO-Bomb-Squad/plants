@@ -34,7 +34,7 @@ class _PlantCareEmptyState extends State<PlantCareEmpty> {
 class PlantCareScreen extends StatefulWidget {
   final int plantID;
   final PlantInfoModel model;
-  PlantCareScreen(this.model, this.plantID, {super.key});
+  const PlantCareScreen(this.model, this.plantID, {super.key});
 
   @override
   State<PlantCareScreen> createState() => _PlantCareScreenState();
@@ -67,7 +67,8 @@ class _PlantCareScreenState extends State<PlantCareScreen> {
             headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
                 SliverAppBar(
-                  leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: (() => Navigator.of(context).pop())),
+                  leading:
+                      IconButton(icon: const Icon(Icons.arrow_back), onPressed: (() => Navigator.of(context).pop())),
                   backgroundColor: lightColour,
                   shadowColor: lightColour,
                   pinned: false,
@@ -109,7 +110,7 @@ class _PlantCareScreenState extends State<PlantCareScreen> {
                           Text(widget.model.scientificName, style: sectionHeaderStyle),
                         ]),
                       ),
-                      widget.model.getCoverPhoto(100, 100, Icons.photo, 150)
+                      widget.model.getCoverPhoto(100, 100, Icons.photo, 100)
                     ]),
                     calendar,
                     SizedBox(

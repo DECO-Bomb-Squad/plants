@@ -5,7 +5,6 @@ import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 
-import 'package:app/plantinstance/plant_image_gallery.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -43,7 +42,7 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         width: MediaQuery.of(context).size.width,
         constraints: BoxConstraints(
           maxHeight: MediaQuery.of(context).size.height / 1.25,
@@ -53,10 +52,10 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [Text("Photo Identification", style: mainHeaderStyle)],
+              children: const [Text("Photo Identification", style: sectionHeaderStyle)],
             ),
             spacer,
-            Text("Select upto 5 photos and identify them as flowers or leaves", style: modalTextStyle),
+            const Text("Select upto 5 photos and identify them as flowers or leaves", style: modalTextStyle),
             spacer,
             sampleAdder(),
             spacer,
@@ -71,7 +70,7 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
             ),
             widget.res.isEmpty
                 ? spacer
-                : Text(
+                : const Text(
                     "RESULTS",
                     style: modalTextStyle,
                   ),
@@ -90,25 +89,22 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
                         children: widget.res.map((e) => resultItem(e)).toList()),
                   ),
             const Spacer(),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-              TextButton(
-                  onPressed: () async {
-                    widget.res = await api.getPlantNetResults(widget.samples);
-                    rebuild();
-                  },
-                  style: buttonStyle,
-                  child: Text(
-                    "API",
-                    style: buttonTextStyle,
-                  )),
-              TextButton(
-                  onPressed: Navigator.of(context).pop,
-                  style: buttonStyle,
-                  child: Text(
-                    "ADD",
-                    style: buttonTextStyle,
-                  ))
-            ])
+            widget.samples.isEmpty
+                ? spacer
+                : Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.65,
+                        child: TextButton(
+                            onPressed: () async {
+                              widget.res = await api.getPlantNetResults(widget.samples);
+                              rebuild();
+                            },
+                            style: buttonStyle,
+                            child: const Text(
+                              "Search",
+                              style: buttonTextStyle,
+                            ))),
+                  ])
           ],
         ),
       ),
@@ -128,7 +124,8 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
                 currentAddition.isEmpty() ? unchosenImage() : chosenImage(currentAddition.image),
                 Container(
                     height: 30,
-                    decoration: BoxDecoration(color: lightColour, borderRadius: BorderRadius.all(Radius.circular(10))),
+                    decoration:
+                        const BoxDecoration(color: lightColour, borderRadius: BorderRadius.all(Radius.circular(10))),
                     child: ToggleButtons(
                         direction: Axis.horizontal,
                         textStyle: modalTextStyle,
@@ -137,13 +134,13 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
                         borderColor: lightColour,
                         selectedColor: darkColour,
                         selectedBorderColor: lightColour,
-                        children: [Text("Leaf"), Text("Flower")],
                         onPressed: (index) => setState(() {
                               organSelection = [false, false];
                               organSelection[index] = true;
                               currentAddition.organ = organs[index];
                             }),
-                        isSelected: organSelection)),
+                        isSelected: organSelection,
+                        children: const [Text("Leaf"), Text("Flower")])),
                 SizedBox(
                     height: 30,
                     width: 30,
@@ -154,7 +151,7 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
                               currentAddition.organ = organs[0];
                               organSelection = [true, false];
                             }),
-                        icon: Icon(Icons.refresh, color: darkColour))),
+                        icon: const Icon(Icons.refresh, color: darkColour))),
                 widget.samples.length >= 5
                     ? spacer
                     : SizedBox(
@@ -171,14 +168,16 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
                                     currentAddition.organ = organs[0];
                                     organSelection = [true, false];
                                   }),
-                            icon: Icon(Icons.add, color: darkColour))),
+                            icon: const Icon(Icons.add, color: darkColour))),
               ])));
 
+  // Allow selection of image if none is currently chosen
   Widget unchosenImage() => Row(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.max, children: [
         SizedBox(height: 50, width: 50, child: imageGetter("Camera", Icons.camera_alt, ImageSource.camera)),
         SizedBox(height: 50, width: 50, child: imageGetter("Gallery", Icons.photo, ImageSource.gallery)),
       ]);
 
+  // An image is selected, display the selected image
   Widget chosenImage(String path) => Container(
       height: 50,
       width: 50,
@@ -200,6 +199,7 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
         ),
       );
 
+  // The widget that displays the images added to the identification search
   Widget sampleItem(PlantIdentifyModel m) => SizedBox(
       height: 50,
       child: DecoratedBox(
@@ -213,7 +213,7 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
                     width: 100,
                     alignment: Alignment.center,
                     child: Text(
-                      "${m.organ.toUpperCase()}",
+                      m.organ.toUpperCase(),
                       style: buttonTextStyle,
                     )),
                 SizedBox(
@@ -227,6 +227,7 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
                         icon: const Icon(Icons.delete, color: darkColour))),
               ])));
 
+  // The widget that displays each of the result items in the list
   Widget resultItem(IdentifyResult m) => GestureDetector(
       onTap: () => Navigator.pop(context, m.science.toLowerCase()),
       child: SizedBox(
@@ -241,7 +242,7 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
                         width: 100,
                         alignment: Alignment.center,
                         child: Text(
-                          "${m.science}",
+                          m.science,
                           style: buttonTextStyle,
                         )),
                     Container(
@@ -251,6 +252,7 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
                           "${double.parse((m.score * 100).toStringAsFixed(1))}%",
                           style: buttonTextStyle,
                         )),
+                    const Icon(Icons.add)
                   ]))));
 
   void addImage(ImageSource source) async {
