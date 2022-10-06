@@ -11,6 +11,9 @@ import 'package:app/plantinstance/plant_info.dart';
 import 'package:app/forum/comments.dart';
 import 'package:app/base/header_sliver.dart';
 import 'package:app/screens/reply_post_screen.dart';
+import 'package:get_it/get_it.dart';
+
+import '../api/plant_api.dart';
 
 class PostScreen extends StatefulWidget {
   final int id;
@@ -70,18 +73,19 @@ class _PostScreenState extends State<PostScreen> {
                 child: Text(model.content, style: textStyle,)
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.28,
-                child: GridView(
+                height: 160,
+                child: Scrollbar(
+                  thickness: 10,
+                  thumbVisibility: false,
+                  radius: const Radius.circular(10),
+                  child: GridView(
                     scrollDirection: Axis.horizontal,
-                    controller: ScrollController(),
                     gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 200, 
-                      childAspectRatio: 1, 
-                      crossAxisSpacing: 20, 
-                      mainAxisSpacing: 20,
-                    ),
-                    children: List<Widget>.generate(2, (int idx) => PlantInfoEmpty(idx, isSmall: true))
-                  )
+                      maxCrossAxisExtent: 160, childAspectRatio: 1, crossAxisSpacing: 20, mainAxisSpacing: 20),
+                    children:
+                      GetIt.I<PlantAPI>().user!.ownedPlantIDs.map((id) => PlantInfoEmpty(id, isSmall: true)).toList(),
+                  ),
+                ),
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.15,
