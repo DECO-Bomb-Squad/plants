@@ -3,6 +3,7 @@ import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/screens/reply_post_screen.dart';
+import 'package:loading_gifs/loading_gifs.dart';
 
 class CommentManager {
   final BuildContext context;
@@ -60,6 +61,22 @@ class CommentManager {
             Expanded(
               flex: 4,
               child: Text(comment.content)
+            )
+          ]
+        ),
+        Row(
+          children: [
+            const Expanded(
+              flex: 1,
+              child: SizedBox(),
+            ),
+            Expanded(
+              flex: 4,
+              child: ElevatedButton(
+                onPressed: null,
+                style: buttonStyle,
+                child: const Text("View care profile", style: buttonTextStyle)
+              ),
             )
           ]
         ),

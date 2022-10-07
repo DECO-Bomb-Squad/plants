@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:app/base/user.dart';
 import 'package:app/forum/test_comments.dart';
+import 'package:app/screens/plant_care_screen.dart';
+import 'package:flutter/material.dart';
 
 /*
  * -- Comment Manager --
@@ -22,6 +24,7 @@ class CommentModel {
   int commentID;        // Comment ID
   int authorID;         // UserID of author
   int score;            // Point score
+  bool plantCareModel;
   String content;       // Actual comment text
   DateTime created;     // When the comment was posted
 
@@ -34,7 +37,8 @@ class CommentModel {
         score = json['score'],
         content = json['content'],
         created = DateTime.parse(json["created"]),
-        replies = []
+        replies = [],
+        plantCareModel = false
 
         {
           if (json.containsKey("replies")) {
