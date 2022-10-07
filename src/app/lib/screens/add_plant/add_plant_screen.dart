@@ -119,8 +119,8 @@ class _PlantAddScreenState extends State<PlantAddScreen> {
                                                                 (() => model = widget.listTypes.firstWhere(
                                                                     (element) =>
                                                                         element.fullName.toLowerCase().contains(value),
-                                                                    orElse: () => model =
-                                                                        PlantTypeModel.empty("value", "value"))),
+                                                                    orElse: () =>
+                                                                        model = PlantTypeModel.empty("", ""))),
                                                               )
                                                             : null
                                                       });
@@ -192,7 +192,7 @@ class _PlantAddScreenState extends State<PlantAddScreen> {
                                   height: MediaQuery.of(context).size.height * 0.05,
                                   child: TextButton(
                                       onPressed: () async {
-                                        if (_formKey.currentState!.validate()) {
+                                        if (_formKey.currentState!.validate() && model.id != 0) {
                                           PlantInfoModel? result = await widget.api
                                               .addPlant(model.id, _nicknameController.text, _descController.text);
                                           Navigator.of(context).pop();
