@@ -4,6 +4,7 @@ String rawJSON = '''{
           "content": "I am the one true original comment",
           "created": "2022-09-14T21:52",
           "id": 8,
+          "score": 2,
           "parentId": null,
           "replies": [
               {
@@ -11,6 +12,7 @@ String rawJSON = '''{
                   "created": "2022-09-14T21:52",
                   "id": 10,
                   "parentId": 8,
+                  "score": 3,
                   "replies": [],
                   "userId": 1
               }
@@ -21,6 +23,7 @@ String rawJSON = '''{
           "content": "I am the second commenter!",
           "created": "2022-09-14T21:52",
           "id": 9,
+          "score": 12,
           "parentId": null,
           "replies": [],
           "userId": 1

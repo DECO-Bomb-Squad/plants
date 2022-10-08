@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 

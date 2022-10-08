@@ -1,8 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:app/forum/comment_model.dart';
 import 'package:app/forum/post.dart';
 import 'package:app/forum/post_model.dart';
-import 'package:app/forum/test_comments.dart';
 import 'package:app/forum/test_post.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
@@ -17,20 +18,32 @@ import '../api/plant_api.dart';
 
 class PostScreen extends StatefulWidget {
   final int id;
-  const PostScreen(this.id, {Key? key}) : super(key: key);
+  CommentManager? commentManager;
+  PostInfoModel? model;
+
+  PostScreen(this.id, {Key? key}) : super(key: key);
 
   @override
   State<PostScreen> createState() => _PostScreenState();
 }
 
 class _PostScreenState extends State<PostScreen> {
-
   @override
-  Widget build(BuildContext context) {
-    PostInfoModel model = PostInfoModel.fromJSON(jsonDecode(rawJSON));
+  void initState() {
+    widget.model = PostInfoModel.fromJSON(jsonDecode(rawJSON));
+    widget.commentManager = CommentManager(context, widget.id, addComment);
+    widget.commentManager!.loadComments(widget.model!.comments);
+  }
 
-    CommentManager commentManager = CommentManager(context, widget.id);
-    commentManager.loadComments(jsonDecode(rawCommentJSON));
+  void addComment(CommentModel comment) {
+    widget.commentManager!.addComment(comment);
+    setState(() {widget.model!.comments;});
+  }
+
+  @override 
+  Widget build(BuildContext context) {
+    // widget.commentManager!.purgeComments();
+    // widget.commentManager!.loadComments(jsonDecode(rawCommentJSON));
 
     return Scaffold(
       body: NestedScrollView(
@@ -50,7 +63,7 @@ class _PostScreenState extends State<PostScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Flexible(child: Text(model.title, style: mainHeaderStyle)),                          
+                        Flexible(child: Text(widget.model!.title, style: mainHeaderStyle)),                          
                         const Icon(Icons.question_answer, size: 40,)
                       ],
                     ),
@@ -64,13 +77,13 @@ class _PostScreenState extends State<PostScreen> {
                       itemBuilder: ((context, index) => tagItemBuilder(context, index))            
                     )
                   ),
-                  PostVoteComponent(model.score)
+                  PostVoteComponent(widget.model!.score)
                 ]
               ),
               spacer,
               Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: Text(model.content, style: textStyle,)
+                child: Text(widget.model!.content, style: textStyle,)
               ),
               SizedBox(
                 height: 160,
@@ -95,7 +108,7 @@ class _PostScreenState extends State<PostScreen> {
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => ReplyPostScreen(1)));
+                        MaterialPageRoute(builder: (context) => ReplyPostScreen(widget.id, null, widget.commentManager!.model, addComment)));
                       },
                       style: buttonStyle,
                       child: const Text("Write a response...", style: buttonTextStyle)
@@ -103,7 +116,7 @@ class _PostScreenState extends State<PostScreen> {
                   ],
                 )
               ),
-              commentManager.getComments()
+              widget.commentManager!.getComments()
             ]
           )
         )

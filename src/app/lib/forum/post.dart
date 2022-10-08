@@ -21,7 +21,7 @@ class _PostSmallState extends State<PostSmallWidget> {
     return InkWell(
       onTap: () {
         Navigator.push(context,
-        MaterialPageRoute(builder: (context) => const PostScreen(1)));
+        MaterialPageRoute(builder: (context) => PostScreen(1)));
       },
       child: DecoratedBox(
         decoration: smallPostComponent,

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app/forum/comment_model.dart';
 import 'package:app/forum/post_model.dart';
 import 'package:app/forum/test_post.dart';
 import 'package:app/utils/visual_pattern.dart';
@@ -10,7 +11,10 @@ import 'package:app/forum/post.dart';
 
 class ReplyPostScreen extends StatefulWidget {
   final int postID;
-  ReplyPostScreen(this.postID, {Key? key}) : super(key: key);
+  final int? parentID;
+  CommentManagerModel model;
+  Function returnFunction;
+  ReplyPostScreen(this.postID, this.parentID, this.model, this.returnFunction, {Key? key}) : super(key: key);
 
   @override
   State<ReplyPostScreen> createState() => _ReplyPostScreenState();
@@ -76,7 +80,28 @@ class _ReplyPostScreenState extends State<ReplyPostScreen> {
                   ]
                 ) 
               ),
-              const MakePostWidget()
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      widget.returnFunction(CommentModel(model.postID, widget.parentID, textController.text));
+                      // setState(() {widget.model!.comments;});
+                      Navigator.pop(context);
+                    },
+                    style: buttonStyle,
+                    child: const Text("Post", style: buttonTextStyle),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: buttonStyle,
+                    child: const Text("Save as draft", style: buttonTextStyle),
+                  ),
+                ],
+              )
             ]
           )
         )
