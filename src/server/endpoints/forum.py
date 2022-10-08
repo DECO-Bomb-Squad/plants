@@ -162,7 +162,7 @@ Gets a list of most recently created posts (GET)
 @api_auth
 def get_post_list(session, num):
     #check num isn't fish
-    if not num.isdigit():
+    if not num.isdecimal():
         return "Please specify a valid number at the end of this URL - this will limit the amount of records to that number.", 400
 
     # confirm the posts exist
