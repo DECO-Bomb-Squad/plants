@@ -153,6 +153,26 @@ def get_post(session, id):
 
     return post.serialize(), 200
 
+
+'''
+Gets a list of most recently created posts (GET)
+'''
+@app.route("/forum/post/list/<num>", methods=["GET"])
+@APICall
+@api_auth
+def get_post_list(session, num):
+    # confirm the posts exist
+    posts: Post = session.query(Post).order_by(Post.created.desc()).limit(num).all()
+    # user = posts[0].userId
+    # print(user)
+    # plants: Plant = session.query(Plant).filter(Plant.userId == user).all()
+    # print(jsonify(plants=plants))
+
+    if not posts:
+        return f"Can't find posts", 400
+    postlist = [post.id for post in posts]
+    return jsonify(posts=postlist), 200
+
 '''
 Updates the score of a POST
     Requires:
