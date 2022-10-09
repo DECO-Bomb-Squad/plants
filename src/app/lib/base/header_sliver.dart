@@ -9,7 +9,7 @@ List<Widget> StandardHeaderBuilder(BuildContext context, bool innerBoxIsScrolled
   return <Widget>[
     SliverAppBar(
       leading: hasBackButton
-          ? IconButton(icon: Icon(Icons.arrow_back), onPressed: (() => Navigator.of(context).pop()))
+          ? IconButton(icon: const Icon(Icons.arrow_back), onPressed: (() => Navigator.of(context).pop()))
           : null,
       backgroundColor: lightColour,
       shadowColor: lightColour,
@@ -22,7 +22,7 @@ List<Widget> StandardHeaderBuilder(BuildContext context, bool innerBoxIsScrolled
           IconButton(
               onPressed: () {
                 GetIt.I<PlantAPI>().logout();
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
               },
               icon: const Icon(Icons.exit_to_app)),
         IconButton(
