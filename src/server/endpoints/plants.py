@@ -11,7 +11,7 @@ import json
 
 app = Blueprint('plant_endpoints', __name__)
 
-VERSION = '5.6.9'
+VERSION = '7.0.0'
 
 # ===== Personal Plant Management Endpoints ====
 
