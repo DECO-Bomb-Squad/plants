@@ -1,14 +1,42 @@
 import 'dart:convert';
 
+import 'package:app/api/plant_api.dart';
 import 'package:app/forum/test_post.dart';
 import 'package:app/screens/post_screen.dart';
 import 'package:app/utils/colour_scheme.dart';
+import 'package:app/utils/loading_builder.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:app/forum/post_model.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+
+class PostSmallEmpty extends StatefulWidget {
+  final int postID;
+  final PlantAPI api = GetIt.I<PlantAPI>();
+
+  PostSmallEmpty(this.postID, {Key? key}) : super(key: key);
+
+  @override 
+  State<PostSmallEmpty> createState() => _PostSmallEmptyState();
+}
+
+class _PostSmallEmptyState extends State<PostSmallEmpty> {
+  @override 
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: smallPostComponent,
+      child: LoadingBuilder(
+        widget.api.getPostInfo(widget.postID),
+        (m) => PostSmallWidget(m as PostInfoModel, widget.postID)
+      )
+    );
+  }
+}
 
 class PostSmallWidget extends StatefulWidget {
-  const PostSmallWidget({Key? key}) : super(key: key);
+  final int postID;
+  final PostInfoModel model;
+  PostSmallWidget(this.model, this.postID, {Key? key}) : super(key: key);
 
   @override
   State<PostSmallWidget> createState() => _PostSmallState();
@@ -17,7 +45,6 @@ class PostSmallWidget extends StatefulWidget {
 class _PostSmallState extends State<PostSmallWidget> {
   @override
   Widget build(BuildContext context) {
-    PostInfoModel model = PostInfoModel.fromJSON(jsonDecode(rawJSON));
     return InkWell(
       onTap: () {
         Navigator.push(context,
@@ -36,8 +63,8 @@ class _PostSmallState extends State<PostSmallWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(model.title, style: sectionHeaderStyle),
-                    Text("${model.authorID} - ${model.getReadableTimeAgo()} ago", style: modalTextStyle)
+                    Text(widget.model.title, style: sectionHeaderStyle),
+                    Text("${widget.model.authorID} - ${widget.model.getReadableTimeAgo()} ago", style: modalTextStyle)
                     ],
                   )
               ),
@@ -49,34 +76,6 @@ class _PostSmallState extends State<PostSmallWidget> {
           ),
         )
       )
-    );
-  }
-}
-
-class MakePostWidget extends StatelessWidget {
-  const MakePostWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-         ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          style: buttonStyle,
-          child: const Text("Post", style: buttonTextStyle),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          style: buttonStyle,
-          child: const Text("Save as draft", style: buttonTextStyle),
-        ),
-      ],
     );
   }
 }

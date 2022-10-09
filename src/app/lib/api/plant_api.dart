@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:app/api/storage.dart';
 import 'package:app/base/user.dart';
+import 'package:app/forum/post_model.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/secrets.dart';
 import 'package:async/async.dart';
@@ -23,7 +24,7 @@ class PlantAPI {
 
   // IMPORTANT! use local if the pythonanywhere deployment doesn't match what the front end model expects!
   // Change this "false" to a "true" to use prod deployment
-  final _baseAddress = true ? BACKEND_URL_PROD : BACKEND_URL_LOCAL;
+  final _baseAddress = false ? BACKEND_URL_PROD : BACKEND_URL_LOCAL;
 
   PlantAppStorage store = PlantAppStorage();
   PlantAppCache cache = PlantAppCache();
@@ -109,6 +110,31 @@ class PlantAPI {
     return getGeneric(path, (result) => PlantInfoModel.fromJSON(result));
   }
 
+  Future<PostInfoModel> getPostInfo(int id) {
+    String path = "/forum/post/$id";
+    return getGeneric(path, (result) => PostInfoModel.fromJSON(result));
+  }
+
+  // Future<PostInfoModel> getRecentPosts(int num) {
+  //   String path = "/forum/post/list/$num";
+  //   return getGeneric(path, (result) => PostInfoModel.fromJSON(result));
+  // }
+
+  Future<bool> addPost(PostInfoModel model) async {
+    String path = "/forum/post";
+
+    http.Response response =
+        await http.post(makePath(path), headers: header, body: {
+          "userId": model.authorID, 
+          "title": model.title,
+          "content": model.content,
+          "plantIds": model.attachedPlantstoJson(),
+          "tagIds": ""
+        });
+
+    return response.statusCode == 200;
+  }
+
   Future<bool> addPlantPhoto(String imageURL, int plantId) async {
     String path = "/plant/photos/add";
 
@@ -139,4 +165,5 @@ class PlantAPI {
   Future<bool> addWatering(DateTime day, int plantId) => addPlantActivity(day, ActivityTypeId.watering, plantId);
   Future<bool> addRepotting(DateTime day, int plantId) => addPlantActivity(day, ActivityTypeId.repotting, plantId);
   Future<bool> addFertilising(DateTime day, int plantId) => addPlantActivity(day, ActivityTypeId.fertilising, plantId);
+
 }

@@ -21,7 +21,23 @@ class PostInfoModel {
         attachedPlants = json["linkedPlants"],
         tags = json["postTags"],
         comments = json["comments"];
+
+  PostInfoModel(this.authorID, this.title, this.content)
+      : postID = -1,
+        score = 0,
+        created = DateTime.now(),
+        attachedPlants = [],
+        tags = [],
+        comments = [];
         
+  String attachedPlantstoJson() {
+    String plantJson = "[";
+    for (var plant in attachedPlants) {
+      plantJson += "${plant['plantId']},";
+    }
+    plantJson = plantJson.substring(0, plantJson.length - 1); // Trim the final comma
+    return "]";
+  }
 
   String getReadableTimeAgo() {
     Duration delta = DateTime.now().difference(created);

@@ -125,6 +125,26 @@ InputDecoration replyInputComponent = InputDecoration(
   focusColor: lightHighlight
 );
 
+InputDecoration postInputComponent = InputDecoration(
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(smallRadius),
+  ),
+  hintText: "Ask your question here. Make sure to include plenty of detail...",
+  hintStyle: inputStyle,
+  hintMaxLines: 2,
+  focusColor: lightHighlight
+);
+
+InputDecoration titleInputComponent = InputDecoration(
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(smallRadius),
+  ),
+  hintText: "Enter an interesting title!",
+  hintStyle: inputStyle,
+  hintMaxLines: 2,
+  focusColor: lightHighlight
+);
+
 // Button styling
 // Standard button
 ButtonStyle buttonStyle = ButtonStyle(

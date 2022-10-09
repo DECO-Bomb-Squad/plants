@@ -62,7 +62,8 @@ class _MainScreenState extends State<MainScreen> {
                       childAspectRatio: 3 / 1,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20),
-                  children: List<Widget>.generate(10, (int idx) => PostSmallWidget()))),
+                  children: List<Widget>.generate(10, (int idx) => PostSmallEmpty(20)))),
+                  //children: GetIt.I<PlantAPI>().user!.ownedPlantIDs.map((id) => PlantInfoEmpty(id, isSmall: true)).toList()))
         ],
       ));
 
