@@ -1,6 +1,8 @@
+import 'package:app/api/plant_api.dart';
 import 'package:app/plantinstance/plant_info.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get_it/get_it.dart';
 
 class MyPlantsScreen extends StatefulWidget {
   const MyPlantsScreen({super.key});
@@ -33,7 +35,14 @@ class _MyPlantsScreenState extends State<MyPlantsScreen> {
                   crossAxisSpacing: 20,
                   mainAxisSpacing: 20,
                 ),
-                children: List<Widget>.generate(6, (int index) => PlantInfoEmpty(index, isSmall: false)),
+                children: GetIt.I<PlantAPI>()
+                    .user!
+                    .ownedPlantIDs!
+                    .map((int id) => PlantInfoEmpty(
+                          id,
+                          isSmall: false,
+                        ))
+                    .toList(),
               ),
             )
           ],
