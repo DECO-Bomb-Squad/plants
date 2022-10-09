@@ -23,16 +23,6 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
   PlantIdentifyModel currentAddition = PlantIdentifyModel("leaf", "");
   final PlantAPI api = GetIt.I<PlantAPI>();
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   void rebuild() {
     setState(() {});
   }

@@ -41,15 +41,6 @@ class _PlantAddScreenState extends State<PlantAddScreen> {
   final TextEditingController _typeAheadController = TextEditingController();
   final TextEditingController _nicknameController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   void rebuild() {
     setState(() {});
