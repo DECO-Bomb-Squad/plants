@@ -151,6 +151,31 @@ extension SoilTypeExtension on SoilType {
         return null;
     }
   }
+
+  static SoilType? toSoilType(String s) {
+    switch (s) {
+      case "small pot":
+        return SoilType.smallPot;
+      case "medium pot":
+        return SoilType.mediumPot;
+      case "large pot":
+        return SoilType.largePot;
+      case "window planter":
+        return SoilType.windowPlanter;
+      case "garden bed":
+        return SoilType.gardenBed;
+      case "container of water":
+        return SoilType.water;
+      case "fish tank":
+        return SoilType.fishTank;
+      default:
+        return null;
+    }
+  }
+
+  static List<String?> allSoilTypes() {
+    return SoilType.values.map((e) => e.toHumanString()).toList();
+  }
 }
 
 enum LocationType {
