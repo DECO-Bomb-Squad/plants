@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:app/api/plant_api.dart';
+import 'package:app/base/header_sliver.dart';
 import 'package:app/plantinstance/plant_info.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/utils/activity_calendar.dart';
@@ -42,11 +43,15 @@ class PlantCareScreen extends StatefulWidget {
 
 class _PlantCareScreenState extends State<PlantCareScreen> {
   ActivityOccurenceModel get activityModel => widget.model.activities;
+  late bool belongsToMe;
 
   @override
   void initState() {
     super.initState();
     widget.model.addListener(rebuild);
+    int myId = GetIt.I<PlantAPI>().user!.id;
+    int plantOwnerId = widget.model.ownerId;
+    belongsToMe = (myId == plantOwnerId);
   }
 
   @override
@@ -64,32 +69,7 @@ class _PlantCareScreenState extends State<PlantCareScreen> {
     SfCalendar calendar = calendarMini(activityModel);
     return Scaffold(
         body: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                SliverAppBar(
-                  leading:
-                      IconButton(icon: const Icon(Icons.arrow_back), onPressed: (() => Navigator.of(context).pop())),
-                  backgroundColor: lightColour,
-                  shadowColor: lightColour,
-                  pinned: false,
-                  floating: true,
-                  forceElevated: innerBoxIsScrolled,
-                  iconTheme: const IconThemeData(color: darkHighlight, size: 35),
-                  actions: [
-                    IconButton(
-                      icon: const Icon(Icons.person),
-                      tooltip: 'Add new entry',
-                      onPressed: () {/* ... */},
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.notifications),
-                      tooltip: 'Add new entry',
-                      onPressed: () {/* ... */},
-                    ),
-                  ],
-                ),
-              ];
-            },
+            headerSliverBuilder: StandardHeaderBuilder,
             body: Container(
               padding: const EdgeInsets.only(left: 20, right: 20),
               child: Column(
@@ -124,11 +104,13 @@ class _PlantCareScreenState extends State<PlantCareScreen> {
                                 width: double.infinity,
                                 height: MediaQuery.of(context).size.height * 0.05,
                                 child: TextButton(
-                                    onPressed: () {
-                                      DateTime? selected = calendar.controller?.selectedDate;
-                                      activityModel.addWatering(selected);
-                                      setState(() {});
-                                    },
+                                    onPressed: belongsToMe
+                                        ? () {
+                                            DateTime? selected = calendar.controller?.selectedDate;
+                                            activityModel.addWatering(selected);
+                                            setState(() {});
+                                          }
+                                        : null,
                                     style: waterButtonStyle,
                                     child: const Text(
                                       "Mark as Watered",
@@ -138,11 +120,13 @@ class _PlantCareScreenState extends State<PlantCareScreen> {
                                 width: double.infinity,
                                 height: MediaQuery.of(context).size.height * 0.05,
                                 child: TextButton(
-                                    onPressed: () {
-                                      DateTime? selected = calendar.controller?.selectedDate;
-                                      activityModel.addFertilising(selected);
-                                      setState(() {});
-                                    },
+                                    onPressed: belongsToMe
+                                        ? () {
+                                            DateTime? selected = calendar.controller?.selectedDate;
+                                            activityModel.addFertilising(selected);
+                                            setState(() {});
+                                          }
+                                        : null,
                                     style: buttonStyle,
                                     child: const Text(
                                       "Mark as Fertilised",
@@ -152,11 +136,13 @@ class _PlantCareScreenState extends State<PlantCareScreen> {
                                 width: double.infinity,
                                 height: MediaQuery.of(context).size.height * 0.05,
                                 child: TextButton(
-                                    onPressed: () {
-                                      DateTime? selected = calendar.controller?.selectedDate;
-                                      activityModel.addRepotting(selected);
-                                      setState(() {});
-                                    },
+                                    onPressed: belongsToMe
+                                        ? () {
+                                            DateTime? selected = calendar.controller?.selectedDate;
+                                            activityModel.addRepotting(selected);
+                                            setState(() {});
+                                          }
+                                        : null,
                                     style: buttonStyle,
                                     child: const Text(
                                       "Mark as Repotted",
