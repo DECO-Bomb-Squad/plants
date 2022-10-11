@@ -33,7 +33,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               child: Padding (
                 padding: EdgeInsets.all(padding),
                 child: TextField(
-                    controller: textController, 
+                    controller: titleController, 
                     style: textStyle, 
                     decoration: titleInputComponent,
                     minLines: 1,

@@ -25,7 +25,7 @@ class PlantAPI {
 
   // IMPORTANT! use local if the pythonanywhere deployment doesn't match what the front end model expects!
   // Change this "false" to a "true" to use prod deployment
-  final _baseAddress = false ? BACKEND_URL_PROD : BACKEND_URL_LOCAL;
+  final _baseAddress = true ? BACKEND_URL_PROD : BACKEND_URL_LOCAL;
 
   PlantAppStorage store = PlantAppStorage();
   PlantAppCache cache = PlantAppCache();
@@ -36,6 +36,7 @@ class PlantAPI {
       Uri.http(_baseAddress, subPath, queryParams ?? {});
 
   User? user;
+  List<int>? recentPosts;
 
   // Auth token - back end rejects requests that don't use this header for security reasons
   Map<String, String> get header => {"apiKey": API_KEY};
@@ -59,6 +60,7 @@ class PlantAPI {
         Map<String, dynamic> decodedUserDetails = jsonDecode(userDetails);
         user = User.fromJSON(decodedUserDetails);
         user!.ownedPlantIDs = await getUserPlants(user!.username);
+        recentPosts = await getRecentPosts(2);
         return true;
       } else {
         return false;
@@ -73,6 +75,7 @@ class PlantAPI {
     await store.set(user_store_name, jsonEncode(data));
     user = User.fromJSON(data);
     user!.ownedPlantIDs = await getUserPlants(user!.username);
+    recentPosts = await getRecentPosts(5);
     return user!;
   }
 
@@ -122,17 +125,23 @@ class PlantAPI {
     return getGeneric(path, (result) => PostInfoModel.fromJSON(result));
   }
 
-  // Future<PostInfoModel> getRecentPosts(int num) {
-  //   String path = "/forum/post/list/$num";
-  //   return getGeneric(path, (result) => PostInfoModel.fromJSON(result));
-  // }
+  Future<List<int>> getRecentPosts(int num) async {
+    String path = "/forum/post/list/$num";
+    //return getGeneric(path, (result) => PostInfoModel.fromJSON(result));
+
+    http.Response response = await http.get(makePath(path), headers: header);
+
+    print(jsonDecode(response.body));
+    List<dynamic> res = jsonDecode(response.body)["posts"];
+    return res.map((e) => e as int).toList();
+  }
 
   Future<bool> addPost(PostInfoModel model) async {
-    String path = "/forum/post";
+    String path = "/forum/post/add";
 
     http.Response response =
         await http.post(makePath(path), headers: header, body: {
-          "userId": model.authorID, 
+          "userId": model.authorID.toString(), 
           "title": model.title,
           "content": model.content,
           "plantIds": model.attachedPlantstoJson(),

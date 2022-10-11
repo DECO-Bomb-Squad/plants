@@ -1,3 +1,4 @@
+import 'package:app/forum/post_model.dart';
 import 'package:app/screens/create_post_screen.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +63,8 @@ class _MainScreenState extends State<MainScreen> {
                       childAspectRatio: 3 / 1,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20),
-                  children: List<Widget>.generate(10, (int idx) => PostSmallEmpty(20)))),
+                  children: GetIt.I<PlantAPI>().recentPosts!.map((id) => PostSmallEmpty(id)).toList()))
+                  //children: List<Widget>.generate(10, (int idx) => PostSmallEmpty(20)))),
                   //children: GetIt.I<PlantAPI>().user!.ownedPlantIDs.map((id) => PlantInfoEmpty(id, isSmall: true)).toList()))
         ],
       ));

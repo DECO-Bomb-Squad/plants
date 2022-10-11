@@ -96,7 +96,7 @@ class _PostScreenState extends State<PostScreen> {
                     gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                       maxCrossAxisExtent: 160, childAspectRatio: 1, crossAxisSpacing: 20, mainAxisSpacing: 20),
                     children:
-                      GetIt.I<PlantAPI>().user!.ownedPlantIDs.map((id) => PlantInfoEmpty(id, isSmall: true)).toList(),
+                      GetIt.I<PlantAPI>().user!.ownedPlantIDs!.map((id) => PlantInfoEmpty(id, isSmall: true)).toList(),
                   ),
                 ),
               ),
