@@ -81,7 +81,7 @@ def create_care_profile(session):
             raise KeyError
 
     except KeyError as e:
-        return '''To update a care profile, you must provide - careProfileId: int, soilType: str,
+        return '''To update a care profile, you must provide - soilType: str,
          plantLocation: str, daysBetweenRepotting: int, daysBetweenWatering: int, daysBetweenFertilizer: int''', 400
     except Exception as e:
         return "An unknown exception occurred", 500
