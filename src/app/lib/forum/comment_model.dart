@@ -16,8 +16,7 @@ class CommentManagerModel {
   int postID;
   List<CommentModel> comments;
 
-  CommentManagerModel(this.postID)
-      : comments = [];
+  CommentManagerModel(this.postID) : comments = [];
 }
 
 class CommentModel {

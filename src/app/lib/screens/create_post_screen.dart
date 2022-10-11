@@ -8,7 +8,6 @@ import 'package:app/base/header_sliver.dart';
 import 'package:get_it/get_it.dart';
 
 class CreatePostScreen extends StatefulWidget {
-
   const CreatePostScreen({Key? key}) : super(key: key);
 
   @override

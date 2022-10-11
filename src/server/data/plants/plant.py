@@ -1,9 +1,9 @@
+from datetime import datetime, timedelta
 from data.constants import TBL_PLANTS, TBL_USERS, TBL_PLANT_TYPES, TBL_PLANT_CARE_PROFILE
 from data.plants.plantCareProfile import PlantCareProfile
-from sqlalchemy import Column, Integer, String, ForeignKey, Enum
+from data.activity.activities import Activity
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from flask import jsonify
-import json
 
 import data.DB as DB
 
@@ -67,4 +67,20 @@ class Plant(DB.BASE):
             "photos":          self.get_serialized_photos() 
         }
 
-    # will need to add more methods here for getting info and setting info of the user
+    def needs_watering(self, session):
+        # Watering's activitytype id is 1 in the database
+        most_recent_watering: Activity = session.query(Activity) \
+            .filter(Activity.activityTypeId == 1) \
+            .filter(Activity.plantId == self.id) \
+            .order_by(Activity.activityTime.desc()) \
+            .first()
+        
+        if most_recent_watering is None:
+            return True
+
+        care: PlantCareProfile = self.careProfile
+        target_watering_time: int = care.daysBetweenWatering
+        delta: timedelta = datetime.now() - most_recent_watering.activityTime
+        days_since_water: int = delta.days
+
+        return days_since_water >= target_watering_time

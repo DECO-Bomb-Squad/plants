@@ -66,16 +66,12 @@ class _PostSmallState extends State<PostSmallWidget> {
                     Text(widget.model.title, style: sectionHeaderStyle),
                     Text("${widget.model.authorID} - ${widget.model.getReadableTimeAgo()} ago", style: modalTextStyle)
                     ],
-                  )
-              ),
-              const Expanded(
-                flex: 1,
-                child: Icon(Icons.check_circle, size: 50)  
-              )
+                  )),
+              const Expanded(flex: 1, child: Icon(Icons.check_circle, size: 50))
             ],
           ),
-        )
-      )
+        ),
+      ),
     );
   }
 }

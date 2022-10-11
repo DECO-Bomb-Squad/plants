@@ -22,21 +22,21 @@ class _LayoutScreenState extends State<LayoutScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: const [
           Text(
-                "HEADER 1\nExample text in mainHeaderStyle\n",
-                style: mainHeaderStyle,
-              ),
+            "HEADER 1\nExample text in mainHeaderStyle\n",
+            style: mainHeaderStyle,
+          ),
           Text(
-                "HEADER 2\nExample text in sectionHeaderStyle\n",
-                style: sectionHeaderStyle,
-              ),
+            "HEADER 2\nExample text in sectionHeaderStyle\n",
+            style: sectionHeaderStyle,
+          ),
           Text(
-                "HEADER 3\nExample text in subHeaderStyle\n",
-                style: subheaderStyle,
-              ),
+            "HEADER 3\nExample text in subHeaderStyle\n",
+            style: subheaderStyle,
+          ),
           Text(
-                "BODY TEXT\nExample text in textStyle\n",
-                style: textStyle,
-              ),
+            "BODY TEXT\nExample text in textStyle\n",
+            style: textStyle,
+          ),
         ],
       ));
 

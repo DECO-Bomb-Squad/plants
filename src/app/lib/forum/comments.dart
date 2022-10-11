@@ -48,18 +48,19 @@ class CommentManager {
 
     return Column(crossAxisAlignment: CrossAxisAlignment.center, children: output);
   }
-  
+
   Column _getComment(CommentModel comment) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            const Expanded (
+        Row(children: [
+          const Expanded(
               flex: 1,
-              child: Icon(Icons.account_circle, size: 40,)
-            ),
-            Expanded (
+              child: Icon(
+                Icons.account_circle,
+                size: 40,
+              )),
+          Expanded(
               flex: 4,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,13 +68,10 @@ class CommentManager {
                   Text("${comment.authorID}", style: subheaderStyle),
                   Text("${comment.getReadableTimeAgo()} ago")
                 ],
-              )
-            )
-          ]
-        ),
-        Row(
-          children: [
-            Expanded(
+              ))
+        ]),
+        Row(children: [
+          Expanded(
               flex: 1,
               child: CommentVoteComponent(comment)
             ),
@@ -104,12 +102,11 @@ class CommentManager {
           children: [
             Expanded(flex: 1, child: Container()),
             Expanded(
-              flex: 4,
-              child: Column(
-                //children: List<Widget>.generate(Random().nextInt(5), (e) => _getCommentReply()),
-                children: List<Widget>.from(comment.replies.map((e) => _getCommentReply(e))),
-              )
-            )
+                flex: 4,
+                child: Column(
+                  //children: List<Widget>.generate(Random().nextInt(5), (e) => _getCommentReply()),
+                  children: List<Widget>.from(comment.replies.map((e) => _getCommentReply(e))),
+                ))
           ],
         ),
         _getReplyButton(comment.commentID)
@@ -120,13 +117,14 @@ class CommentManager {
   Widget _getCommentReply(CommentModel comment) {
     return Column(
       children: [
-        Row(
-          children: [
-            const Expanded (
+        Row(children: [
+          const Expanded(
               flex: 1,
-              child: Icon(Icons.account_circle, size: 40,)
-            ),
-            Expanded (
+              child: Icon(
+                Icons.account_circle,
+                size: 40,
+              )),
+          Expanded(
               flex: 4,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
