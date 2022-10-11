@@ -1,4 +1,5 @@
 import 'package:app/api/plant_api.dart';
+import 'package:app/editplantcareprofile/edit_plant_care_profile.dart';
 import 'package:app/plantinstance/plant_image_gallery.dart';
 import 'package:app/screens/plant_care_screen.dart';
 import 'package:app/utils/loading_builder.dart';
@@ -229,6 +230,13 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
         child: const Text("Mark as watered", style: buttonTextStyle),
       );
 
+  ElevatedButton get editCareProfileButton => ElevatedButton(
+        onPressed: () {
+          showDialog(context: context, builder: (_) => EditPlantCareProfile(profile: model.careProfile, plant: model));
+        },
+        child: const Text("Edit Care Profile", style: buttonTextStyle),
+      );
+
   ElevatedButton get activityOptionsButton => ElevatedButton(
         onPressed: navigateToActivityScreen,
         style: buttonStyle,
@@ -265,6 +273,7 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   markAsWateredButton,
+                  editCareProfileButton,
                   activityOptionsButton,
                 ],
               ),

@@ -28,7 +28,7 @@ class PlantAPI {
 
   // IMPORTANT! use local if the pythonanywhere deployment doesn't match what the front end model expects!
   // Change this "false" to a "true" to use prod deployment
-  final _baseAddress = true ? BACKEND_URL_PROD : BACKEND_URL_LOCAL;
+  final _baseAddress = false ? BACKEND_URL_PROD : BACKEND_URL_LOCAL;
 
   PlantAppStorage store = PlantAppStorage();
   PlantAppCache cache = PlantAppCache();
@@ -225,6 +225,22 @@ class PlantAPI {
     String path = "/users/$username/token";
 
     http.Response response = await http.post(makePath(path), headers: header, body: {"token": token});
+
+    return response.statusCode == 200;
+  }
+
+  Future<bool> updatePlantCareProfile(PlantCareProfile profile) async {
+    String path = "/careprofile/update";
+    Map<String, dynamic> reqBody = {
+      "careProfileId": profile.id.toString(),
+      "soilType": profile.soilType.name,
+      "plantLocation": profile.location.name,
+      "daysBetweenWatering": profile.daysBetweenWatering.toString(),
+      "daysBetweenRepotting": profile.daysBetweenRepotting.toString(),
+      "daysBetweenFertilizer": profile.daysBetweenFertilising.toString(),
+    };
+
+    http.Response response = await http.patch(makePath(path), body: reqBody, headers: header);
 
     return response.statusCode == 200;
   }

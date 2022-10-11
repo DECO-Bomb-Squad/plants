@@ -22,8 +22,8 @@ class PlantCareProfile(DB.BASE):
     daysBetweenRepotting = Column('daysBetweenRepotting', Integer, nullable=True)
     daysBetweenFertilizer = Column('daysBetweenFertilizer', Integer, nullable=True)
 
-    linkedComment = Column('linkedComment', Integer, ForeignKey(f"{TBL_COMMENTS}.id", name=f"fk_comments_{__tablename__}"), nullable=True)
-    comment = relationship("Comment", back_populates="careProfiles")
+    linkedComment = Column('linkedComment', Integer, ForeignKey(f"{TBL_COMMENTS}.id"), nullable=True)
+    comment = relationship("Comment", back_populates="careProfiles", foreign_keys=[linkedComment])
 
     
     def __init__(self, soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer):
@@ -42,7 +42,6 @@ class PlantCareProfile(DB.BASE):
             "daysBetweenWatering": self.daysBetweenWatering,
             "daysBetweenRepotting": self.daysBetweenRepotting if self.daysBetweenRepotting else -1,
             "daysBetweenFertilizer": self.daysBetweenFertilizer if self.daysBetweenFertilizer else -1,
-            "linkedComment": self.linkedComment
         }
 
 """
