@@ -1,13 +1,15 @@
+import 'package:app/api/plant_api.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/editplantcareprofile/edit_plant_care_profile_model.dart';
+import 'package:get_it/get_it.dart';
 
 class EditPlantCareProfile extends StatefulWidget {
   PlantCareProfile? profile;
   PlantInfoModel? plant;
-  EditPlantCareProfile({super.key, this.profile, this.plant});
+  EditPlantCareProfile({super.key, required this.profile, required this.plant});
 
   @override
   State<EditPlantCareProfile> createState() => _EditPlantCareProfileState();
@@ -219,14 +221,15 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                               ? null
                               : () async {
                                   if (_formKey.currentState!.validate()) {
+                                    int? idToReturn;
                                     if (model.isNew) {
                                       PlantCareProfile newProfile = PlantCareProfile.newCareProfile(model);
-                                      print(newProfile.daysBetweenFertilising);
-                                      print(newProfile.location.toHumanString());
+                                      idToReturn = await GetIt.I<PlantAPI>().createPlantCareProfile(newProfile);
                                     } else {
                                       await model.assignedPlant?.careProfile.updatePlantCareProfile(model);
+                                      idToReturn = model.assignedPlant?.careProfile.id;
                                     }
-                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop<int?>(idToReturn);
                                   }
                                 },
                           child: Text(submitText, style: buttonTextStyle)),

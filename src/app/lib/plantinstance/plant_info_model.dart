@@ -75,7 +75,11 @@ class PlantInfoModel extends ChangeNotifier {
             .map((key, value) => MapEntry(DateTime.parse(key as String), value as String)),
         activities = ActivityOccurenceModel.fromListJSON(json["id"], json["activities"]),
         careProfile = PlantCareProfile.fromJSON(json["careProfile"]) {
-    activities.addListener(notifyListeners);
+    activities.addListener(rebuild);
+  }
+
+  void rebuild() {
+    notifyListeners();
   }
 
   Widget getCoverPhoto(double height, double width, IconData iconData, double iconSize) => ClipRRect(

@@ -180,6 +180,7 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
   void initState() {
     super.initState();
     widget.model.addListener(rebuild);
+    widget.model.careProfile.addListener(rebuild);
     int myId = GetIt.I<PlantAPI>().user!.id;
     int plantOwnerId = model.ownerId;
     belongsToMe = (myId == plantOwnerId);
@@ -189,6 +190,7 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
   void dispose() {
     super.dispose();
     widget.model.removeListener(rebuild);
+    widget.model.careProfile.removeListener(rebuild);
   }
 
   void rebuild() {
@@ -260,54 +262,77 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
         child: const Text("More options", style: buttonTextStyle),
       );
 
-  Widget get descriptionParagraph => Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-      child: Text(model.description!, style: modalTextStyle));
+  Widget get descriptionParagraph => Text(model.description!, style: modalTextStyle);
 
-  Widget get careDetailsParagraph => Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Text(
-          "Water every ${model.careProfile.daysBetweenWatering} days, repot every ${model.careProfile.daysBetweenRepotting} days, fertilise every ${model.careProfile.daysBetweenFertilising} days. Planted in a ${model.careProfile.soilType.toHumanString()} located ${model.careProfile.location.toHumanString()}",
-          style: modalTextStyle));
+  Widget get careDetailsParagraph => Text(
+      "Water every ${model.waterFrequency} days, repot every ${model.repotFrequency} days, fertilise every ${model.fertiliseFrequency} days. Planted in a ${model.careProfile.soilType.toHumanString()} located ${model.careProfile.location.toHumanString()}",
+      style: modalTextStyle);
+
+  Widget get healthHeader => Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: const [Text("Health", style: sectionHeaderStyle)],
+      );
+
+  Widget get careHeader => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text("Care Profile", style: sectionHeaderStyle),
+          if (belongsToMe) editCareProfileButton,
+        ],
+      );
+
+  Column get lastCareDetails => Column(
+        children: [
+          Text("Last watered ${model.timeSinceLastWater} days ago", style: modalTextStyle),
+          Text("Last fertilised ${model.timeSinceLastFertilise} days ago", style: modalTextStyle),
+          Text("Last repotted ${model.timeSinceLastRepot} days ago", style: modalTextStyle),
+        ],
+      );
 
   @override
   Widget build(BuildContext context) => Scaffold(
-          body: NestedScrollView(
-        scrollDirection: Axis.vertical,
-        scrollBehavior: const MaterialScrollBehavior(),
-        headerSliverBuilder: StandardHeaderBuilder,
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            nameRow,
-            if (model.description != null && model.description!.isNotEmpty) descriptionParagraph,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                photoGalleryButton,
-                activityCalendarButton,
-              ],
-            ),
-            model.getWaterMeterRow(200, 30),
-            Text(model.condition.text(), style: textStyle),
-            if (belongsToMe)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+        body: NestedScrollView(
+          scrollDirection: Axis.vertical,
+          scrollBehavior: const MaterialScrollBehavior(),
+          headerSliverBuilder: StandardHeaderBuilder,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  markAsWateredButton,
-                  activityOptionsButton,
+                  nameRow,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      photoGalleryButton,
+                      spacer,
+                      activityCalendarButton,
+                    ],
+                  ),
+                  if (model.description != null && model.description!.isNotEmpty) descriptionParagraph,
+                  healthHeader,
+                  model.getWaterMeterRow(200, 30),
+                  Text(model.condition.text(), style: textStyle),
+                  spacer,
+                  lastCareDetails,
+                  if (belongsToMe)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        markAsWateredButton,
+                        activityOptionsButton,
+                      ],
+                    ),
+                  careHeader,
+                  careDetailsParagraph,
                 ],
               ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                const Text("Care Profile", style: sectionHeaderStyle),
-                if (belongsToMe) editCareProfileButton,
-              ],
             ),
-            careDetailsParagraph,
-          ],
+          ),
         ),
-      ));
+      );
+
+  SizedBox get spacer => const SizedBox(height: 10, width: 10);
 }
