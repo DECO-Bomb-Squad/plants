@@ -228,4 +228,41 @@ class PlantAPI {
 
     return response.statusCode == 200;
   }
+
+  Future<bool> updatePlantCareProfile(PlantCareProfile profile) async {
+    String path = "/careprofile/update";
+    Map<String, dynamic> reqBody = {
+      "careProfileId": profile.id.toString(),
+      "soilType": profile.soilType.name,
+      "plantLocation": profile.location.name,
+      "daysBetweenWatering": profile.daysBetweenWatering.toString(),
+      "daysBetweenRepotting": profile.daysBetweenRepotting.toString(),
+      "daysBetweenFertilizer": profile.daysBetweenFertilising.toString(),
+    };
+
+    http.Response response = await http.patch(makePath(path), body: reqBody, headers: header);
+
+    return response.statusCode == 200;
+  }
+
+  // Posts a new orphaned plantcareprofile for the forum
+  Future<int?> createPlantCareProfile(PlantCareProfile profile) async {
+    String path = "/careprofile/add";
+    Map<String, dynamic> reqBody = {
+      "soilType": profile.soilType.name,
+      "plantLocation": profile.location.name,
+      "daysBetweenWatering": profile.daysBetweenWatering.toString(),
+      "daysBetweenRepotting": profile.daysBetweenRepotting.toString(),
+      "daysBetweenFertilizer": profile.daysBetweenFertilising.toString()
+    };
+
+    http.Response response = await http.patch(makePath(path), body: reqBody, headers: header);
+    if (response.statusCode != 200) return null;
+
+    Map<String, dynamic> res = json.decode(response.body);
+    int? profileId = res["id"];
+    profile.id = profileId!;
+
+    return profileId;
+  }
 }

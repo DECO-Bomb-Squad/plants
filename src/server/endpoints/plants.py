@@ -439,13 +439,3 @@ Deletes a Plant Type (ADMIN)
     - Params:
         - plantId: int
 '''
-
-@app.route("/test_plant", methods = ["GET"])
-@APICall
-def test_plant(session):
-    return {
-        "plant_name": "Rose",
-        "scientific_name": "Scientific",
-        "tags": [],
-        "imageUrls": []
-    }, 200

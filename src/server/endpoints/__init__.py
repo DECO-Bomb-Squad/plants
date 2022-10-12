@@ -14,7 +14,6 @@ def get_blueprints() -> List[Blueprint]:
         plants.app,
         careProfile.app,
         activities.app,
-        careProfile.app,
         notifications.app,
         forum.app
     ]

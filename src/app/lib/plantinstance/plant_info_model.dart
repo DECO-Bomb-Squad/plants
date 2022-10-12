@@ -23,13 +23,17 @@ class PlantCareProfile extends ChangeNotifier {
         daysBetweenFertilising = json["daysBetweenFertilizer"],
         daysBetweenRepotting = json["daysBetweenRepotting"];
 
-  void updatePlantCareProfile(EditPlantCareProfileModel model) {
+  Future<bool> updatePlantCareProfile(EditPlantCareProfileModel model) async {
+    // Set the fields to new ones specified in the edit model
     location = model.location!;
     soilType = model.soilType!;
     daysBetweenWatering = model.daysBetweenWatering!;
     daysBetweenFertilising = model.daysBetweenFertilising!;
     daysBetweenRepotting = model.daysBetweenRepotting!;
+    // Make api call to ask server to update
+    bool result = await GetIt.I<PlantAPI>().updatePlantCareProfile(this);
     notifyListeners();
+    return result;
   }
 
   PlantCareProfile.newCareProfile(EditPlantCareProfileModel model)
