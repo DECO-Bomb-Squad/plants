@@ -70,7 +70,7 @@ def add_post(session):
         newPost = Post(title=title, content=content, userId=int(userId))
         session.add(newPost)
         session.flush()
-        session.refresh(plant)
+        session.refresh(newPost)
         # Post Plants
         for plantId in parsedPlantIds:
             postPlant = PostPlant(plantId, newPost.id)
