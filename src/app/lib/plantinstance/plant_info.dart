@@ -1,4 +1,5 @@
 import 'package:app/api/plant_api.dart';
+import 'package:app/base/header_sliver.dart';
 import 'package:app/editplantcareprofile/edit_plant_care_profile.dart';
 import 'package:app/plantinstance/plant_image_gallery.dart';
 import 'package:app/screens/plant_care_screen.dart';
@@ -63,7 +64,7 @@ class _PlantInfoSmallState extends State<PlantInfoSmallWidget> {
         child: InkWell(
       onTap: () {
         showDialog(
-            context: context, builder: (_) => PlantInfoDialog(widget.model, () => setState(() {}), widget.plantID));
+            context: context, builder: (_) => PlantInfoScreen(widget.model, () => setState(() {}), widget.plantID));
       },
       child: Container(
           decoration: smallPlantComponent,
@@ -124,7 +125,7 @@ class _PlantInfoLargeState extends State<PlantInfoLargeWidget> {
         child: InkWell(
       onTap: () {
         showDialog(
-            context: context, builder: (_) => PlantInfoDialog(widget.model, () => setState(() {}), widget.plantID));
+            context: context, builder: (_) => PlantInfoScreen(widget.model, () => setState(() {}), widget.plantID));
       },
       child: Container(
         decoration: smallPlantComponent,
@@ -159,18 +160,18 @@ class _PlantInfoLargeState extends State<PlantInfoLargeWidget> {
   }
 }
 
-class PlantInfoDialog extends StatefulWidget {
+class PlantInfoScreen extends StatefulWidget {
   final int plantID;
   final PlantInfoModel model;
   final void Function() rebuildParent;
 
-  const PlantInfoDialog(this.model, this.rebuildParent, this.plantID, {super.key});
+  const PlantInfoScreen(this.model, this.rebuildParent, this.plantID, {super.key});
 
   @override
-  State<PlantInfoDialog> createState() => _PlantInfoDialogState();
+  State<PlantInfoScreen> createState() => _PlantInfoScreenState();
 }
 
-class _PlantInfoDialogState extends State<PlantInfoDialog> {
+class _PlantInfoScreenState extends State<PlantInfoScreen> {
   PlantInfoModel get model => widget.model;
 
   late bool belongsToMe;
@@ -200,8 +201,13 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
   Row get nameRow => Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(model.nickName ?? model.plantName, style: mainHeaderStyle),
-          Icon(model.condition.iconData(), size: 50)
+          Column(
+            children: [
+              Text(model.nickName ?? model.plantName, style: mainHeaderStyle),
+              Text(model.scientificName, style: sectionHeaderStyle),
+            ],
+          ),
+          Icon(model.condition.iconData(), size: 75)
         ],
       );
 
@@ -265,52 +271,43 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
           style: modalTextStyle));
 
   @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height / 1.5,
-        ),
-        decoration: dialogComponent,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              nameRow,
-              Text(model.scientificName, style: sectionHeaderStyle),
-              if (model.description != null && model.description!.isNotEmpty) descriptionParagraph,
+  Widget build(BuildContext context) => Scaffold(
+          body: NestedScrollView(
+        scrollDirection: Axis.vertical,
+        scrollBehavior: const MaterialScrollBehavior(),
+        headerSliverBuilder: StandardHeaderBuilder,
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            nameRow,
+            if (model.description != null && model.description!.isNotEmpty) descriptionParagraph,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                photoGalleryButton,
+                activityCalendarButton,
+              ],
+            ),
+            model.getWaterMeterRow(200, 30),
+            Text(model.condition.text(), style: textStyle),
+            if (belongsToMe)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  photoGalleryButton,
-                  activityCalendarButton,
+                  markAsWateredButton,
+                  activityOptionsButton,
                 ],
               ),
-              model.getWaterMeterRow(200, 30),
-              Text(model.condition.text(), style: textStyle),
-              if (belongsToMe)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    markAsWateredButton,
-                    activityOptionsButton,
-                  ],
-                ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text("Care Profile", style: sectionHeaderStyle),
-                  if (belongsToMe) editCareProfileButton,
-                ],
-              ),
-              careDetailsParagraph,
-            ],
-          ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                const Text("Care Profile", style: sectionHeaderStyle),
+                if (belongsToMe) editCareProfileButton,
+              ],
+            ),
+            careDetailsParagraph,
+          ],
         ),
-      ),
-    );
-  }
+      ));
 }

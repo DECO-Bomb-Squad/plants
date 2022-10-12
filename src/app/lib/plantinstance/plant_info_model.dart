@@ -100,8 +100,25 @@ class PlantInfoModel extends ChangeNotifier {
 
   int get waterFrequency => careProfile.daysBetweenWatering;
 
-  ConditionType get condition =>
-      (timeSinceLastWater > waterFrequency) ? ConditionType.needsWatering : ConditionType.happy;
+  int get timeSinceLastRepot => DateTime.now().difference(activities.lastRepotted).inDays;
+
+  int get repotFrequency => careProfile.daysBetweenRepotting;
+
+  int get timeSinceLastFertilise => DateTime.now().difference(activities.lastFertilised).inDays;
+
+  int get fertiliseFrequency => careProfile.daysBetweenFertilising;
+
+  ConditionType get condition {
+    if (timeSinceLastWater > waterFrequency) {
+      return ConditionType.needsWatering;
+    } else if (timeSinceLastFertilise > fertiliseFrequency) {
+      return ConditionType.needsFertilising;
+    } else if (timeSinceLastRepot > repotFrequency) {
+      return ConditionType.needsPotting;
+    } else {
+      return ConditionType.happy;
+    }
+  }
 
   double get waterTimePercentage {
     double fraction = 1.0 - timeSinceLastWater / waterFrequency;
@@ -227,7 +244,13 @@ extension LocationExtension on LocationType {
   }
 }
 
-enum ConditionType { happy, needsWatering, needsPotting, problem }
+enum ConditionType {
+  happy,
+  needsWatering,
+  needsPotting,
+  needsFertilising,
+  problem,
+}
 
 extension ConditionExtension on ConditionType {
   String text() {
@@ -238,6 +261,8 @@ extension ConditionExtension on ConditionType {
         return "This plant is in need of repotting!";
       case ConditionType.needsWatering:
         return "This plant needs to be watered!";
+      case ConditionType.needsFertilising:
+        return "This plant needs to be fertilised!";
       case ConditionType.problem:
         return "This plant is sick!";
     }
@@ -249,6 +274,8 @@ extension ConditionExtension on ConditionType {
         return Icons.sentiment_satisfied_alt;
       case ConditionType.needsPotting:
         return Icons.compost;
+      case ConditionType.needsFertilising:
+        return Icons.yard;
       case ConditionType.needsWatering:
         return Icons.water_drop_outlined;
       case ConditionType.problem:
