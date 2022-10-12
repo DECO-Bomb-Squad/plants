@@ -52,7 +52,8 @@ class _RootWidgetState extends State<RootWidget> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) => Scaffold(
         body: NestedScrollView(
-            headerSliverBuilder: StandardHeaderBuilder,
+            headerSliverBuilder: (context, isScrolled) =>
+                StandardHeaderBuilder(context, isScrolled, hasBackButton: false, hasLogout: true),
             body: TabBarView(
               controller: controller!,
               children: navItems!.map((e) => e.child).toList(),

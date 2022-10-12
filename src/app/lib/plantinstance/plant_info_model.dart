@@ -4,6 +4,8 @@ import 'package:app/utils/colour_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
+import 'package:app/editplantcareprofile/edit_plant_care_profile_model.dart';
+
 class PlantCareProfile extends ChangeNotifier {
   int id;
   LocationType location;
@@ -20,6 +22,25 @@ class PlantCareProfile extends ChangeNotifier {
         daysBetweenWatering = json["daysBetweenWatering"],
         daysBetweenFertilising = json["daysBetweenFertilizer"],
         daysBetweenRepotting = json["daysBetweenRepotting"];
+
+  void updatePlantCareProfile(EditPlantCareProfileModel model) {
+    location = model.location!;
+    soilType = model.soilType!;
+    daysBetweenWatering = model.daysBetweenWatering!;
+    daysBetweenFertilising = model.daysBetweenFertilising!;
+    daysBetweenRepotting = model.daysBetweenRepotting!;
+    notifyListeners();
+  }
+
+  PlantCareProfile.newCareProfile(EditPlantCareProfileModel model)
+      : id = 0, // placeholder vallue
+        location = model.location!,
+        soilType = model.soilType!,
+        daysBetweenWatering = model.daysBetweenWatering!,
+        daysBetweenFertilising = model.daysBetweenFertilising!,
+        daysBetweenRepotting = model.daysBetweenRepotting!;
+
+  // Widget get dropdownWidget
 }
 
 class PlantInfoModel extends ChangeNotifier {
@@ -150,6 +171,31 @@ extension SoilTypeExtension on SoilType {
       default:
         return null;
     }
+  }
+
+  static SoilType? toSoilType(String s) {
+    switch (s) {
+      case "small pot":
+        return SoilType.smallPot;
+      case "medium pot":
+        return SoilType.mediumPot;
+      case "large pot":
+        return SoilType.largePot;
+      case "window planter":
+        return SoilType.windowPlanter;
+      case "garden bed":
+        return SoilType.gardenBed;
+      case "container of water":
+        return SoilType.water;
+      case "fish tank":
+        return SoilType.fishTank;
+      default:
+        return null;
+    }
+  }
+
+  static List<String?> allSoilTypes() {
+    return SoilType.values.map((e) => e.toHumanString()).toList();
   }
 }
 
