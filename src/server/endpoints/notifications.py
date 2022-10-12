@@ -4,7 +4,6 @@ from data import User
 from data.plants.plant import Plant
 from utils.notification_utils import send_notif_to_user
 from utils.api import APICall, api_auth
-from firebase_admin import messaging
 
 app = Blueprint("notifications", __name__)
 
@@ -29,3 +28,33 @@ def send_watering_notifications(session):
         notif_count += 1
     
     return f"Sent notifications to {notif_count} users", 200
+
+@app.route('/send_plant_notification', methods=['POST'])
+@APICall
+@api_auth
+def send_plant_notification(session):
+    try:
+        plantId:       int = request.form['plantId']
+        title:         str = request.form['title']
+        message:       str = request.form['message']
+
+        # verify all information is present
+        if (not plantId or
+            not title or
+            not message):
+            raise KeyError
+
+        plant: Plant = session.query(Plant).filter(Plant.id == plantId).first()
+        if plant is None:
+            return "Invalid plant id", 400
+        user: User = session.query(User).filter(User.id == plant.userId).first()
+        if user is None:
+            return "Invalid user information based on plant id", 400
+
+    except KeyError as e:
+        return "To send notification must provide plantId: int, title: str, message: str", 400
+    except Exception as e:
+        return "An unknown error occurred:", e, 400
+    send_notif_to_user(user, title, message)
+    
+    return f"Sent notification to {user.username} about plantId: {plant.id}", 200       
