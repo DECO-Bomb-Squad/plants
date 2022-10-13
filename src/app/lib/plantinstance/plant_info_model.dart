@@ -1,11 +1,14 @@
+import 'package:app/PlantCareIcons_icons.dart';
 import 'package:app/api/plant_api.dart';
 import 'package:app/utils/activity_calendar.dart';
 import 'package:app/utils/colour_scheme.dart';
+import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 import 'package:app/editplantcareprofile/edit_plant_care_profile_model.dart';
 
+// Stores information related to a plant's care details - care schedules, soil type and location.
 class PlantCareProfile extends ChangeNotifier {
   int id;
   LocationType location;
@@ -43,10 +46,9 @@ class PlantCareProfile extends ChangeNotifier {
         daysBetweenWatering = model.daysBetweenWatering!,
         daysBetweenFertilising = model.daysBetweenFertilising!,
         daysBetweenRepotting = model.daysBetweenRepotting!;
-
-  // Widget get dropdownWidget
 }
 
+// Stores info received from back end about an individual plant.
 class PlantInfoModel extends ChangeNotifier {
   int id;
   String? nickName;
@@ -75,7 +77,12 @@ class PlantInfoModel extends ChangeNotifier {
             .map((key, value) => MapEntry(DateTime.parse(key as String), value as String)),
         activities = ActivityOccurenceModel.fromListJSON(json["id"], json["activities"]),
         careProfile = PlantCareProfile.fromJSON(json["careProfile"]) {
-    activities.addListener(notifyListeners);
+    activities.addListener(rebuild);
+  }
+
+  void rebuild() {
+    // Tells anything listening to this model to rerender
+    notifyListeners();
   }
 
   Widget getCoverPhoto(double height, double width, IconData iconData, double iconSize) => ClipRRect(
@@ -100,8 +107,25 @@ class PlantInfoModel extends ChangeNotifier {
 
   int get waterFrequency => careProfile.daysBetweenWatering;
 
-  ConditionType get condition =>
-      (timeSinceLastWater > waterFrequency) ? ConditionType.needsWatering : ConditionType.happy;
+  int get timeSinceLastRepot => DateTime.now().difference(activities.lastRepotted).inDays;
+
+  int get repotFrequency => careProfile.daysBetweenRepotting;
+
+  int get timeSinceLastFertilise => DateTime.now().difference(activities.lastFertilised).inDays;
+
+  int get fertiliseFrequency => careProfile.daysBetweenFertilising;
+
+  ConditionType get condition {
+    if (timeSinceLastWater > waterFrequency) {
+      return ConditionType.needsWatering;
+    } else if (timeSinceLastFertilise > fertiliseFrequency) {
+      return ConditionType.needsFertilising;
+    } else if (timeSinceLastRepot > repotFrequency) {
+      return ConditionType.needsPotting;
+    } else {
+      return ConditionType.happy;
+    }
+  }
 
   double get waterTimePercentage {
     double fraction = 1.0 - timeSinceLastWater / waterFrequency;
@@ -113,11 +137,14 @@ class PlantInfoModel extends ChangeNotifier {
     return fraction;
   }
 
-  Widget get wateringProgressBar => LinearProgressIndicator(
-        value: waterTimePercentage,
-        valueColor: const AlwaysStoppedAnimation<Color>(darkHighlight),
-        backgroundColor: lightHighlight,
-        minHeight: 20,
+  Widget get wateringProgressBar => ClipRRect(
+        borderRadius: BorderRadius.circular(radius),
+        child: LinearProgressIndicator(
+          value: waterTimePercentage,
+          valueColor: const AlwaysStoppedAnimation<Color>(darkHighlight),
+          backgroundColor: lightHighlight,
+          minHeight: 20,
+        ),
       );
 
   Row getWaterMeterRow(double meterWidth, double iconSize) => Row(
@@ -145,6 +172,8 @@ class PlantInfoModel extends ChangeNotifier {
   }
 }
 
+// Enum for information related to what material a plant is planted in
+// Extension provides methods on these enum values
 enum SoilType {
   smallPot,
   mediumPot,
@@ -177,6 +206,25 @@ extension SoilTypeExtension on SoilType {
     }
   }
 
+  IconData iconData() {
+    switch (this) {
+      case SoilType.smallPot:
+        return PlantCareIcons.small_pot;
+      case SoilType.mediumPot:
+        return PlantCareIcons.med_pot;
+      case SoilType.largePot:
+        return PlantCareIcons.large_pot;
+      case SoilType.gardenBed:
+        return PlantCareIcons.planter;
+      case SoilType.water:
+        return PlantCareIcons.vase;
+      case SoilType.fishTank:
+        return PlantCareIcons.tank;
+      case SoilType.windowPlanter:
+        return PlantCareIcons.window;
+    }
+  }
+
   static SoilType? toSoilType(String s) {
     switch (s) {
       case "small pot":
@@ -203,6 +251,8 @@ extension SoilTypeExtension on SoilType {
   }
 }
 
+// Enum for location (i.e. light level) of the plant
+// Extension provides methods on these enum values
 enum LocationType {
   indoor,
   fullShade,
@@ -225,9 +275,30 @@ extension LocationExtension on LocationType {
         return null;
     }
   }
+
+  IconData iconData() {
+    switch (this) {
+      case LocationType.indoor:
+        return PlantCareIcons.inside;
+      case LocationType.fullShade:
+        return PlantCareIcons.full_shade;
+      case LocationType.fullSun:
+        return PlantCareIcons.full_sun;
+      case LocationType.partShade:
+        return PlantCareIcons.half_sun;
+    }
+  }
 }
 
-enum ConditionType { happy, needsWatering, needsPotting, problem }
+// Enum for the current condition of the plant, derived from how recently it has been repotted, watered, ...
+// Extension provides methods for the enum values
+enum ConditionType {
+  happy,
+  needsWatering,
+  needsPotting,
+  needsFertilising,
+  problem,
+}
 
 extension ConditionExtension on ConditionType {
   String text() {
@@ -238,6 +309,8 @@ extension ConditionExtension on ConditionType {
         return "This plant is in need of repotting!";
       case ConditionType.needsWatering:
         return "This plant needs to be watered!";
+      case ConditionType.needsFertilising:
+        return "This plant needs to be fertilised!";
       case ConditionType.problem:
         return "This plant is sick!";
     }
@@ -246,17 +319,20 @@ extension ConditionExtension on ConditionType {
   IconData iconData() {
     switch (this) {
       case ConditionType.happy:
-        return Icons.sentiment_satisfied_alt;
+        return Icons.sentiment_very_satisfied;
       case ConditionType.needsPotting:
-        return Icons.compost;
+        return PlantCareIcons.repotting;
+      case ConditionType.needsFertilising:
+        return PlantCareIcons.needs_fertiliser;
       case ConditionType.needsWatering:
-        return Icons.water_drop_outlined;
+        return PlantCareIcons.watering;
       case ConditionType.problem:
         return Icons.sick;
     }
   }
 }
 
+// Enum for different activities possible
 enum ActivityTypeId {
   watering,
   repotting,
@@ -290,6 +366,19 @@ extension ActivityColour on ActivityTypeId {
         return darkColour;
       default:
         return lightHighlight;
+    }
+  }
+
+  IconData iconData() {
+    switch (this) {
+      case ActivityTypeId.fertilising:
+        return PlantCareIcons.fertilising;
+      case ActivityTypeId.repotting:
+        return PlantCareIcons.repotting;
+      case ActivityTypeId.watering:
+        return PlantCareIcons.watering;
+      case ActivityTypeId.worshipping:
+        return Icons.volunteer_activism;
     }
   }
 }

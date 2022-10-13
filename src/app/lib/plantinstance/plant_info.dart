@@ -1,4 +1,5 @@
 import 'package:app/api/plant_api.dart';
+import 'package:app/base/header_sliver.dart';
 import 'package:app/editplantcareprofile/edit_plant_care_profile.dart';
 import 'package:app/plantinstance/plant_image_gallery.dart';
 import 'package:app/screens/plant_care_screen.dart';
@@ -8,6 +9,7 @@ import 'package:app/utils/visual_pattern.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:get_it/get_it.dart';
 
+// Skeleton class for a plant that is loading in from the server.
 class PlantInfoEmpty extends StatefulWidget {
   final int plantID;
   final PlantAPI api = GetIt.I<PlantAPI>();
@@ -31,6 +33,7 @@ class _PlantInfoEmptyState extends State<PlantInfoEmpty> {
   }
 }
 
+// 'Small' summary form of a plant's info - navigates to full info screen upon clicking
 class PlantInfoSmallWidget extends StatefulWidget {
   final int plantID;
   final PlantInfoModel model;
@@ -41,6 +44,7 @@ class PlantInfoSmallWidget extends StatefulWidget {
 }
 
 class _PlantInfoSmallState extends State<PlantInfoSmallWidget> {
+  // 'rebuild' method needs to listen for changes to the plant's model & visually display these changes
   @override
   void initState() {
     super.initState();
@@ -63,7 +67,7 @@ class _PlantInfoSmallState extends State<PlantInfoSmallWidget> {
         child: InkWell(
       onTap: () {
         showDialog(
-            context: context, builder: (_) => PlantInfoDialog(widget.model, () => setState(() {}), widget.plantID));
+            context: context, builder: (_) => PlantInfoScreen(widget.model, () => setState(() {}), widget.plantID));
       },
       child: Container(
           decoration: smallPlantComponent,
@@ -91,6 +95,7 @@ class _PlantInfoSmallState extends State<PlantInfoSmallWidget> {
   }
 }
 
+// 'Large' summary form of a plant's info - navigates to full info screen upon clicking
 class PlantInfoLargeWidget extends StatefulWidget {
   final int plantID;
   final PlantInfoModel model;
@@ -102,6 +107,7 @@ class PlantInfoLargeWidget extends StatefulWidget {
 }
 
 class _PlantInfoLargeState extends State<PlantInfoLargeWidget> {
+  // 'rebuild' method needs to listen for changes to the plant's model & visually display these changes
   @override
   void initState() {
     super.initState();
@@ -124,7 +130,7 @@ class _PlantInfoLargeState extends State<PlantInfoLargeWidget> {
         child: InkWell(
       onTap: () {
         showDialog(
-            context: context, builder: (_) => PlantInfoDialog(widget.model, () => setState(() {}), widget.plantID));
+            context: context, builder: (_) => PlantInfoScreen(widget.model, () => setState(() {}), widget.plantID));
       },
       child: Container(
         decoration: smallPlantComponent,
@@ -132,7 +138,7 @@ class _PlantInfoLargeState extends State<PlantInfoLargeWidget> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            widget.model.getCoverPhoto(100, 100, Icons.grass, 50),
+            widget.model.getCoverPhoto(100, 100, Icons.grass, 100),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -159,26 +165,30 @@ class _PlantInfoLargeState extends State<PlantInfoLargeWidget> {
   }
 }
 
-class PlantInfoDialog extends StatefulWidget {
+// Full screen information page for everything related to the plant
+class PlantInfoScreen extends StatefulWidget {
   final int plantID;
   final PlantInfoModel model;
   final void Function() rebuildParent;
 
-  const PlantInfoDialog(this.model, this.rebuildParent, this.plantID, {super.key});
+  const PlantInfoScreen(this.model, this.rebuildParent, this.plantID, {super.key});
 
   @override
-  State<PlantInfoDialog> createState() => _PlantInfoDialogState();
+  State<PlantInfoScreen> createState() => _PlantInfoScreenState();
 }
 
-class _PlantInfoDialogState extends State<PlantInfoDialog> {
+class _PlantInfoScreenState extends State<PlantInfoScreen> {
   PlantInfoModel get model => widget.model;
 
+  // Need to check if the plant is being accessed by the user who owns it - if not, hide buttons that can change the model
   late bool belongsToMe;
 
+  // 'rebuild' method needs to listen for changes to the plant's model & visually display these changes
   @override
   void initState() {
     super.initState();
     widget.model.addListener(rebuild);
+    widget.model.careProfile.addListener(rebuild);
     int myId = GetIt.I<PlantAPI>().user!.id;
     int plantOwnerId = model.ownerId;
     belongsToMe = (myId == plantOwnerId);
@@ -188,6 +198,7 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
   void dispose() {
     super.dispose();
     widget.model.removeListener(rebuild);
+    widget.model.careProfile.removeListener(rebuild);
   }
 
   void rebuild() {
@@ -200,8 +211,13 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
   Row get nameRow => Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(model.nickName ?? model.plantName, style: mainHeaderStyle),
-          Icon(model.condition.iconData(), size: 50)
+          Column(
+            children: [
+              Text(model.nickName ?? model.plantName, style: mainHeaderStyle),
+              Text(model.scientificName, style: sectionHeaderStyle),
+            ],
+          ),
+          Icon(model.condition.iconData(), size: 75)
         ],
       );
 
@@ -254,63 +270,143 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
         child: const Text("More options", style: buttonTextStyle),
       );
 
-  Widget get descriptionParagraph => Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-      child: Text(model.description!, style: modalTextStyle));
+  Widget get descriptionParagraph => Text(model.description!, style: modalTextStyle);
 
-  Widget get careDetailsParagraph => Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Text(
-          "Water every ${model.careProfile.daysBetweenWatering} days, repot every ${model.careProfile.daysBetweenRepotting} days, fertilise every ${model.careProfile.daysBetweenFertilising} days. Planted in a ${model.careProfile.soilType.toHumanString()} located ${model.careProfile.location.toHumanString()}",
-          style: modalTextStyle));
+  Widget get careDetailsParagraph => Text(
+      "Water every ${model.waterFrequency} days, repot every ${model.repotFrequency} days, fertilise every ${model.fertiliseFrequency} days. Planted in a ${model.careProfile.soilType.toHumanString()} located ${model.careProfile.location.toHumanString()}",
+      style: modalTextStyle);
 
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height / 1.5,
-        ),
-        decoration: dialogComponent,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
+  Widget get healthHeader => Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: const [Text("Health", style: sectionHeaderStyle)],
+      );
+
+  Widget get careHeader => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text("Care Profile", style: sectionHeaderStyle),
+          if (belongsToMe) editCareProfileButton,
+        ],
+      );
+
+  Column get lastCareDetails => Column(
+        children: [
+          Row(
             children: [
-              nameRow,
-              Text(model.scientificName, style: sectionHeaderStyle),
-              if (model.description != null && model.description!.isNotEmpty) descriptionParagraph,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  photoGalleryButton,
-                  activityCalendarButton,
-                ],
-              ),
-              model.getWaterMeterRow(200, 30),
-              Text(model.condition.text(), style: textStyle),
-              if (belongsToMe)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    markAsWateredButton,
-                    activityOptionsButton,
-                  ],
-                ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  const Text("Care Profile", style: sectionHeaderStyle),
-                  if (belongsToMe) editCareProfileButton,
-                ],
-              ),
-              careDetailsParagraph,
+              Icon(ActivityTypeId.watering.iconData()),
+              spacer,
+              Text("Last watered ${model.timeSinceLastWater} days ago", style: modalTextStyle),
             ],
           ),
+          Row(
+            children: [
+              Icon(ActivityTypeId.fertilising.iconData()),
+              spacer,
+              Text("Last fertilised ${model.timeSinceLastFertilise} days ago", style: modalTextStyle),
+            ],
+          ),
+          Row(
+            children: [
+              Icon(ActivityTypeId.repotting.iconData()),
+              spacer,
+              Text("Last repotted ${model.timeSinceLastRepot} days ago", style: modalTextStyle),
+            ],
+          ),
+        ],
+      );
+
+  Column get careProfileDetails => Column(
+        children: [
+          Row(
+            children: [
+              Icon(ActivityTypeId.watering.iconData(), size: 50.0),
+              spacer,
+              Text("Water every ${model.waterFrequency} days", style: modalTextStyle),
+            ],
+          ),
+          Row(
+            children: [
+              Icon(ActivityTypeId.fertilising.iconData(), size: 50.0),
+              spacer,
+              Text("Fertilise every ${model.fertiliseFrequency} days", style: modalTextStyle),
+            ],
+          ),
+          Row(
+            children: [
+              Icon(ActivityTypeId.repotting.iconData(), size: 50.0),
+              spacer,
+              Text("Repot every ${model.repotFrequency} days", style: modalTextStyle),
+            ],
+          ),
+          spacer,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Icon(model.careProfile.soilType.iconData(), size: 50.0),
+                  Text("Planted in ${model.careProfile.soilType.toHumanString()}", style: modalTextStyle),
+                ],
+              ),
+              spacer,
+              spacer,
+              Column(
+                children: [
+                  Icon(model.careProfile.location.iconData(), size: 50.0),
+                  Text("Located ${model.careProfile.location.toHumanString()}", style: modalTextStyle),
+                ],
+              )
+            ],
+          ),
+        ],
+      );
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        body: NestedScrollView(
+          scrollDirection: Axis.vertical,
+          scrollBehavior: const MaterialScrollBehavior(),
+          headerSliverBuilder: StandardHeaderBuilder,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  nameRow,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      photoGalleryButton,
+                      spacer,
+                      activityCalendarButton,
+                    ],
+                  ),
+                  spacer,
+                  if (model.description != null && model.description!.isNotEmpty) descriptionParagraph,
+                  healthHeader,
+                  lastCareDetails,
+                  model.getWaterMeterRow(200, 30),
+                  Text(model.condition.text(), style: textStyle),
+                  spacer,
+                  if (belongsToMe)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        markAsWateredButton,
+                        activityOptionsButton,
+                      ],
+                    ),
+                  careHeader,
+                  careProfileDetails,
+                  spacer,
+                ],
+              ),
+            ),
+          ),
         ),
-      ),
-    );
-  }
+      );
+
+  SizedBox get spacer => const SizedBox(height: 10, width: 10);
 }

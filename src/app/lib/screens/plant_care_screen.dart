@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
+// Skeleton widget for when page is loading from backend
 class PlantCareEmpty extends StatefulWidget {
   final int plantID;
   final PlantAPI api = GetIt.I<PlantAPI>();
@@ -29,6 +30,8 @@ class _PlantCareEmptyState extends State<PlantCareEmpty> {
   }
 }
 
+// Displays a comprehensive history of watering, repotting and fertilising activities for a plant
+// and allows the user to add these activities
 class PlantCareScreen extends StatefulWidget {
   final int plantID;
   final PlantInfoModel model;
@@ -42,6 +45,7 @@ class _PlantCareScreenState extends State<PlantCareScreen> {
   ActivityOccurenceModel get activityModel => widget.model.activities;
   late bool belongsToMe;
 
+  // 'rebuild' method needs to listen for changes to the plant's model & visually display these changes
   @override
   void initState() {
     super.initState();
@@ -65,106 +69,99 @@ class _PlantCareScreenState extends State<PlantCareScreen> {
   Widget build(BuildContext context) {
     SfCalendar calendar = calendarMini(activityModel);
     return Scaffold(
-        body: NestedScrollView(
-            headerSliverBuilder: StandardHeaderBuilder,
-            body: Container(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(children: [
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.1,
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Row(
-                            children: [
-                              Text(widget.model.nickName ?? widget.model.plantName, style: mainHeaderStyle),
-                              Icon(widget.model.condition.iconData(), size: 50)
-                            ],
-                          ),
-                          Text(widget.model.scientificName, style: sectionHeaderStyle),
-                        ]),
-                      ),
-                      widget.model.getCoverPhoto(100, 100, Icons.photo, 100)
-                    ]),
-                    calendar,
+      body: NestedScrollView(
+        headerSliverBuilder: StandardHeaderBuilder,
+        body: Container(
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(children: [
+                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                     SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.25,
-                        width: MediaQuery.of(context).size.width,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Row(
                           children: [
-                            SizedBox(
-                                width: double.infinity,
-                                height: MediaQuery.of(context).size.height * 0.05,
-                                child: TextButton(
-                                    onPressed: belongsToMe
-                                        ? () {
-                                            DateTime? selected = calendar.controller?.selectedDate;
-                                            activityModel.addWatering(selected);
-                                            setState(() {});
-                                          }
-                                        : null,
-                                    style: waterButtonStyle,
-                                    child: const Text(
-                                      "Mark as Watered",
-                                      style: buttonTextStyle,
-                                    ))),
-                            SizedBox(
-                                width: double.infinity,
-                                height: MediaQuery.of(context).size.height * 0.05,
-                                child: TextButton(
-                                    onPressed: belongsToMe
-                                        ? () {
-                                            DateTime? selected = calendar.controller?.selectedDate;
-                                            activityModel.addFertilising(selected);
-                                            setState(() {});
-                                          }
-                                        : null,
-                                    style: buttonStyle,
-                                    child: const Text(
-                                      "Mark as Fertilised",
-                                      style: buttonTextStyle,
-                                    ))),
-                            SizedBox(
-                                width: double.infinity,
-                                height: MediaQuery.of(context).size.height * 0.05,
-                                child: TextButton(
-                                    onPressed: belongsToMe
-                                        ? () {
-                                            DateTime? selected = calendar.controller?.selectedDate;
-                                            activityModel.addRepotting(selected);
-                                            setState(() {});
-                                          }
-                                        : null,
-                                    style: buttonStyle,
-                                    child: const Text(
-                                      "Mark as Repotted",
-                                      style: buttonTextStyle,
-                                    ))),
+                            Text(widget.model.nickName ?? widget.model.plantName, style: mainHeaderStyle),
+                            Icon(widget.model.condition.iconData(), size: 50)
                           ],
-                        )),
+                        ),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(widget.model.scientificName, style: sectionHeaderStyle),
+                        )
+                      ]),
+                    ),
+                    widget.model.getCoverPhoto(100, 100, Icons.photo, 100)
                   ]),
+                  calendar,
                   SizedBox(
-                      width: double.infinity,
-                      height: MediaQuery.of(context).size.height * 0.05,
-                      child: TextButton(
-                          onPressed: () {
-                            DateTime? selected = calendar.controller?.selectedDate;
-                            activityModel.addFertilising(selected);
-                            setState(() {});
-                          },
-                          style: buttonStyle,
-                          child: const Text(
-                            "Edit Plant",
-                            style: buttonTextStyle,
-                          ))),
-                ],
-              ),
-            )));
+                      height: MediaQuery.of(context).size.height * 0.25,
+                      width: MediaQuery.of(context).size.width,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.height * 0.05,
+                              child: TextButton(
+                                  onPressed: belongsToMe
+                                      ? () {
+                                          DateTime? selected = calendar.controller?.selectedDate;
+                                          activityModel.addWatering(selected);
+                                          setState(() {});
+                                        }
+                                      : null,
+                                  style: waterButtonStyle,
+                                  child: const Text(
+                                    "Mark as Watered",
+                                    style: buttonTextStyle,
+                                  ))),
+                          SizedBox(
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.height * 0.05,
+                              child: TextButton(
+                                  onPressed: belongsToMe
+                                      ? () {
+                                          DateTime? selected = calendar.controller?.selectedDate;
+                                          activityModel.addFertilising(selected);
+                                          setState(() {});
+                                        }
+                                      : null,
+                                  style: buttonStyle,
+                                  child: const Text(
+                                    "Mark as Fertilised",
+                                    style: buttonTextStyle,
+                                  ))),
+                          SizedBox(
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.height * 0.05,
+                              child: TextButton(
+                                  onPressed: belongsToMe
+                                      ? () {
+                                          DateTime? selected = calendar.controller?.selectedDate;
+                                          activityModel.addRepotting(selected);
+                                          setState(() {});
+                                        }
+                                      : null,
+                                  style: buttonStyle,
+                                  child: const Text(
+                                    "Mark as Repotted",
+                                    style: buttonTextStyle,
+                                  ))),
+                        ],
+                      )),
+                ]),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   SizedBox get spacer => const SizedBox(height: 10, width: 10);
