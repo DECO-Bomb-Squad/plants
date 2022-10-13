@@ -133,7 +133,7 @@ class _PlantInfoLargeState extends State<PlantInfoLargeWidget> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            widget.model.getCoverPhoto(100, 100, Icons.grass, 50),
+            widget.model.getCoverPhoto(100, 100, Icons.grass, 100),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,

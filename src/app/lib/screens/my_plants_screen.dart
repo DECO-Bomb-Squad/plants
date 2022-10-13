@@ -1,7 +1,9 @@
 import 'package:app/api/plant_api.dart';
 import 'package:app/plantinstance/plant_info.dart';
+import 'package:app/screens/add_plant/add_plant_screen.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 class MyPlantsScreen extends StatefulWidget {
@@ -12,6 +14,25 @@ class MyPlantsScreen extends StatefulWidget {
 }
 
 class _MyPlantsScreenState extends State<MyPlantsScreen> {
+  GestureDetector get addPlantsButton => GestureDetector(
+      child: Center(
+        child: Row(
+          children: const [
+            Text(
+              "Add new plant",
+              style: modalTextStyle,
+            ),
+            Icon(
+              Icons.add,
+              size: 20.0,
+            ),
+          ],
+        ),
+      ),
+      onTap: () => Navigator.of(context, rootNavigator: false)
+          .push(MaterialPageRoute(builder: (context) => PlantAddEmpty()))
+          .then((value) => setState(() {})));
+
   @override
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.only(left: 20, right: 20),
@@ -25,6 +46,7 @@ class _MyPlantsScreenState extends State<MyPlantsScreen> {
                 style: mainHeaderStyle,
               ),
             ),
+            addPlantsButton,
             spacer,
             Flexible(
               child: GridView(
