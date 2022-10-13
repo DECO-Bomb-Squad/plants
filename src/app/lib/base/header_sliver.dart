@@ -13,6 +13,12 @@ List<Widget> StandardHeaderBuilder(BuildContext context, bool innerBoxIsScrolled
           : null,
       backgroundColor: lightColour,
       shadowColor: lightColour,
+      title: hasBackButton
+          ? null
+          : const Image(
+              image: AssetImage('assets/head.png'),
+              height: 35,
+            ),
       pinned: false,
       floating: true,
       forceElevated: innerBoxIsScrolled,

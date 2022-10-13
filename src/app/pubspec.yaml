@@ -66,6 +66,11 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   uses-material-design: true
+  assets: 
+    - assets/bigheader.png
+    - assets/biglogotransparent.png
+    - assets/head.png
+    - assets/logo.png
   fonts:
     - family: PlantCareIcons
       fonts:

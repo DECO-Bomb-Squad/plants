@@ -1,5 +1,6 @@
 import 'package:app/api/plant_api.dart';
 import 'package:app/base/root_widget.dart';
+import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -19,6 +20,10 @@ class _LoginScreenState extends State<LoginScreen> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Image(
+              image: AssetImage('assets/head.png'),
+              height: 70,
+            ),
             if (errorMessage != null) Text(errorMessage!),
             usernameField,
             submitButton,
@@ -36,6 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget get submitButton => ElevatedButton(
         onPressed: onLoginClicked,
         child: const Text("Log in"),
+        style: waterButtonStyle,
       );
 
   void onLoginClicked() async {
