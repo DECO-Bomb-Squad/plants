@@ -112,7 +112,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                             hintText: "Type a number...",
                             filled: true,
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
-                            focusedBorder: OutlineInputBorder(
+                            focusedBorder: const OutlineInputBorder(
                               borderSide: BorderSide(color: accent),
                             ),
                             labelStyle: const TextStyle(
@@ -136,7 +136,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                             hintText: "Type a number...",
                             filled: true,
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
-                            focusedBorder: OutlineInputBorder(
+                            focusedBorder: const OutlineInputBorder(
                               borderSide: BorderSide(color: accent),
                             ),
                             labelStyle: const TextStyle(
@@ -160,7 +160,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                             hintText: "Type a number...",
                             filled: true,
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
-                            focusedBorder: OutlineInputBorder(
+                            focusedBorder: const OutlineInputBorder(
                               borderSide: BorderSide(color: accent),
                             ),
                             labelStyle: const TextStyle(

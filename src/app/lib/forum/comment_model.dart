@@ -1,9 +1,5 @@
-import 'dart:convert';
 
-import 'package:app/base/user.dart';
 import 'package:app/editplantcareprofile/edit_plant_care_profile_model.dart';
-import 'package:app/screens/plant_care_screen.dart';
-import 'package:flutter/material.dart';
 
 /*
  * -- Comment Manager --

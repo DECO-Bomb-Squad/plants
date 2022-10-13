@@ -1,12 +1,7 @@
-// ignore_for_file: unnecessary_cast
-
-import 'dart:ffi';
 
 import 'package:app/api/plant_api.dart';
-import 'package:app/forum/post.dart';
 import 'package:app/forum/post_model.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
-import 'package:app/screens/post_screen.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/loading_builder.dart';
 import 'package:app/utils/visual_pattern.dart';
@@ -65,7 +60,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [ 
-                  Text("Tags", style: sectionHeaderStyle),
+                  const Text("Tags", style: sectionHeaderStyle),
                   SizedBox(
                     height: 40,
                     child: ListView.builder(
@@ -93,7 +88,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [const Text("Attach plants/photos", style: buttonTextStyle)],
+                      children: const [Text("Attach plants/photos", style: buttonTextStyle)],
                     )
                   )
                 ]
@@ -124,7 +119,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 ElevatedButton(
                   onPressed: () {
                     userPlants.removeWhere((key, value) => value == false);
-                    GetIt.I<PlantAPI>().addPost(PostInfoModel(GetIt.I<PlantAPI>().user!.id, titleController.text, textController.text, userPlants.values.toList()));
+                    GetIt.I<PlantAPI>().addPost(PostInfoModel(GetIt.I<PlantAPI>().user!.id, titleController.text, textController.text, userPlants.keys.toList()));
                     Navigator.pop(context);
                   },
                   style: buttonStyle,

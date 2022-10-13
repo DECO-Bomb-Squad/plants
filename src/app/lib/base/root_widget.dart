@@ -6,7 +6,6 @@ import 'package:app/screens/main_screen.dart';
 import 'package:app/screens/layout_test_screen.dart';
 import 'package:flutter/material.dart';
 
-import '../screens/post_screen.dart';
 
 class RootWidget extends StatefulWidget {
   const RootWidget({super.key});

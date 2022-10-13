@@ -302,7 +302,7 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Text("Care Profile", style: sectionHeaderStyle),
+                  const Text("Care Profile", style: sectionHeaderStyle),
                   if (belongsToMe) editCareProfileButton,
                 ],
               ),

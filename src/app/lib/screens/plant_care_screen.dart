@@ -1,11 +1,8 @@
-import 'dart:convert';
 
 import 'package:app/api/plant_api.dart';
 import 'package:app/base/header_sliver.dart';
-import 'package:app/plantinstance/plant_info.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/utils/activity_calendar.dart';
-import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/loading_builder.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/cupertino.dart';

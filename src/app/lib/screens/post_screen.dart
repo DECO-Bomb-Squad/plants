@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:app/forum/comment_model.dart';
 import 'package:app/forum/post.dart';

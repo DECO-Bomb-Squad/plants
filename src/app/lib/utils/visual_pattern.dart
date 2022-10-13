@@ -1,5 +1,3 @@
-// TODO: Actually develop concrete visual design and put it here
-
 import 'package:app/utils/colour_scheme.dart';
 import 'package:flutter/material.dart';
 

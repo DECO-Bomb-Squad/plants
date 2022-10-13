@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:convert';
 import 'package:app/screens/add_plant/plant_type_model.dart';
 import 'package:dio/dio.dart';
@@ -207,7 +209,7 @@ class PlantAPI {
           "userId": model.authorID.toString(), 
           "title": model.title, 
           "content": model.content, 
-          "plantIds": jsonEncode([]), 
+          "plantIds": jsonEncode(model.attachedPlants), 
           "tagIds": jsonEncode([])
         });
 

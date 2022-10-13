@@ -1,11 +1,9 @@
-import 'dart:async';
 
 import 'package:app/forum/comment_model.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/screens/reply_post_screen.dart';
-import 'package:app/screens/post_screen.dart';
 
 class CommentManager {
   final BuildContext context;

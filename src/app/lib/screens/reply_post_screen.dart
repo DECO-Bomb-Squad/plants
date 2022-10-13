@@ -5,9 +5,7 @@ import 'package:app/forum/post_model.dart';
 import 'package:app/forum/test_post.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
-import 'package:app/forum/tags.dart';
 import 'package:app/base/header_sliver.dart';
-import 'package:app/forum/post.dart';
 
 class ReplyPostScreen extends StatefulWidget {
   final int postID;
