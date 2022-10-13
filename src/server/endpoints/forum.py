@@ -89,6 +89,7 @@ def add_comment(session):
         userId:   int = request.form['userId']
         content:  str = request.form['content']
         parentId: int = request.form.get('parentId') # this will silently fail, since it's optional
+        careProfileId: int = request.form.get('careProfileId') # this will silently fail, since it's optional
         postId:   int = request.form['postId'] # encoded in JSON
 
         # check if all is good
@@ -112,14 +113,20 @@ def add_comment(session):
             parent: Comment = session.query(Comment).filter(Comment.id == parentId).first()
             if not parent:
                 return f"The parent comment does not exist with id [{parentId}]", 400
+        
+        # if the user provides a care profile, check it exists:
+        if careProfileId:
+            careProfile: PlantCareProfile = session.query(PlantCareProfile).filter(PlantCareProfile.id == careProfileId).first()
+            if not careProfile:
+                return f"There is no plant care profile with id [{careProfileId}]", 400
 
     except KeyError as e:
-        return "Invalid request. NEED to provide userId: int, postId: int, content: str. OPTIONALLY include parentId: int.", 400
+        return "Invalid request. NEED to provide userId: int, postId: int, content: str. OPTIONALLY include parentId: int, careProfileId: int.", 400
     except Exception as e:
         return f"An error occurred: {e}", 500
 
     try:
-        comment: Comment = Comment(content, userId, postId, parentId)
+        comment: Comment = Comment(content, userId, postId, parentId, careProfileId)
         session.add(comment)
         session.commit()
     except Exception as e:

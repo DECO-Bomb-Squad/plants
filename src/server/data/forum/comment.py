@@ -1,4 +1,4 @@
-from data.constants import TBL_USERS, TBL_POSTS, TBL_COMMENTS
+from data.constants import TBL_USERS, TBL_POSTS, TBL_COMMENTS, TBL_PLANT_CARE_PROFILE
 from data.plants.plantCareProfile import PlantCareProfile
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship, backref
@@ -30,15 +30,17 @@ class Comment(DB.BASE):
 
     score = Column("score", Integer, nullable=False)
 
-    careProfiles = relationship("PlantCareProfile", back_populates="comment")
+    careProfileId = Column(Integer, ForeignKey(f"{TBL_PLANT_CARE_PROFILE}.id", name=f"fk_care_profile_{__tablename__}"), nullable=True)
+    careProfile = relationship("PlantCareProfile", back_populates="comment")
 
 
-    def __init__(self, content, userId, postId, parentId):
+    def __init__(self, content, userId, postId, parentId, careProfileId):
 
         self.content = content
         self.created = func.now()
         self.userId = userId
         self.parentId = parentId # the parent id will be None
+        self.careProfileId = careProfileId
         self.postId = postId
         self.score = 0
 
@@ -47,8 +49,11 @@ class Comment(DB.BASE):
         return allReplies
 
     def serialize_care_profiles(self):
-        allCareProfiles = [profile.serialize() for profile in self.careProfiles]
-        return allCareProfiles
+        print(self.careProfile)
+        if (self.careProfile):
+            return self.careProfile.serialize()
+        else:
+            return "None"
 
     def serialize(self):
         return {
@@ -60,7 +65,7 @@ class Comment(DB.BASE):
             "userId":          self.userId,
             "username":        self.author.username,
             "replies":         self.serialize_replies(),
-            "careProfiles":    self.serialize_care_profiles()
+            "careProfile":     self.serialize_care_profiles()
         }
 
     # will need to add more methods here for getting info and setting info of the user

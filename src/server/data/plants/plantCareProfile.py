@@ -22,8 +22,7 @@ class PlantCareProfile(DB.BASE):
     daysBetweenRepotting = Column('daysBetweenRepotting', Integer, nullable=True)
     daysBetweenFertilizer = Column('daysBetweenFertilizer', Integer, nullable=True)
 
-    linkedComment = Column('linkedComment', Integer, ForeignKey(f"{TBL_COMMENTS}.id"), nullable=True)
-    comment = relationship("Comment", back_populates="careProfiles", foreign_keys=[linkedComment])
+    comment = relationship("Comment", back_populates="careProfile")
 
     
     def __init__(self, soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer):
@@ -32,7 +31,6 @@ class PlantCareProfile(DB.BASE):
         self.daysBetweenWatering = daysBetweenWatering
         self.daysBetweenRepotting = daysBetweenRepotting
         self.daysBetweenFertilizer = daysBetweenFertilizer
-        self.linkedComment = None
 
     def serialize(self):
         return {
