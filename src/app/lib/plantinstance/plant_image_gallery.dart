@@ -62,7 +62,7 @@ class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
       bodyBytes: imgBytes,
     );
     // Get permanent access URI from Azure
-    String blobLink = (await storage.getBlobLink(path)).toString();
+    String blobLink = (await storage.getBlobLink(path, expiry: DateTime(2022, 12, 30))).toString();
     widget.model.addNewImage(blobLink, DateTime.now());
   }
 

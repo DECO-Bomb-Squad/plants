@@ -1,4 +1,5 @@
 import 'package:app/api/plant_api.dart';
+import 'package:app/base/user.dart';
 import 'package:app/plantinstance/plant_info.dart';
 import 'package:app/screens/add_plant/add_plant_screen.dart';
 import 'package:app/utils/visual_pattern.dart';
@@ -33,11 +34,13 @@ class _MyPlantsScreenState extends State<MyPlantsScreen> {
           .push(MaterialPageRoute(builder: (context) => PlantAddEmpty()))
           .then((value) => setState(() {})));
 
+  User user = GetIt.I<PlantAPI>().user!;
+
   @override
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.only(left: 20, right: 20),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
               alignment: Alignment.centerLeft,
@@ -49,23 +52,23 @@ class _MyPlantsScreenState extends State<MyPlantsScreen> {
             addPlantsButton,
             spacer,
             Flexible(
-              child: GridView(
-                controller: ScrollController(),
-                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.9,
-                  childAspectRatio: 3 / 1,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                ),
-                children: GetIt.I<PlantAPI>()
-                    .user!
-                    .ownedPlantIDs!
-                    .map((int id) => PlantInfoEmpty(
-                          id,
-                          isSmall: false,
-                        ))
-                    .toList(),
-              ),
+              child: user.ownedPlantIDs!.isEmpty
+                  ? Text("Add a plant to get started...", style: modalTextStyle)
+                  : GridView(
+                      controller: ScrollController(),
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.9,
+                        childAspectRatio: 3 / 1,
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 20,
+                      ),
+                      children: user.ownedPlantIDs!
+                          .map((int id) => PlantInfoEmpty(
+                                id,
+                                isSmall: false,
+                              ))
+                          .toList(),
+                    ),
             )
           ],
         ),
