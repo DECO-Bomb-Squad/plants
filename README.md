@@ -33,3 +33,8 @@ all you will need to do is start the virtual environment.
 2. Access the virtual environment. See above for more information.
 3. Run `python3 app.py`
 4. Navigate to `http://127.0.0.1:5000`
+
+## Setting Up the Moisture Sensor
+### ESP/Arduino
+1. Store a h file "secrets.h" with a Wifi SSID, PASSWORD and APIKEY in hardware/esp
+2. Using Arduino IDE upload the files hardware/arduino/arduino.ino, hardware/esp/esp.ino and hardware/esp/secrets.h to the Arduino and ESP microcontroller respectively. Note: the plantId for the moisture sensor can be changes in esp.ino.
