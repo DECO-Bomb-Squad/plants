@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
+// Skeleton widget for when page is loading from backend
 class PlantCareEmpty extends StatefulWidget {
   final int plantID;
   final PlantAPI api = GetIt.I<PlantAPI>();
@@ -32,6 +33,8 @@ class _PlantCareEmptyState extends State<PlantCareEmpty> {
   }
 }
 
+// Displays a comprehensive history of watering, repotting and fertilising activities for a plant
+// and allows the user to add these activities
 class PlantCareScreen extends StatefulWidget {
   final int plantID;
   final PlantInfoModel model;
@@ -45,6 +48,7 @@ class _PlantCareScreenState extends State<PlantCareScreen> {
   ActivityOccurenceModel get activityModel => widget.model.activities;
   late bool belongsToMe;
 
+  // 'rebuild' method needs to listen for changes to the plant's model & visually display these changes
   @override
   void initState() {
     super.initState();

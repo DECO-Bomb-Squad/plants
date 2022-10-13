@@ -80,11 +80,4 @@ class _MainScreenState extends State<MainScreen> {
       ));
 
   SizedBox get spacer => const SizedBox(height: 10, width: 10);
-
-  List<String> get questions => const ["Lounge room cat", "Watering levels", "Does my plant hate me"];
-  List<String> get questionsFurther => const [
-        "My cat keeps attacking my fiddle leaf",
-        "If I water my cactus everyday will it grow faster?",
-        "The thorns on the stem keep attacking me and my family. What can I do?"
-      ];
 }

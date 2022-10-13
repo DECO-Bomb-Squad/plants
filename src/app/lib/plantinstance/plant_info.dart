@@ -9,6 +9,7 @@ import 'package:app/utils/visual_pattern.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:get_it/get_it.dart';
 
+// Skeleton class for a plant that is loading in from the server.
 class PlantInfoEmpty extends StatefulWidget {
   final int plantID;
   final PlantAPI api = GetIt.I<PlantAPI>();
@@ -32,6 +33,7 @@ class _PlantInfoEmptyState extends State<PlantInfoEmpty> {
   }
 }
 
+// 'Small' summary form of a plant's info - navigates to full info screen upon clicking
 class PlantInfoSmallWidget extends StatefulWidget {
   final int plantID;
   final PlantInfoModel model;
@@ -42,6 +44,7 @@ class PlantInfoSmallWidget extends StatefulWidget {
 }
 
 class _PlantInfoSmallState extends State<PlantInfoSmallWidget> {
+  // 'rebuild' method needs to listen for changes to the plant's model & visually display these changes
   @override
   void initState() {
     super.initState();
@@ -92,6 +95,7 @@ class _PlantInfoSmallState extends State<PlantInfoSmallWidget> {
   }
 }
 
+// 'Large' summary form of a plant's info - navigates to full info screen upon clicking
 class PlantInfoLargeWidget extends StatefulWidget {
   final int plantID;
   final PlantInfoModel model;
@@ -103,6 +107,7 @@ class PlantInfoLargeWidget extends StatefulWidget {
 }
 
 class _PlantInfoLargeState extends State<PlantInfoLargeWidget> {
+  // 'rebuild' method needs to listen for changes to the plant's model & visually display these changes
   @override
   void initState() {
     super.initState();
@@ -160,6 +165,7 @@ class _PlantInfoLargeState extends State<PlantInfoLargeWidget> {
   }
 }
 
+// Full screen information page for everything related to the plant
 class PlantInfoScreen extends StatefulWidget {
   final int plantID;
   final PlantInfoModel model;
@@ -174,8 +180,10 @@ class PlantInfoScreen extends StatefulWidget {
 class _PlantInfoScreenState extends State<PlantInfoScreen> {
   PlantInfoModel get model => widget.model;
 
+  // Need to check if the plant is being accessed by the user who owns it - if not, hide buttons that can change the model
   late bool belongsToMe;
 
+  // 'rebuild' method needs to listen for changes to the plant's model & visually display these changes
   @override
   void initState() {
     super.initState();

@@ -43,6 +43,7 @@ class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
     setState(() {});
   }
 
+  // Retrieve image bytes from a picture the user uploads or takes
   Future<Uint8List?> getImage(ImageSource source) async {
     XFile? image = await ImagePicker().pickImage(source: source);
     if (image == null) return null;

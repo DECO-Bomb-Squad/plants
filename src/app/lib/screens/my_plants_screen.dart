@@ -53,7 +53,7 @@ class _MyPlantsScreenState extends State<MyPlantsScreen> {
             spacer,
             Flexible(
               child: user.ownedPlantIDs!.isEmpty
-                  ? Text("Add a plant to get started...", style: modalTextStyle)
+                  ? const Text("Add a plant to get started...", style: modalTextStyle)
                   : GridView(
                       controller: ScrollController(),
                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(

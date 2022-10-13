@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:app/editplantcareprofile/edit_plant_care_profile_model.dart';
 import 'package:get_it/get_it.dart';
 
+// Widget for editing a plant's care details
 class EditPlantCareProfile extends StatefulWidget {
   PlantCareProfile? profile;
   PlantInfoModel? plant;
@@ -48,7 +49,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
   @override
   Widget build(BuildContext context) {
     String submitText = "Save";
-    String titleText = "SAVE CARE PROFILE";
+    String titleText = "EDIT CARE PROFILE";
     if (model.isNew) {
       submitText = "Create";
       titleText = "CREATE CARE PROFILE";
