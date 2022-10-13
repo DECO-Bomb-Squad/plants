@@ -283,9 +283,73 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
 
   Column get lastCareDetails => Column(
         children: [
-          Text("Last watered ${model.timeSinceLastWater} days ago", style: modalTextStyle),
-          Text("Last fertilised ${model.timeSinceLastFertilise} days ago", style: modalTextStyle),
-          Text("Last repotted ${model.timeSinceLastRepot} days ago", style: modalTextStyle),
+          Row(
+            children: [
+              Icon(ActivityTypeId.watering.iconData()),
+              spacer,
+              Text("Last watered ${model.timeSinceLastWater} days ago", style: modalTextStyle),
+            ],
+          ),
+          Row(
+            children: [
+              Icon(ActivityTypeId.fertilising.iconData()),
+              spacer,
+              Text("Last fertilised ${model.timeSinceLastFertilise} days ago", style: modalTextStyle),
+            ],
+          ),
+          Row(
+            children: [
+              Icon(ActivityTypeId.repotting.iconData()),
+              spacer,
+              Text("Last repotted ${model.timeSinceLastRepot} days ago", style: modalTextStyle),
+            ],
+          ),
+        ],
+      );
+
+  Column get careProfileDetails => Column(
+        children: [
+          Row(
+            children: [
+              Icon(ActivityTypeId.watering.iconData(), size: 50.0),
+              spacer,
+              Text("Water every ${model.waterFrequency} days", style: modalTextStyle),
+            ],
+          ),
+          Row(
+            children: [
+              Icon(ActivityTypeId.fertilising.iconData(), size: 50.0),
+              spacer,
+              Text("Fertilise every ${model.fertiliseFrequency} days", style: modalTextStyle),
+            ],
+          ),
+          Row(
+            children: [
+              Icon(ActivityTypeId.repotting.iconData(), size: 50.0),
+              spacer,
+              Text("Repot every ${model.repotFrequency} days", style: modalTextStyle),
+            ],
+          ),
+          spacer,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Icon(model.careProfile.soilType.iconData(), size: 50.0),
+                  Text("Planted in ${model.careProfile.soilType.toHumanString()}", style: modalTextStyle),
+                ],
+              ),
+              spacer,
+              spacer,
+              Column(
+                children: [
+                  Icon(model.careProfile.location.iconData(), size: 50.0),
+                  Text("Located ${model.careProfile.location.toHumanString()}", style: modalTextStyle),
+                ],
+              )
+            ],
+          ),
         ],
       );
 
@@ -311,12 +375,13 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
                       activityCalendarButton,
                     ],
                   ),
+                  spacer,
                   if (model.description != null && model.description!.isNotEmpty) descriptionParagraph,
                   healthHeader,
+                  lastCareDetails,
                   model.getWaterMeterRow(200, 30),
                   Text(model.condition.text(), style: textStyle),
                   spacer,
-                  lastCareDetails,
                   if (belongsToMe)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -326,7 +391,8 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
                       ],
                     ),
                   careHeader,
-                  careDetailsParagraph,
+                  careProfileDetails,
+                  spacer,
                 ],
               ),
             ),

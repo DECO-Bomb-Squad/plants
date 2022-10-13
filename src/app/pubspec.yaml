@@ -69,7 +69,7 @@ flutter:
   fonts:
     - family: PlantCareIcons
       fonts:
-        - asset: fonts/PlantCareIcons.ttf
+        - asset: assets/fonts/PlantCareIcons.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

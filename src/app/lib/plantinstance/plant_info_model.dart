@@ -310,7 +310,7 @@ extension ConditionExtension on ConditionType {
       case ConditionType.happy:
         return Icons.sentiment_very_satisfied;
       case ConditionType.needsPotting:
-        return PlantCareIcons.needs_potting;
+        return PlantCareIcons.repotting;
       case ConditionType.needsFertilising:
         return PlantCareIcons.needs_fertiliser;
       case ConditionType.needsWatering:
