@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:app/api/plant_api.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/utils/colour_scheme.dart';
@@ -95,18 +93,18 @@ class ActivityOccurenceModel extends ChangeNotifier {
 
   List<Activity> getActivities() {
     List<Activity> activities = [];
-    watering.forEach((element) {
+    for (var element in watering) {
       activities.add(Activity.activityFromType(ActivityTypeId.watering, element));
-    });
-    repotting.forEach((element) {
+    }
+    for (var element in repotting) {
       activities.add(Activity.activityFromType(ActivityTypeId.repotting, element));
-    });
-    fertilising.forEach((element) {
+    }
+    for (var element in fertilising) {
       activities.add(Activity.activityFromType(ActivityTypeId.fertilising, element));
-    });
-    worshipping.forEach((element) {
+    }
+    for (var element in worshipping) {
       activities.add(Activity.activityFromType(ActivityTypeId.worshipping, element));
-    });
+    }
 
     return activities;
   }
@@ -114,6 +112,10 @@ class ActivityOccurenceModel extends ChangeNotifier {
   DateTime mostRecent(DateTime a, DateTime b) => a.isAfter(b) ? a : b;
 
   DateTime get lastWatered {
+    // the plant must be just added, assume it was watered
+    if (watering.isEmpty) {
+      return DateTime.now();
+    }
     _lastWatered ??= watering.reduce(mostRecent);
     return _lastWatered!;
   }

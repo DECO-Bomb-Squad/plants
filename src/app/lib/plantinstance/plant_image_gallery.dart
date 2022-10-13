@@ -1,13 +1,14 @@
 import 'package:app/api/plant_api.dart';
+import 'package:app/base/header_sliver.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/secrets.dart';
-import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/image_gallery.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:azblob/azblob.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PlantGalleryScreen extends StatefulWidget {
@@ -21,10 +22,15 @@ class PlantGalleryScreen extends StatefulWidget {
 }
 
 class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
+  late bool belongsToMe;
+
   @override
   void initState() {
     super.initState();
     widget.model.addListener(rebuild);
+    int myId = GetIt.I<PlantAPI>().user!.id;
+    int plantOwnerId = widget.model.ownerId;
+    belongsToMe = (myId == plantOwnerId);
   }
 
   @override
@@ -64,33 +70,22 @@ class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: (() => Navigator.of(context).pop())),
-              backgroundColor: lightColour,
-              shadowColor: lightColour,
-              pinned: false,
-              floating: true,
-              forceElevated: innerBoxIsScrolled,
-              iconTheme: const IconThemeData(color: darkHighlight, size: 35),
-            ),
-          ];
-        },
+        headerSliverBuilder: StandardHeaderBuilder,
         body: Container(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(
             children: [
-              Flexible(
-                flex: 1,
-                child: Row(
-                  children: [
-                    imageGetter("Take Picture", Icons.camera_alt, ImageSource.camera),
-                    spacer,
-                    imageGetter("From Gallery", Icons.image, ImageSource.gallery),
-                  ],
+              if (belongsToMe)
+                Flexible(
+                  flex: 1,
+                  child: Row(
+                    children: [
+                      imageGetter("Take Picture", Icons.camera_alt, ImageSource.camera),
+                      spacer,
+                      imageGetter("From Gallery", Icons.image, ImageSource.gallery),
+                    ],
+                  ),
                 ),
-              ),
               Flexible(
                 flex: 4,
                 child: GalleryView(
@@ -108,7 +103,7 @@ class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
   Widget imageGetter(String subtitleText, IconData icon, ImageSource source) => Expanded(
         child: Container(
           decoration: smallPostComponent,
-          padding: EdgeInsets.all(5),
+          padding: const EdgeInsets.all(5),
           child: Column(
             children: [
               Expanded(
@@ -126,5 +121,5 @@ class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
         ),
       );
 
-  Widget get spacer => SizedBox(width: 10);
+  Widget get spacer => const SizedBox(width: 10);
 }

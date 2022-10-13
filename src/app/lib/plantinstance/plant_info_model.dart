@@ -23,13 +23,17 @@ class PlantCareProfile extends ChangeNotifier {
         daysBetweenFertilising = json["daysBetweenFertilizer"],
         daysBetweenRepotting = json["daysBetweenRepotting"];
 
-  void updatePlantCareProfile(EditPlantCareProfileModel model) {
+  Future<bool> updatePlantCareProfile(EditPlantCareProfileModel model) async {
+    // Set the fields to new ones specified in the edit model
     location = model.location!;
     soilType = model.soilType!;
     daysBetweenWatering = model.daysBetweenWatering!;
     daysBetweenFertilising = model.daysBetweenFertilising!;
     daysBetweenRepotting = model.daysBetweenRepotting!;
+    // Make api call to ask server to update
+    bool result = await GetIt.I<PlantAPI>().updatePlantCareProfile(this);
     notifyListeners();
+    return result;
   }
 
   PlantCareProfile.newCareProfile(EditPlantCareProfileModel model)
@@ -171,6 +175,31 @@ extension SoilTypeExtension on SoilType {
       default:
         return null;
     }
+  }
+
+  static SoilType? toSoilType(String s) {
+    switch (s) {
+      case "small pot":
+        return SoilType.smallPot;
+      case "medium pot":
+        return SoilType.mediumPot;
+      case "large pot":
+        return SoilType.largePot;
+      case "window planter":
+        return SoilType.windowPlanter;
+      case "garden bed":
+        return SoilType.gardenBed;
+      case "container of water":
+        return SoilType.water;
+      case "fish tank":
+        return SoilType.fishTank;
+      default:
+        return null;
+    }
+  }
+
+  static List<String?> allSoilTypes() {
+    return SoilType.values.map((e) => e.toHumanString()).toList();
   }
 }
 

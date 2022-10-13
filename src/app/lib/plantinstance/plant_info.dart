@@ -1,4 +1,5 @@
 import 'package:app/api/plant_api.dart';
+import 'package:app/editplantcareprofile/edit_plant_care_profile.dart';
 import 'package:app/plantinstance/plant_image_gallery.dart';
 import 'package:app/screens/plant_care_screen.dart';
 import 'package:app/utils/loading_builder.dart';
@@ -172,10 +173,15 @@ class PlantInfoDialog extends StatefulWidget {
 class _PlantInfoDialogState extends State<PlantInfoDialog> {
   PlantInfoModel get model => widget.model;
 
+  late bool belongsToMe;
+
   @override
   void initState() {
     super.initState();
     widget.model.addListener(rebuild);
+    int myId = GetIt.I<PlantAPI>().user!.id;
+    int plantOwnerId = model.ownerId;
+    belongsToMe = (myId == plantOwnerId);
   }
 
   @override
@@ -188,6 +194,76 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
     setState(() {});
   }
 
+  void navigateToActivityScreen() => Navigator.of(context, rootNavigator: false)
+      .push(MaterialPageRoute(builder: (context) => PlantCareEmpty(widget.plantID)));
+
+  Row get nameRow => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(model.nickName ?? model.plantName, style: mainHeaderStyle),
+          Icon(model.condition.iconData(), size: 50)
+        ],
+      );
+
+  GestureDetector get photoGalleryButton => GestureDetector(
+        onTap: () => Navigator.of(context, rootNavigator: false).push(
+          MaterialPageRoute(
+            builder: (context) => PlantGalleryScreen(widget.plantID, widget.model),
+          ),
+        ),
+        child: Column(
+          children: [
+            model.getCoverPhoto(150, 150, Icons.photo, 150),
+            const Text("Photos", style: subheaderStyle),
+          ],
+        ),
+      );
+
+  GestureDetector get activityCalendarButton => GestureDetector(
+        onTap: navigateToActivityScreen,
+        child: Column(
+          children: const [
+            Icon(Icons.calendar_month, size: 150),
+            Text("Activity History", style: subheaderStyle),
+          ],
+        ),
+      );
+
+  ElevatedButton get markAsWateredButton => ElevatedButton(
+        onPressed: () {
+          widget.rebuildParent();
+          setState(() {
+            model.activities.addWatering(DateTime.now());
+          });
+        },
+        style: waterButtonStyle,
+        child: const Text("Mark as watered", style: buttonTextStyle),
+      );
+
+  ElevatedButton get editCareProfileButton => ElevatedButton(
+        onPressed: () {
+          showDialog(context: context, builder: (_) => EditPlantCareProfile(profile: model.careProfile, plant: model));
+        },
+        style: buttonStyle,
+        child: const Text("Edit", style: buttonTextStyle),
+      );
+
+  ElevatedButton get activityOptionsButton => ElevatedButton(
+        onPressed: navigateToActivityScreen,
+        style: buttonStyle,
+        child: const Text("More options", style: buttonTextStyle),
+      );
+
+  Widget get descriptionParagraph => Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+      child: Text(model.description!, style: modalTextStyle));
+
+  Widget get careDetailsParagraph => Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Text(
+          "Water every ${model.careProfile.daysBetweenWatering} days, repot every ${model.careProfile.daysBetweenRepotting} days, fertilise every ${model.careProfile.daysBetweenFertilising} days. Planted in a ${model.careProfile.soilType.toHumanString()} located ${model.careProfile.location.toHumanString()}",
+          style: modalTextStyle));
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -198,61 +274,41 @@ class _PlantInfoDialogState extends State<PlantInfoDialog> {
           maxHeight: MediaQuery.of(context).size.height / 1.5,
         ),
         decoration: dialogComponent,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(model.nickName ?? model.plantName, style: mainHeaderStyle),
-                Icon(model.condition.iconData(), size: 50)
-              ],
-            ),
-            Text(model.scientificName, style: sectionHeaderStyle),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                GestureDetector(
-                  onTap: () => Navigator.of(context, rootNavigator: false).push(
-                    MaterialPageRoute(
-                      builder: (context) => PlantGalleryScreen(widget.plantID, widget.model),
-                    ),
-                  ),
-                  child: model.getCoverPhoto(150, 150, Icons.photo, 150),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              nameRow,
+              Text(model.scientificName, style: sectionHeaderStyle),
+              if (model.description != null && model.description!.isNotEmpty) descriptionParagraph,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  photoGalleryButton,
+                  activityCalendarButton,
+                ],
+              ),
+              model.getWaterMeterRow(200, 30),
+              Text(model.condition.text(), style: textStyle),
+              if (belongsToMe)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    markAsWateredButton,
+                    activityOptionsButton,
+                  ],
                 ),
-                const Icon(Icons.calendar_month, size: 150),
-              ],
-            ),
-            model.getWaterMeterRow(200, 30),
-            Text(model.condition.text(), style: textStyle),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    widget.rebuildParent();
-                    setState(() {
-                      model.activities.addWatering(DateTime.now());
-                    });
-                  },
-                  style: waterButtonStyle,
-                  child: const Text("Mark as watered", style: buttonTextStyle),
-                ),
-                ElevatedButton(
-                  onPressed: () => Navigator.of(context, rootNavigator: false)
-                      .push(MaterialPageRoute(builder: (context) => PlantCareEmpty(widget.plantID))),
-                  style: buttonStyle,
-                  child: const Text("More options", style: buttonTextStyle),
-                )
-              ],
-            ),
-            Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Text(
-                    "Recommended to water every ${model.waterFrequency} days. Last watered ${model.timeSinceLastWater} days ago. Planted in a ${model.careProfile.soilType.toHumanString()} located ${model.careProfile.location.toHumanString()}",
-                    style: modalTextStyle))
-          ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text("Care Profile", style: sectionHeaderStyle),
+                  if (belongsToMe) editCareProfileButton,
+                ],
+              ),
+              careDetailsParagraph,
+            ],
+          ),
         ),
       ),
     );

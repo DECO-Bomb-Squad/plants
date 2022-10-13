@@ -17,7 +17,7 @@ class Plant(DB.BASE):
     plantDesc = Column('plantDesc', String(255), nullable=False)
 
     plantTypeId = Column("plantTypeId", Integer, ForeignKey(f"{TBL_PLANT_TYPES}.id", name=f"fk_plant_type_id_{__tablename__}"), nullable=False)
-    plantType = relationship("PlantType", back_populates="plantTypes")
+    plantType = relationship("PlantType", back_populates="plants", uselist=False)
 
     userId = Column(Integer, ForeignKey(f"{TBL_USERS}.id", name=f"fk_user_id_{__tablename__}"), nullable=False)
     user = relationship("User", back_populates='userPlants')

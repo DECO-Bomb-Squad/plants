@@ -217,14 +217,14 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                           style: buttonStyle,
                           onPressed: editMode == false
                               ? null
-                              : () {
+                              : () async {
                                   if (_formKey.currentState!.validate()) {
                                     if (model.isNew) {
                                       PlantCareProfile newProfile = PlantCareProfile.newCareProfile(model);
                                       print(newProfile.daysBetweenFertilising);
                                       print(newProfile.location.toHumanString());
                                     } else {
-                                      model.assignedPlant?.careProfile.updatePlantCareProfile(model);
+                                      await model.assignedPlant?.careProfile.updatePlantCareProfile(model);
                                     }
                                     Navigator.of(context).pop();
                                   }

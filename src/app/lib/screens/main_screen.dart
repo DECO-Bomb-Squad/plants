@@ -1,10 +1,11 @@
+import 'package:app/api/plant_api.dart';
+import 'package:app/screens/add_plant/add_plant_screen.dart';
 import 'package:app/forum/post_model.dart';
 import 'package:app/screens/create_post_screen.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/plantinstance/plant_info.dart';
 import 'package:app/forum/post.dart';
-import 'package:app/api/plant_api.dart';
 import 'package:get_it/get_it.dart';
 
 class MainScreen extends StatefulWidget {
@@ -21,12 +22,20 @@ class _MainScreenState extends State<MainScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-              alignment: Alignment.centerLeft,
-              child: const Text(
-                "MY PLANTS",
-                style: mainHeaderStyle,
-              )),
+          Row(children: [
+            Container(
+                alignment: Alignment.centerLeft,
+                child: const Text(
+                  "MY PLANTS",
+                  style: mainHeaderStyle,
+                )),
+            IconButton(
+              onPressed: () => (Navigator.of(context, rootNavigator: false)
+                  .push(MaterialPageRoute(builder: (context) => PlantAddEmpty()))).then((value) => setState((() {}))),
+              style: buttonStyle,
+              icon: const Icon(Icons.add),
+            )
+          ]),
           spacer,
           SizedBox(
             height: 160,
