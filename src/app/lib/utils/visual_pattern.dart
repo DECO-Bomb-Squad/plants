@@ -82,7 +82,7 @@ BoxDecoration smallPlantComponent = BoxDecoration(
 );
 
 BoxDecoration smallPostComponent = BoxDecoration(
-  color: mutedAccent,
+  color: lightHighlight,
   borderRadius: BorderRadius.circular(radius),
 );
 
