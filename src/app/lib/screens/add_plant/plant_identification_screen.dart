@@ -11,7 +11,8 @@ import 'package:image_picker/image_picker.dart';
 class PlantIdentificationDialog extends StatefulWidget {
   List<PlantIdentifyModel> samples = [];
   List<IdentifyResult> res = [];
-  PlantIdentificationDialog({super.key});
+  List<String> validSciNames;
+  PlantIdentificationDialog({super.key, required this.validSciNames});
 
   @override
   State<PlantIdentificationDialog> createState() => _PlantIdentificationDialogState();
@@ -87,6 +88,9 @@ class _PlantIdentificationDialogState extends State<PlantIdentificationDialog> {
                         child: TextButton(
                             onPressed: () async {
                               widget.res = await api.getPlantNetResults(widget.samples);
+                              widget.res = widget.res
+                                  .where((identify) => widget.validSciNames.contains(identify.science))
+                                  .toList();
                               rebuild();
                             },
                             style: buttonStyle,

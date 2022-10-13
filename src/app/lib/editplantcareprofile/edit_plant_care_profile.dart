@@ -1,13 +1,16 @@
+import 'package:app/api/plant_api.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/editplantcareprofile/edit_plant_care_profile_model.dart';
+import 'package:get_it/get_it.dart';
 
+// Widget for editing a plant's care details
 class EditPlantCareProfile extends StatefulWidget {
   PlantCareProfile? profile;
   PlantInfoModel? plant;
-  EditPlantCareProfile({super.key, this.profile, this.plant});
+  EditPlantCareProfile({super.key, required this.profile, required this.plant});
 
   @override
   State<EditPlantCareProfile> createState() => _EditPlantCareProfileState();
@@ -46,7 +49,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
   @override
   Widget build(BuildContext context) {
     String submitText = "Save";
-    String titleText = "SAVE CARE PROFILE";
+    String titleText = "EDIT CARE PROFILE";
     if (model.isNew) {
       submitText = "Create";
       titleText = "CREATE CARE PROFILE";
@@ -80,6 +83,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                       child: Column(children: [
                         DropdownButton<SoilType>(
                           value: model.soilType,
+                          dropdownColor: lightColour,
                           onChanged: (SoilType? newType) {
                             setState(() {
                               model.soilType = newType;
@@ -94,6 +98,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                         ),
                         DropdownButton<LocationType>(
                           value: model.location,
+                          dropdownColor: lightColour,
                           onChanged: (LocationType? newLocation) {
                             setState(() {
                               model.location = newLocation;
@@ -112,7 +117,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                             hintText: "Type a number...",
                             filled: true,
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
-                            focusedBorder: OutlineInputBorder(
+                            focusedBorder: const OutlineInputBorder(
                               borderSide: BorderSide(color: accent),
                             ),
                             labelStyle: const TextStyle(
@@ -136,7 +141,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                             hintText: "Type a number...",
                             filled: true,
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
-                            focusedBorder: OutlineInputBorder(
+                            focusedBorder: const OutlineInputBorder(
                               borderSide: BorderSide(color: accent),
                             ),
                             labelStyle: const TextStyle(
@@ -160,7 +165,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                             hintText: "Type a number...",
                             filled: true,
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
-                            focusedBorder: OutlineInputBorder(
+                            focusedBorder: const OutlineInputBorder(
                               borderSide: BorderSide(color: accent),
                             ),
                             labelStyle: const TextStyle(
@@ -219,14 +224,15 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                               ? null
                               : () async {
                                   if (_formKey.currentState!.validate()) {
+                                    int? idToReturn;
                                     if (model.isNew) {
                                       PlantCareProfile newProfile = PlantCareProfile.newCareProfile(model);
-                                      print(newProfile.daysBetweenFertilising);
-                                      print(newProfile.location.toHumanString());
+                                      idToReturn = await GetIt.I<PlantAPI>().createPlantCareProfile(newProfile);
                                     } else {
                                       await model.assignedPlant?.careProfile.updatePlantCareProfile(model);
+                                      idToReturn = model.assignedPlant?.careProfile.id;
                                     }
-                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop<int?>(idToReturn);
                                   }
                                 },
                           child: Text(submitText, style: buttonTextStyle)),

@@ -43,6 +43,7 @@ class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
     setState(() {});
   }
 
+  // Retrieve image bytes from a picture the user uploads or takes
   Future<Uint8List?> getImage(ImageSource source) async {
     XFile? image = await ImagePicker().pickImage(source: source);
     if (image == null) return null;
@@ -62,7 +63,7 @@ class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
       bodyBytes: imgBytes,
     );
     // Get permanent access URI from Azure
-    String blobLink = (await storage.getBlobLink(path)).toString();
+    String blobLink = (await storage.getBlobLink(path, expiry: DateTime(2022, 12, 30))).toString();
     widget.model.addNewImage(blobLink, DateTime.now());
   }
 

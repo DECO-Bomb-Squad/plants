@@ -1,4 +1,5 @@
 import 'package:app/api/plant_api.dart';
+import 'package:app/base/user.dart';
 import 'package:app/screens/add_plant/add_plant_screen.dart';
 import 'package:app/screens/create_post_screen.dart';
 import 'package:app/utils/visual_pattern.dart';
@@ -15,6 +16,8 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  User user = GetIt.I<PlantAPI>().user!;
+
   @override
   Widget build(BuildContext context) => Container(
       padding: const EdgeInsets.only(left: 20, right: 20),
@@ -42,13 +45,14 @@ class _MainScreenState extends State<MainScreen> {
               thickness: 10,
               thumbVisibility: true,
               radius: const Radius.circular(10),
-              child: GridView(
-                scrollDirection: Axis.horizontal,
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 200, childAspectRatio: 1, crossAxisSpacing: 20, mainAxisSpacing: 20),
-                children:
-                    GetIt.I<PlantAPI>().user!.ownedPlantIDs!.map((id) => PlantInfoEmpty(id, isSmall: true)).toList(),
-              ),
+              child: user.ownedPlantIDs!.isEmpty
+                  ? const Text("Add a plant to get started...", style: modalTextStyle)
+                  : GridView(
+                      scrollDirection: Axis.horizontal,
+                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 200, childAspectRatio: 1, crossAxisSpacing: 20, mainAxisSpacing: 20),
+                      children: user.ownedPlantIDs!.map((id) => PlantInfoEmpty(id, isSmall: true)).toList(),
+                    ),
             ),
           ),
           spacer,
@@ -76,11 +80,4 @@ class _MainScreenState extends State<MainScreen> {
       ));
 
   SizedBox get spacer => const SizedBox(height: 10, width: 10);
-
-  List<String> get questions => const ["Lounge room cat", "Watering levels", "Does my plant hate me"];
-  List<String> get questionsFurther => const [
-        "My cat keeps attacking my fiddle leaf",
-        "If I water my cactus everyday will it grow faster?",
-        "The thorns on the stem keep attacking me and my family. What can I do?"
-      ];
 }

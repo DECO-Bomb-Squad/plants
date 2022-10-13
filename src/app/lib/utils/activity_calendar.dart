@@ -121,11 +121,17 @@ class ActivityOccurenceModel extends ChangeNotifier {
   }
 
   DateTime get lastFertilised {
+    if (fertilising.isEmpty) {
+      return DateTime.now();
+    }
     _lastFertilised ??= fertilising.reduce(mostRecent);
     return _lastFertilised!;
   }
 
   DateTime get lastRepotted {
+    if (repotting.isEmpty) {
+      return DateTime.now();
+    }
     _lastRepotted ??= repotting.reduce(mostRecent);
     return _lastRepotted!;
   }
