@@ -96,54 +96,59 @@ class _PlantAddScreenState extends State<PlantAddScreen> {
                               ),
                               spacer,
                               SizedBox(
-                                  child: TypeAheadFormField(
-                                textFieldConfiguration: TextFieldConfiguration(
+                                child: TypeAheadFormField(
+                                  textFieldConfiguration: TextFieldConfiguration(
                                     controller: _typeAheadController,
                                     decoration: InputDecoration(
-                                        labelText: 'Plant',
-                                        suffixIcon: IconButton(
-                                            onPressed: () {
-                                              showDialog(context: context, builder: (_) => PlantIdentificationDialog())
-                                                  .then((value) => {
-                                                        value != null
-                                                            ? setState(
-                                                                (() => model = widget.listTypes.firstWhere(
-                                                                    (element) =>
-                                                                        element.fullName.toLowerCase().contains(value),
-                                                                    orElse: () =>
-                                                                        model = PlantTypeModel.empty("", ""))),
-                                                              )
-                                                            : null
-                                                      });
-                                              _typeAheadController.text = model.commonName;
-                                              rebuild();
-                                            },
-                                            icon: const Icon(Icons.camera_alt)))),
-                                suggestionsCallback: (pattern) {
-                                  List<PlantTypeModel> t = [];
-                                  t.addAll(widget.listTypes);
-                                  t.retainWhere((element) =>
-                                      element.commonName.toLowerCase().contains(pattern.toLowerCase()) ||
-                                      element.fullName.toLowerCase().contains(pattern.toLowerCase()));
-                                  return t;
-                                },
-                                itemBuilder: (context, PlantTypeModel suggestion) {
-                                  return ListTile(
-                                    title: Text(suggestion.commonName ?? ""),
-                                    subtitle: Text(suggestion.fullName ?? ""),
-                                  );
-                                },
-                                onSuggestionSelected: (PlantTypeModel suggestion) {
-                                  _typeAheadController.text = suggestion.commonName ?? "";
-                                  model = suggestion;
-                                },
-                                validator: (value) {
-                                  if (value == "" || value == null || model.id == 0) {
-                                    return 'Please select a plant';
-                                  }
-                                  return null;
-                                },
-                              )),
+                                      labelText: 'Plant',
+                                      suffixIcon: IconButton(
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (_) => PlantIdentificationDialog(
+                                                    validSciNames: widget.listTypes.map((t) => t.fullName).toList(),
+                                                  )).then((value) => {
+                                                value != null
+                                                    ? setState(
+                                                        (() => model = widget.listTypes.firstWhere(
+                                                            (element) => element.fullName.toLowerCase().contains(value),
+                                                            orElse: () => model = PlantTypeModel.empty("", ""))),
+                                                      )
+                                                    : null
+                                              });
+                                          _typeAheadController.text = model.commonName;
+                                          rebuild();
+                                        },
+                                        icon: const Icon(Icons.camera_alt),
+                                      ),
+                                    ),
+                                  ),
+                                  suggestionsCallback: (pattern) {
+                                    List<PlantTypeModel> t = [];
+                                    t.addAll(widget.listTypes);
+                                    t.retainWhere((element) =>
+                                        element.commonName.toLowerCase().contains(pattern.toLowerCase()) ||
+                                        element.fullName.toLowerCase().contains(pattern.toLowerCase()));
+                                    return t;
+                                  },
+                                  itemBuilder: (context, PlantTypeModel suggestion) {
+                                    return ListTile(
+                                      title: Text(suggestion.commonName ?? ""),
+                                      subtitle: Text(suggestion.fullName ?? ""),
+                                    );
+                                  },
+                                  onSuggestionSelected: (PlantTypeModel suggestion) {
+                                    _typeAheadController.text = suggestion.commonName ?? "";
+                                    model = suggestion;
+                                  },
+                                  validator: (value) {
+                                    if (value == "" || value == null || model.id == 0) {
+                                      return 'Please select a plant';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
                               spacer,
                               const Text(
                                 "in a",

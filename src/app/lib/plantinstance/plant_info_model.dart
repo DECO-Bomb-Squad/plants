@@ -314,7 +314,7 @@ extension ConditionExtension on ConditionType {
       case ConditionType.needsFertilising:
         return PlantCareIcons.needs_fertiliser;
       case ConditionType.needsWatering:
-        return PlantCareIcons.needs_water;
+        return PlantCareIcons.watering;
       case ConditionType.problem:
         return Icons.sick;
     }

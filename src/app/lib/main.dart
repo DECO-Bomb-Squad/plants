@@ -53,7 +53,7 @@ class PlantApp extends StatelessWidget {
     return MaterialApp(
       title: 'Aloe',
       theme: ThemeData(
-        canvasColor: Colors.transparent,
+        canvasColor: lightColour,
         backgroundColor: lightColour,
         scaffoldBackgroundColor: lightColour, // This sets the default background colour of the app
         primaryColor: accent,

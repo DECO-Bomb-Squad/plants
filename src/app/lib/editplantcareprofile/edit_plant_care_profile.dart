@@ -82,6 +82,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                       child: Column(children: [
                         DropdownButton<SoilType>(
                           value: model.soilType,
+                          dropdownColor: lightColour,
                           onChanged: (SoilType? newType) {
                             setState(() {
                               model.soilType = newType;
@@ -96,6 +97,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                         ),
                         DropdownButton<LocationType>(
                           value: model.location,
+                          dropdownColor: lightColour,
                           onChanged: (LocationType? newLocation) {
                             setState(() {
                               model.location = newLocation;
@@ -114,7 +116,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                             hintText: "Type a number...",
                             filled: true,
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
-                            focusedBorder: OutlineInputBorder(
+                            focusedBorder: const OutlineInputBorder(
                               borderSide: BorderSide(color: accent),
                             ),
                             labelStyle: const TextStyle(
@@ -138,7 +140,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                             hintText: "Type a number...",
                             filled: true,
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
-                            focusedBorder: OutlineInputBorder(
+                            focusedBorder: const OutlineInputBorder(
                               borderSide: BorderSide(color: accent),
                             ),
                             labelStyle: const TextStyle(
@@ -162,7 +164,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                             hintText: "Type a number...",
                             filled: true,
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
-                            focusedBorder: OutlineInputBorder(
+                            focusedBorder: const OutlineInputBorder(
                               borderSide: BorderSide(color: accent),
                             ),
                             labelStyle: const TextStyle(

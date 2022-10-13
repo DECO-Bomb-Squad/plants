@@ -80,7 +80,7 @@ class _PlantCareScreenState extends State<PlantCareScreen> {
                 Column(children: [
                   Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.1,
+                      height: MediaQuery.of(context).size.height * 0.15,
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Row(
                           children: [
@@ -88,7 +88,10 @@ class _PlantCareScreenState extends State<PlantCareScreen> {
                             Icon(widget.model.condition.iconData(), size: 50)
                           ],
                         ),
-                        Text(widget.model.scientificName, style: sectionHeaderStyle),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(widget.model.scientificName, style: sectionHeaderStyle),
+                        )
                       ]),
                     ),
                     widget.model.getCoverPhoto(100, 100, Icons.photo, 100)
