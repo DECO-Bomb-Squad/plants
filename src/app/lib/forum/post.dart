@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:app/api/plant_api.dart';
-import 'package:app/forum/test_post.dart';
 import 'package:app/screens/post_screen.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/loading_builder.dart';
@@ -27,16 +26,15 @@ class _PostSmallEmptyState extends State<PostSmallEmpty> {
       decoration: smallPostComponent,
       child: LoadingBuilder(
         widget.api.getPostInfo(widget.postID),
-        (m) => PostSmallWidget(m as PostInfoModel, widget.postID)
+        (m) => PostSmallWidget(m as PostInfoModel)
       )
     );
   }
 }
 
 class PostSmallWidget extends StatefulWidget {
-  final int postID;
   final PostInfoModel model;
-  PostSmallWidget(this.model, this.postID, {Key? key}) : super(key: key);
+  PostSmallWidget(this.model, {Key? key}) : super(key: key);
 
   @override
   State<PostSmallWidget> createState() => _PostSmallState();
@@ -48,7 +46,7 @@ class _PostSmallState extends State<PostSmallWidget> {
     return InkWell(
       onTap: () {
         Navigator.push(context,
-        MaterialPageRoute(builder: (context) => PostScreen(1)));
+        MaterialPageRoute(builder: (context) => PostScreen(widget.model)));
       },
       child: DecoratedBox(
         decoration: smallPostComponent,

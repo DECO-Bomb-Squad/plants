@@ -24,7 +24,7 @@ def APICall(func: Callable):
             res = func(session, *args, **kwargs)
         finally:
             session.close()
-            close_all_sessions()
+        #    close_all_sessions()
         return res
     inner.__name__ = func.__name__
     return inner

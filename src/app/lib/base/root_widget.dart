@@ -1,5 +1,6 @@
 import 'package:app/base/header_sliver.dart';
 import 'package:app/base/nav_bar.dart';
+import 'package:app/screens/create_post_screen.dart';
 import 'package:app/screens/my_plants_screen.dart';
 import 'package:app/screens/main_screen.dart';
 import 'package:app/screens/layout_test_screen.dart';
@@ -39,7 +40,7 @@ class _RootWidgetState extends State<RootWidget> with SingleTickerProviderStateM
       NavBarItem(
         text: "Ask\nQuestion",
         iconData: Icons.question_answer,
-        childFunc: () => PostScreen(1),
+        childFunc: () => const CreatePostScreen(),
       ),
     ];
     controller = TabController(length: navItems!.length, vsync: this);
