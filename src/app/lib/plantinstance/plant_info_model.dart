@@ -1,3 +1,4 @@
+import 'package:app/PlantCareIcons_icons.dart';
 import 'package:app/api/plant_api.dart';
 import 'package:app/utils/activity_calendar.dart';
 import 'package:app/utils/colour_scheme.dart';
@@ -198,6 +199,25 @@ extension SoilTypeExtension on SoilType {
     }
   }
 
+  IconData iconData() {
+    switch (this) {
+      case SoilType.smallPot:
+        return PlantCareIcons.small_pot;
+      case SoilType.mediumPot:
+        return PlantCareIcons.med_pot;
+      case SoilType.largePot:
+        return PlantCareIcons.large_pot;
+      case SoilType.gardenBed:
+        return PlantCareIcons.planter;
+      case SoilType.water:
+        return PlantCareIcons.vase;
+      case SoilType.fishTank:
+        return PlantCareIcons.tank;
+      case SoilType.windowPlanter:
+        return PlantCareIcons.window;
+    }
+  }
+
   static SoilType? toSoilType(String s) {
     switch (s) {
       case "small pot":
@@ -246,6 +266,19 @@ extension LocationExtension on LocationType {
         return null;
     }
   }
+
+  IconData iconData() {
+    switch (this) {
+      case LocationType.indoor:
+        return PlantCareIcons.inside;
+      case LocationType.fullShade:
+        return PlantCareIcons.full_shade;
+      case LocationType.fullSun:
+        return PlantCareIcons.full_sun;
+      case LocationType.partShade:
+        return PlantCareIcons.half_sun;
+    }
+  }
 }
 
 enum ConditionType {
@@ -275,13 +308,13 @@ extension ConditionExtension on ConditionType {
   IconData iconData() {
     switch (this) {
       case ConditionType.happy:
-        return Icons.sentiment_satisfied_alt;
+        return Icons.sentiment_very_satisfied;
       case ConditionType.needsPotting:
-        return Icons.compost;
+        return PlantCareIcons.needs_potting;
       case ConditionType.needsFertilising:
-        return Icons.yard;
+        return PlantCareIcons.needs_fertiliser;
       case ConditionType.needsWatering:
-        return Icons.water_drop_outlined;
+        return PlantCareIcons.needs_water;
       case ConditionType.problem:
         return Icons.sick;
     }
@@ -321,6 +354,19 @@ extension ActivityColour on ActivityTypeId {
         return darkColour;
       default:
         return lightHighlight;
+    }
+  }
+
+  IconData iconData() {
+    switch (this) {
+      case ActivityTypeId.fertilising:
+        return PlantCareIcons.fertilising;
+      case ActivityTypeId.repotting:
+        return PlantCareIcons.repotting;
+      case ActivityTypeId.watering:
+        return PlantCareIcons.watering;
+      case ActivityTypeId.worshipping:
+        return Icons.volunteer_activism;
     }
   }
 }
