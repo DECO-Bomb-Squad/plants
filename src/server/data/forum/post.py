@@ -53,6 +53,7 @@ class Post(DB.BASE):
             "content":        self.content,
             "created":        self.created.isoformat(),
             "userId":         self.userId,
+            "username":       self.author.username,
             "score":          self.score,
             "linkedPlants":   self.get_serialized_linked_plants(),
             "comments":       self.get_serialized_comments()
