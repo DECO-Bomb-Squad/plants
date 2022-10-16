@@ -8,7 +8,6 @@ class PostInfoModel {
   DateTime created; // When the post was written
 
   List<dynamic> attachedPlants; // IDs of attached plants
-  List<dynamic> tags;
   List<dynamic> comments;
 
   PostInfoModel.fromJSON(Map<String, dynamic> json)
@@ -19,16 +18,13 @@ class PostInfoModel {
         title = json["title"],
         content = json["content"],
         created = DateTime.parse(json["created"]),
-        //attachedPlants = (json["linkedPlants"] as List<dynamic>).map((e) => e as int).toList(),
         attachedPlants = json["linkedPlants"],
-        tags = json["postTags"],
         comments = json["comments"];
 
   PostInfoModel(this.authorID, this.username, this.title, this.content, this.attachedPlants)
       : postID = -1,
         score = 0,
         created = DateTime.now(),
-        tags = [],
         comments = [];
 
   String getReadableTimeAgo() {
