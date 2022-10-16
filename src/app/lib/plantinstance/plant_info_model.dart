@@ -3,6 +3,7 @@ import 'package:app/api/plant_api.dart';
 import 'package:app/utils/activity_calendar.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/visual_pattern.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -89,7 +90,7 @@ class PlantInfoModel extends ChangeNotifier {
         borderRadius: BorderRadius.circular(8.0),
         child: images.isNotEmpty
             ? Image(
-                image: NetworkImage(sortedImages[0]),
+                image: CachedNetworkImageProvider(sortedImages[0]),
                 height: height,
                 width: width,
                 fit: BoxFit.cover,
