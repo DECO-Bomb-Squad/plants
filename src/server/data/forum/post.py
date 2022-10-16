@@ -28,7 +28,7 @@ class Post(DB.BASE):
 
     plants = relationship("PostPlant", back_populates='post')
 
-    tags = relationship("PostTag", back_populates='post')
+    tags = relationship("PostTag", back_populates='post') # not used
 
     def __init__(self, title, content, userId):
         self.title = title
@@ -41,9 +41,6 @@ class Post(DB.BASE):
         allPlants = [plant.serialize() for plant in self.plants]
         return allPlants
 
-    def get_serialized_post_tags(self):
-        allTags = [tag.serialize() for tag in self.tags]
-        return allTags
 
     def get_serialized_comments(self):
         allComments = [comment.serialize() for comment in self.comments if not comment.parentId]
@@ -56,8 +53,8 @@ class Post(DB.BASE):
             "content":        self.content,
             "created":        self.created.isoformat(),
             "userId":         self.userId,
+            "username":       self.author.username,
             "score":          self.score,
             "linkedPlants":   self.get_serialized_linked_plants(),
-            "postTags":       self.get_serialized_post_tags(),
             "comments":       self.get_serialized_comments()
         }

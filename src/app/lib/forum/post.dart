@@ -60,7 +60,7 @@ class _PostSmallState extends State<PostSmallWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(widget.model.title, style: sectionHeaderStyle),
-                    Text("${widget.model.authorID} - ${widget.model.getReadableTimeAgo()} ago", style: modalTextStyle)
+                    Text("${widget.model.username} - ${widget.model.getReadableTimeAgo()} ago", style: modalTextStyle)
                     ],
                   )),
               const Expanded(flex: 1, child: Icon(Icons.check_circle, size: 50))

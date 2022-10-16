@@ -20,6 +20,7 @@ class CommentModel {
   int authorID;         // UserID of author
   int? parentID;
   int score;            // Point score
+  String username;
   EditPlantCareProfileModel? plantCareModel;  // Plant care model if attached
   String content;       // Actual comment text
   DateTime created;     // When the comment was posted
@@ -33,6 +34,7 @@ class CommentModel {
         authorID = json['userId'],
         score = json['score'],
         content = json['content'],
+        username = json['username'],
         created = DateTime.parse(json["created"]),
         replies = [],
         plantCareModel = null
@@ -44,7 +46,7 @@ class CommentModel {
         }
         //author = User.fromJSON(jsonDecode('{"id": 1, "name": "Test"}')),
         
-  CommentModel(this.authorID, this.parentID, this.content)
+  CommentModel(this.authorID, this.parentID, this.content, this.username)
       : commentID = -1,
         score = 0,
         created = DateTime.now(),

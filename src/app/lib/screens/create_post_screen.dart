@@ -119,7 +119,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 ElevatedButton(
                   onPressed: () {
                     userPlants.removeWhere((key, value) => value == false);
-                    GetIt.I<PlantAPI>().addPost(PostInfoModel(GetIt.I<PlantAPI>().user!.id, titleController.text, textController.text, userPlants.keys.toList()));
+                    GetIt.I<PlantAPI>().addPost(PostInfoModel(GetIt.I<PlantAPI>().user!.id, GetIt.I<PlantAPI>().user!.username, titleController.text, textController.text, userPlants.keys.toList()));
                     Navigator.pop(context);
                   },
                   style: buttonStyle,

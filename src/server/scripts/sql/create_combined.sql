@@ -150,6 +150,7 @@ CREATE TABLE `comments` (
   `content` VARCHAR(255) NOT NULL,
   `created` DATETIME NOT NULL,
   `parentId` INT NULL,
+  `careProfileId` INT NULL,
   `userId` INT NOT NULL,
   `postId` INT NOT NULL,
   `score` INT NOT NULL,
@@ -164,6 +165,11 @@ CREATE TABLE `comments` (
   CONSTRAINT `comments_to_post`
     FOREIGN KEY (`postId`)
     REFERENCES `posts` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `comments_to_care_profile`
+    FOREIGN KEY (`careProfileId`)
+    REFERENCES `plant_care_profile` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE);
 

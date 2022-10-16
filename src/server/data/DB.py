@@ -11,7 +11,7 @@ DBM = "mysql"
 HST = "localhost"
 DTB = "plants"
 USR = "root"
-PWD = "E415EEF018"
+PWD = "password"
 PRT = "3306"
 CONNECTION_STRING = f"{DBM}://{USR}:{PWD}@{HST}:{PRT}/{DTB}"
 
