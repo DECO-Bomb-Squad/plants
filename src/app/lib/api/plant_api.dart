@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
+import 'package:app/forum/comment_model.dart';
 import 'package:app/screens/add_plant/plant_type_model.dart';
 import 'package:dio/dio.dart';
 
@@ -31,7 +32,7 @@ class PlantAPI {
 
   // IMPORTANT! use local if the pythonanywhere deployment doesn't match what the front end model expects!
   // Change this "false" to a "true" to use prod deployment
-  final _baseAddress = true ? BACKEND_URL_PROD : BACKEND_URL_LOCAL;
+  final _baseAddress = false ? BACKEND_URL_PROD : BACKEND_URL_LOCAL;
 
   PlantAppStorage store = PlantAppStorage();
   PlantAppCache cache = PlantAppCache();
@@ -204,14 +205,27 @@ class PlantAPI {
   Future<bool> addPost(PostInfoModel model) async {
     String path = "/forum/post";
 
-    http.Response response = 
-        await http.post(makePath(path), headers: header, body: {
-          "userId": model.authorID.toString(), 
-          "title": model.title, 
-          "content": model.content, 
-          "plantIds": jsonEncode(model.attachedPlants), 
-          "tagIds": jsonEncode([])
-        });
+    http.Response response = await http.post(makePath(path), headers: header, body: {
+      "userId": model.authorID.toString(),
+      "title": model.title,
+      "content": model.content,
+      "plantIds": jsonEncode(model.attachedPlants),
+      "tagIds": jsonEncode([])
+    });
+
+    return response.statusCode == 200;
+  }
+
+  Future<bool> addComment(CommentModel comment) async {
+    String path = "forum/comment";
+
+    http.Response response = await http.post(makePath(path), headers: header, body: {
+      "userId": comment.authorID.toString(),
+      "content": comment.content,
+      if (comment.parentID != null) "parentId": comment.parentID.toString(),
+      if (comment.plantCareModel != null) "careProfileId": comment.plantCareModel!.id.toString(),
+      "postId": comment.postID.toString()
+    });
 
     return response.statusCode == 200;
   }
@@ -282,7 +296,7 @@ class PlantAPI {
   }
 
   // Posts a new orphaned plantcareprofile for the forum
-  Future<int?> createPlantCareProfile(PlantCareProfile profile) async {
+  Future<PlantCareProfile?> createPlantCareProfile(PlantCareProfile profile) async {
     String path = "/careprofile/add";
     Map<String, dynamic> reqBody = {
       "soilType": profile.soilType.name,
@@ -292,13 +306,15 @@ class PlantAPI {
       "daysBetweenFertilizer": profile.daysBetweenFertilising.toString()
     };
 
-    http.Response response = await http.patch(makePath(path), body: reqBody, headers: header);
-    if (response.statusCode != 200) return null;
+    http.Response response = await http.post(makePath(path), body: reqBody, headers: header);
+    if (response.statusCode != 200) {
+      return null;
+    }
 
     Map<String, dynamic> res = json.decode(response.body);
     int? profileId = res["id"];
     profile.id = profileId!;
 
-    return profileId;
+    return profile;
   }
 }

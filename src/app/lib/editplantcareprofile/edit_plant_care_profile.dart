@@ -224,15 +224,15 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                               ? null
                               : () async {
                                   if (_formKey.currentState!.validate()) {
-                                    int? idToReturn;
+                                    PlantCareProfile? profileToReturn;
                                     if (model.isNew) {
                                       PlantCareProfile newProfile = PlantCareProfile.newCareProfile(model);
-                                      idToReturn = await GetIt.I<PlantAPI>().createPlantCareProfile(newProfile);
+                                      profileToReturn = await GetIt.I<PlantAPI>().createPlantCareProfile(newProfile);
                                     } else {
                                       await model.assignedPlant?.careProfile.updatePlantCareProfile(model);
-                                      idToReturn = model.assignedPlant?.careProfile.id;
+                                      profileToReturn = model.assignedPlant?.careProfile;
                                     }
-                                    Navigator.of(context).pop<int?>(idToReturn);
+                                    Navigator.of(context).pop<PlantCareProfile?>(profileToReturn);
                                   }
                                 },
                           child: Text(submitText, style: buttonTextStyle)),

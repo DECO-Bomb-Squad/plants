@@ -1,5 +1,4 @@
-
-import 'package:app/editplantcareprofile/edit_plant_care_profile_model.dart';
+import 'package:app/plantinstance/plant_info_model.dart';
 
 /*
  * -- Comment Manager --
@@ -16,20 +15,22 @@ class CommentManagerModel {
 }
 
 class CommentModel {
-  int commentID;        // Comment ID
-  int authorID;         // UserID of author
+  int commentID; // Comment ID
+  int authorID; // UserID of author
+  int postID;
   int? parentID;
-  int score;            // Point score
+  int score; // Point score
   String username;
-  EditPlantCareProfileModel? plantCareModel;  // Plant care model if attached
-  String content;       // Actual comment text
-  DateTime created;     // When the comment was posted
+  PlantCareProfile? plantCareModel; // Plant care model if attached
+  String content; // Actual comment text
+  DateTime created; // When the comment was posted
 
   //User author;                // User object
   List<CommentModel> replies; // Replies to comment
 
   CommentModel.fromJSON(Map<String, dynamic> json)
       : commentID = json['id'],
+        postID = json['postId'],
         parentID = json['parentId'],
         authorID = json['userId'],
         score = json['score'],
@@ -37,21 +38,18 @@ class CommentModel {
         username = json['username'],
         created = DateTime.parse(json["created"]),
         replies = [],
-        plantCareModel = null
+        plantCareModel = (json["careProfile"] != "None") ? PlantCareProfile.fromJSON(json["careProfile"]) : null {
+    if (json.containsKey("replies")) {
+      replies = (json["replies"] as List<dynamic>).map((e) => CommentModel.fromJSON(e)).toList();
+    }
+  }
+  //author = User.fromJSON(jsonDecode('{"id": 1, "name": "Test"}')),
 
-        {
-          if (json.containsKey("replies")) {
-            replies = (json["replies"] as List<dynamic>).map((e) => CommentModel.fromJSON(e)).toList();
-          }
-        }
-        //author = User.fromJSON(jsonDecode('{"id": 1, "name": "Test"}')),
-        
-  CommentModel(this.authorID, this.parentID, this.content, this.username)
+  CommentModel(this.authorID, this.parentID, this.postID, this.content, this.username, this.plantCareModel)
       : commentID = -1,
         score = 0,
         created = DateTime.now(),
-        replies = [],
-        plantCareModel = null;
+        replies = [];
 
   String getReadableTimeAgo() {
     Duration delta = DateTime.now().difference(created);
