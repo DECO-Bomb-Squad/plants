@@ -1,5 +1,3 @@
-// TODO: Actually develop concrete visual design and put it here
-
 import 'package:app/utils/colour_scheme.dart';
 import 'package:flutter/material.dart';
 
@@ -35,6 +33,12 @@ const textStyle = TextStyle(
   fontSize: 20,
   fontWeight: FontWeight.w400,
   color: darkColour,
+);
+
+const lightTextStyle = TextStyle(
+  fontSize: 20,
+  fontWeight: FontWeight.w400,
+  color: lightColour
 );
 
 // Small, clear text for buttons or other UI elements
@@ -87,9 +91,44 @@ BoxDecoration dialogComponent = BoxDecoration(
   borderRadius: BorderRadius.circular(radius),
 );
 
-BoxDecoration inputComponent = BoxDecoration(
-  border: Border.all(color: lightHighlight, width: 2.0),
-  borderRadius: BorderRadius.circular(smallRadius),
+BoxDecoration quoteComponent = BoxDecoration(
+  color: lightHighlight,
+  borderRadius: BorderRadius.circular(radius),
+);
+
+BoxDecoration voteComponent = BoxDecoration(
+  color: darkColour,
+  borderRadius: BorderRadius.circular(radius)
+);
+
+InputDecoration replyInputComponent = InputDecoration(
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(smallRadius),
+  ),
+  hintText: "Write your response here. Make sure to include plenty of detail...",
+  hintStyle: inputStyle,
+  hintMaxLines: 2,
+  focusColor: lightHighlight
+);
+
+InputDecoration postInputComponent = InputDecoration(
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(smallRadius),
+  ),
+  hintText: "Ask your question here. Make sure to include plenty of detail...",
+  hintStyle: inputStyle,
+  hintMaxLines: 2,
+  focusColor: lightHighlight
+);
+
+InputDecoration titleInputComponent = InputDecoration(
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(smallRadius),
+  ),
+  hintText: "Enter an interesting title!",
+  hintStyle: inputStyle,
+  hintMaxLines: 2,
+  focusColor: lightHighlight
 );
 
 // Button styling

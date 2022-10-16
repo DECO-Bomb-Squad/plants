@@ -24,20 +24,28 @@ class _MainScreenState extends State<MainScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(children: [
-            Container(
-                alignment: Alignment.centerLeft,
-                child: const Text(
-                  "MY PLANTS",
-                  style: mainHeaderStyle,
-                )),
-            IconButton(
-              onPressed: () => (Navigator.of(context, rootNavigator: false)
-                  .push(MaterialPageRoute(builder: (context) => PlantAddEmpty()))).then((value) => setState((() {}))),
-              style: buttonStyle,
-              icon: const Icon(Icons.add),
-            )
-          ]),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: Row(
+              children: [
+                const Flexible(
+                  flex: 4,
+                  fit: FlexFit.tight,
+                  child: Text("MY PLANTS", style: mainHeaderStyle),
+                ),
+                Flexible(
+                  flex: 1,
+                  fit: FlexFit.tight,
+                  child: IconButton(
+                    onPressed: () => (Navigator.of(context, rootNavigator: false)
+                        .push(MaterialPageRoute(builder: (context) => PlantAddEmpty()))).then((value) => setState((() {}))),
+                    style: buttonStyle,
+                    icon: const Icon(Icons.add, size: 30),
+                  )
+                )  
+              ]
+            ),
+          ),
           spacer,
           SizedBox(
             height: 160,
@@ -57,25 +65,42 @@ class _MainScreenState extends State<MainScreen> {
           ),
           spacer,
           spacer,
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Text("HOT QUESTIONS", style: mainHeaderStyle),
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const CreatePostScreen()));
-              },
-            )
-          ]),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+              children: [
+                const Flexible(
+                  flex: 4,
+                  fit: FlexFit.tight,
+                  child: Text("HOT QUESTIONS", style: mainHeaderStyle),
+                ),
+                Flexible(
+                  flex: 1,
+                  fit: FlexFit.tight,
+                  child: IconButton(
+                    icon: const Icon(Icons.add, size: 30),
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const CreatePostScreen()));
+                    },
+                  )
+                )
+              ]
+            ),
+          ),
           Flexible(
-              child: GridView(
-                  padding: EdgeInsets.zero,
-                  scrollDirection: Axis.vertical,
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.9,
-                      childAspectRatio: 3 / 1,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 20),
-                  children: List<Widget>.generate(10, (int idx) => const PostSmallWidget()))),
+            child: GridView(
+              padding: EdgeInsets.zero,
+              scrollDirection: Axis.vertical,
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.9,
+                  childAspectRatio: 3 / 1,
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 20),
+              children: GetIt.I<PlantAPI>().recentPosts!.map((id) => PostSmallEmpty(id)
+              ).toList()
+            )
+          )
         ],
       ));
 

@@ -1,9 +1,12 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:convert';
 import 'package:app/screens/add_plant/plant_type_model.dart';
 import 'package:dio/dio.dart';
 
 import 'package:app/api/storage.dart';
 import 'package:app/base/user.dart';
+import 'package:app/forum/post_model.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/secrets.dart';
 import 'package:app/screens/add_plant/plant_identification_screen.dart';
@@ -39,6 +42,7 @@ class PlantAPI {
       Uri.http(_baseAddress, subPath, queryParams ?? {});
 
   User? user;
+  List<int>? recentPosts;
 
   // Auth token - back end rejects requests that don't use this header for security reasons
   Map<String, String> get header => {"apiKey": API_KEY};
@@ -62,6 +66,7 @@ class PlantAPI {
         Map<String, dynamic> decodedUserDetails = jsonDecode(userDetails);
         user = User.fromJSON(decodedUserDetails);
         user!.ownedPlantIDs = await getUserPlants(user!.username);
+        recentPosts = await getRecentPosts(5);
         return true;
       } else {
         return false;
@@ -76,6 +81,7 @@ class PlantAPI {
     await store.set(user_store_name, jsonEncode(data));
     user = User.fromJSON(data);
     user!.ownedPlantIDs = await getUserPlants(user!.username);
+    recentPosts = await getRecentPosts(5);
     return user!;
   }
 
@@ -178,6 +184,36 @@ class PlantAPI {
   Future<PlantInfoModel> _getPlantInfo(int id) {
     String path = "/plant/$id";
     return getGeneric(path, (result) => PlantInfoModel.fromJSON(result));
+  }
+
+  Future<PostInfoModel> getPostInfo(int id) {
+    String path = "/forum/post/$id";
+    return getGeneric(path, (result) => PostInfoModel.fromJSON(result));
+  }
+
+  Future<List<int>> getRecentPosts(int num) async {
+    String path = "/forum/post/list/$num";
+    //return getGeneric(path, (result) => PostInfoModel.fromJSON(result));
+
+    http.Response response = await http.get(makePath(path), headers: header);
+
+    List<dynamic> res = jsonDecode(response.body)["posts"];
+    return res.map((e) => e as int).toList();
+  }
+
+  Future<bool> addPost(PostInfoModel model) async {
+    String path = "/forum/post";
+
+    http.Response response = 
+        await http.post(makePath(path), headers: header, body: {
+          "userId": model.authorID.toString(), 
+          "title": model.title, 
+          "content": model.content, 
+          "plantIds": jsonEncode(model.attachedPlants), 
+          "tagIds": jsonEncode([])
+        });
+
+    return response.statusCode == 200;
   }
 
   Future<bool> addPlantPhoto(String imageURL, int plantId) async {

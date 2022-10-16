@@ -23,7 +23,7 @@ class LoadingBuilderState<M> extends State<LoadingBuilder<M>> {
           if (snapshot.hasData) {
             return widget.constructor(snapshot.data as M);
           } else if (snapshot.hasError) {
-            return const Text("Something went wrong...");
+            return Text("Something went wrong... ${snapshot.error}");
           } else {
             return Container(padding: const EdgeInsets.all(30), child: const CircularProgressIndicator());
           }
