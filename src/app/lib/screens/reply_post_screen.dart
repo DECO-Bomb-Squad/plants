@@ -10,11 +10,11 @@ import 'package:app/base/header_sliver.dart';
 import 'package:get_it/get_it.dart';
 
 class ReplyPostScreen extends StatefulWidget {
-  final int postID;
+  final PostInfoModel model;
   final int? parentID;
-  CommentManagerModel model;
+  CommentManagerModel commentModel;
   Function returnFunction;
-  ReplyPostScreen(this.postID, this.parentID, this.model, this.returnFunction, {Key? key}) : super(key: key);
+  ReplyPostScreen(this.model, this.parentID, this.commentModel, this.returnFunction, {Key? key}) : super(key: key);
 
   @override
   State<ReplyPostScreen> createState() => _ReplyPostScreenState();
@@ -32,7 +32,6 @@ class _ReplyPostScreenState extends State<ReplyPostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    PostInfoModel model = PostInfoModel.fromJSON(jsonDecode(rawJSON));
   
     return Scaffold(
       body: NestedScrollView(
@@ -51,7 +50,7 @@ class _ReplyPostScreenState extends State<ReplyPostScreen> {
                     decoration: quoteComponent,
                     child: Padding(
                       padding: const EdgeInsets.all(padding),
-                      child: Text(model.content, style: textStyle),
+                      child: Text(widget.model.content, style: textStyle),
                     ),
                   ),
                 )
@@ -86,7 +85,7 @@ class _ReplyPostScreenState extends State<ReplyPostScreen> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      widget.returnFunction(CommentModel(model.postID, widget.parentID, textController.text, GetIt.I<PlantAPI>().user!.username));
+                      widget.returnFunction(CommentModel(widget.model.postID, widget.parentID, textController.text, GetIt.I<PlantAPI>().user!.username));
                       // setState(() {widget.model!.comments;});
                       Navigator.pop(context);
                     },
