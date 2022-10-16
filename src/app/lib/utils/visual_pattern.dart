@@ -89,7 +89,6 @@ BoxDecoration smallPlantComponent = BoxDecoration(
 
 BoxDecoration smallPostComponent = BoxDecoration(
   color: mutedAccent,
-  //gradient: const LinearGradient(colors: [accent, mutedAccent], begin: Alignment.bottomCenter, end: Alignment.topRight),
   borderRadius: BorderRadius.circular(radius),
 );
 
