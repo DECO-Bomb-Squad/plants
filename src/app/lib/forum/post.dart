@@ -9,9 +9,10 @@ import 'package:get_it/get_it.dart';
 
 class PostSmallEmpty extends StatefulWidget {
   final int postID;
+  final bool showDesc;
   final PlantAPI api = GetIt.I<PlantAPI>();
 
-  PostSmallEmpty(this.postID, {Key? key}) : super(key: key);
+  PostSmallEmpty(this.postID, this.showDesc, {Key? key}) : super(key: key);
 
   @override 
   State<PostSmallEmpty> createState() => _PostSmallEmptyState();
@@ -24,7 +25,7 @@ class _PostSmallEmptyState extends State<PostSmallEmpty> {
       decoration: smallPostComponent,
       child: LoadingBuilder(
         widget.api.getPostInfo(widget.postID),
-        (m) => PostSmallWidget(m as PostInfoModel)
+        (m) => PostSmallWidget(m as PostInfoModel, widget.showDesc)
       )
     );
   }
@@ -32,7 +33,8 @@ class _PostSmallEmptyState extends State<PostSmallEmpty> {
 
 class PostSmallWidget extends StatefulWidget {
   final PostInfoModel model;
-  PostSmallWidget(this.model, {Key? key}) : super(key: key);
+  final bool showDesc;
+  PostSmallWidget(this.model, this.showDesc, {Key? key}) : super(key: key);
 
   @override
   State<PostSmallWidget> createState() => _PostSmallState();
@@ -48,24 +50,31 @@ class _PostSmallState extends State<PostSmallWidget> {
       },
       child: DecoratedBox(
         decoration: smallPostComponent,
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                flex: 3,
-                child: Column (
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(widget.model.title, style: sectionHeaderStyle),
-                    Text("${widget.model.username} - ${widget.model.getReadableTimeAgo()} ago", style: modalTextStyle)
-                    ],
-                  )),
-              const Expanded(flex: 1, child: Icon(Icons.question_answer, size: 50))
-            ],
-          ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Column (
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(widget.model.title, style: sectionHeaderStyle),
+                        Text("${widget.model.username} - ${widget.model.getReadableTimeAgo()} ago", style: modalTextStyle)
+                        ],
+                      )),
+                  const Expanded(flex: 1, child: Icon(Icons.question_answer, size: 50))
+                ],
+              ),
+            ),
+            if (widget.showDesc) Padding(
+              padding: EdgeInsets.all(8.0), 
+              child: Text(widget.model.content, style: modalTextStyle,),) 
+          ]
         ),
       ),
     );

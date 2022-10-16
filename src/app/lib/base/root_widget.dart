@@ -3,7 +3,7 @@ import 'package:app/base/nav_bar.dart';
 import 'package:app/screens/create_post_screen.dart';
 import 'package:app/screens/my_plants_screen.dart';
 import 'package:app/screens/main_screen.dart';
-import 'package:app/screens/layout_test_screen.dart';
+import 'package:app/screens/trending_screen.dart';
 import 'package:flutter/material.dart';
 
 

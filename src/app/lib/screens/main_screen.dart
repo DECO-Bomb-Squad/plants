@@ -87,7 +87,7 @@ class _MainScreenState extends State<MainScreen> {
                   childAspectRatio: 3 / 1,
                   crossAxisSpacing: 20,
                   mainAxisSpacing: 20),
-              children: GetIt.I<PlantAPI>().recentPosts!.map((id) => PostSmallEmpty(id)
+              children: GetIt.I<PlantAPI>().recentPosts!.map((id) => PostSmallEmpty(id, false)
               ).toList()
             )
           )

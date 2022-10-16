@@ -1,5 +1,8 @@
+import 'package:app/api/plant_api.dart';
+import 'package:app/forum/post.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class LayoutScreen extends StatefulWidget {
   final String demoTitle;
@@ -20,23 +23,28 @@ class _LayoutScreenState extends State<LayoutScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Text(
-            "HEADER 1\nExample text in mainHeaderStyle\n",
-            style: mainHeaderStyle,
+        children: [
+            SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+              children: const [
+                Flexible(
+                  flex: 4,
+                  fit: FlexFit.tight,
+                  child: Text("HOT QUESTIONS", style: mainHeaderStyle),
+                )
+              ]
+            ),
           ),
-          Text(
-            "HEADER 2\nExample text in sectionHeaderStyle\n",
-            style: sectionHeaderStyle,
-          ),
-          Text(
-            "HEADER 3\nExample text in subHeaderStyle\n",
-            style: subheaderStyle,
-          ),
-          Text(
-            "BODY TEXT\nExample text in textStyle\n",
-            style: textStyle,
-          ),
+          Flexible(
+            child: ListView(
+              padding: EdgeInsets.all(5.0),
+              scrollDirection: Axis.vertical,
+              children: GetIt.I<PlantAPI>().recentPosts!.map((id) => PostSmallEmpty(id, true)
+              ).toList()
+            )
+          )
         ],
       ));
 
