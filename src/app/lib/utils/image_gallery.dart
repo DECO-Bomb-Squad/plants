@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
@@ -38,7 +39,7 @@ class GalleryView extends StatelessWidget {
                   body: Stack(
                     children: [
                       PhotoView(
-                        imageProvider: NetworkImage(
+                        imageProvider: CachedNetworkImageProvider(
                           images[index].image,
                         ),
                       ),
@@ -61,7 +62,7 @@ class GalleryView extends StatelessWidget {
             decoration: BoxDecoration(
               image: DecorationImage(
                 fit: BoxFit.cover,
-                image: NetworkImage(images[index].image),
+                image: CachedNetworkImageProvider(images[index].image),
               ),
             ),
           ),
