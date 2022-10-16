@@ -58,12 +58,31 @@ class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
     Uint8List imgBytes = await image.readAsBytes();
     var storage = AzureStorage.parse(AZURE_BLOB_CONN_STR);
     String path = "/images/${image.name}";
+    // Show a loading icon while the image is uploading
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: const [
+                CircularProgressIndicator(),
+                Text("Loading"),
+              ],
+            ),
+          );
+        });
     await storage.putBlob(
       path,
       bodyBytes: imgBytes,
     );
     // Get permanent access URI from Azure
     String blobLink = (await storage.getBlobLink(path, expiry: DateTime(2022, 12, 30))).toString();
+    // pop the loading icon
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
     widget.model.addNewImage(blobLink, DateTime.now());
   }
 
