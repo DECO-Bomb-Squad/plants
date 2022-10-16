@@ -89,17 +89,18 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
           Flexible(
-              child: GridView(
-                  padding: EdgeInsets.zero,
-                  scrollDirection: Axis.vertical,
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.9,
-                      childAspectRatio: 3 / 1,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 20),
-                  children: GetIt.I<PlantAPI>().recentPosts!.map((id) => PostSmallEmpty(id)).toList()))
-                  //children: List<Widget>.generate(10, (int idx) => PostSmallEmpty(20)))),
-                  //children: GetIt.I<PlantAPI>().user!.ownedPlantIDs.map((id) => PlantInfoEmpty(id, isSmall: true)).toList()))
+            child: GridView(
+              padding: EdgeInsets.zero,
+              scrollDirection: Axis.vertical,
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.9,
+                  childAspectRatio: 3 / 1,
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 20),
+              children: GetIt.I<PlantAPI>().recentPosts!.map((id) => PostSmallEmpty(id)
+              ).toList()
+            )
+          )
         ],
       ));
 

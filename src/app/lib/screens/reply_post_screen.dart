@@ -1,11 +1,13 @@
 import 'dart:convert';
 
+import 'package:app/api/plant_api.dart';
 import 'package:app/forum/comment_model.dart';
 import 'package:app/forum/post_model.dart';
 import 'package:app/forum/test_post.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/base/header_sliver.dart';
+import 'package:get_it/get_it.dart';
 
 class ReplyPostScreen extends StatefulWidget {
   final int postID;
@@ -84,7 +86,7 @@ class _ReplyPostScreenState extends State<ReplyPostScreen> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      widget.returnFunction(CommentModel(model.postID, widget.parentID, textController.text));
+                      widget.returnFunction(CommentModel(model.postID, widget.parentID, textController.text, GetIt.I<PlantAPI>().user!.username));
                       // setState(() {widget.model!.comments;});
                       Navigator.pop(context);
                     },
