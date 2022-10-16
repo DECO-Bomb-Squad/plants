@@ -14,28 +14,25 @@ class LayoutScreen extends StatefulWidget {
 }
 
 class _LayoutScreenState extends State<LayoutScreen> {
-  int counter;
 
-  _LayoutScreenState() : counter = 0;
+  Future<Null> rebuild() {
+    GetIt.I<PlantAPI>().refreshPosts(5);
+      return Future.sync(() {
+        setState(() {
+          context;
+        });
+      }
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    GetIt.I<PlantAPI>().refreshPosts(5);
-    setState(() {
-      context;
-    });
+    rebuild();
     return Container(
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: RefreshIndicator(
         color: accent,
-        onRefresh: () {
-          GetIt.I<PlantAPI>().refreshPosts(5);
-          return Future.sync(() {
-            setState(() {
-              context;
-            });
-          });
-        },
+        onRefresh: rebuild,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,7 +54,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
               child: ListView(
                 padding: EdgeInsets.all(5.0),
                 scrollDirection: Axis.vertical,
-                children: GetIt.I<PlantAPI>().recentPosts!.map((id) => PostSmallEmpty(id, true)
+                children: GetIt.I<PlantAPI>().recentPosts!.map((id) => PostSmallEmpty(id, true, rebuild)
                 ).toList()
               )
             )

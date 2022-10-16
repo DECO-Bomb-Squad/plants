@@ -1,7 +1,6 @@
 import 'package:app/api/plant_api.dart';
 import 'package:app/base/user.dart';
 import 'package:app/screens/add_plant/add_plant_screen.dart';
-import 'package:app/screens/create_post_screen.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
@@ -19,12 +18,19 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   User user = GetIt.I<PlantAPI>().user!;
 
+  Future<void> rebuild() {
+    GetIt.I<PlantAPI>().refreshPosts(5);
+      return Future.sync(() {
+        setState(() {
+
+        });
+      }
+    );
+  }
+
   @override
   Widget build(BuildContext context) { 
-    GetIt.I<PlantAPI>().refreshPosts(5);
-    setState(() {
-      context;
-    });
+    rebuild();
     return Container(
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: Column(
@@ -87,18 +93,11 @@ class _MainScreenState extends State<MainScreen> {
           Flexible(
             child: RefreshIndicator(
               color: accent,
-              onRefresh: () {
-                GetIt.I<PlantAPI>().refreshPosts(5);
-                return Future.sync(() {
-                  setState(() {
-                    context;
-                  });
-                });
-              },
+              onRefresh: rebuild,
               child: ListView(
                 padding: EdgeInsets.zero,
                 scrollDirection: Axis.vertical,
-                children: GetIt.I<PlantAPI>().recentPosts!.map((id) => PostSmallEmpty(id, false)
+                children: GetIt.I<PlantAPI>().recentPosts!.map((id) => PostSmallEmpty(id, false, rebuild)
                 ).toList()
               ),
             )

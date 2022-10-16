@@ -1,3 +1,4 @@
+import 'package:app/api/plant_api.dart';
 import 'package:app/api/storage.dart';
 import 'package:app/editplantcareprofile/edit_plant_care_profile.dart';
 import 'package:app/forum/comment_model.dart';
@@ -6,10 +7,13 @@ import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/screens/reply_post_screen.dart';
+import 'package:get_it/get_it.dart';
 
 class CommentManager {
   final BuildContext context;
   final PostInfoModel postModel; // The ID of the post to get comments from
+  final PlantAPI api = GetIt.I<PlantAPI>();
+  
   PlantAppStorage store = PlantAppStorage();
   Function(CommentModel) returnFunction;
   CommentManagerModel model;

@@ -146,7 +146,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                           ),
                           controller: _daysBetweenWateringController,
                           validator: (String? value) {
-                            if (value == null || value.isEmpty || double.tryParse(value) == null) {
+                            if (value == null || value.isEmpty || double.tryParse(value) == null || double.tryParse(value)! < 1) {
                               return 'Please enter a valid number';
                             } else {
                               model.daysBetweenWatering = int.parse(value);
@@ -170,7 +170,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                           ),
                           controller: _daysBetweenFertilisingController,
                           validator: (String? value) {
-                            if (value == null || value.isEmpty || int.tryParse(value) == null) {
+                            if (value == null || value.isEmpty || int.tryParse(value) == null || double.tryParse(value)! < 1) {
                               return 'Please enter a valid number';
                             } else {
                               model.daysBetweenFertilising = int.parse(value);
@@ -194,7 +194,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                           ),
                           controller: _daysBetweenRepottingController,
                           validator: (String? value) {
-                            if (value == null || value.isEmpty || int.tryParse(value) == null) {
+                            if (value == null || value.isEmpty || int.tryParse(value) == null || double.tryParse(value)! < 1) {
                               return 'Please enter a valid number';
                             } else {
                               model.daysBetweenRepotting = int.parse(value);

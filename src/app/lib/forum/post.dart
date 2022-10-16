@@ -10,9 +10,10 @@ import 'package:get_it/get_it.dart';
 class PostSmallEmpty extends StatefulWidget {
   final int postID;
   final bool showDesc;
+  final Function returnFunc;
   final PlantAPI api = GetIt.I<PlantAPI>();
 
-  PostSmallEmpty(this.postID, this.showDesc, {Key? key}) : super(key: key);
+  PostSmallEmpty(this.postID, this.showDesc, this.returnFunc, {Key? key}) : super(key: key);
 
   @override 
   State<PostSmallEmpty> createState() => _PostSmallEmptyState();
@@ -27,7 +28,7 @@ class _PostSmallEmptyState extends State<PostSmallEmpty> {
         decoration: smallPostComponent,
         child: LoadingBuilder(
           widget.api.getPostInfo(widget.postID),
-          (m) => PostSmallWidget(m as PostInfoModel, widget.showDesc)
+          (m) => PostSmallWidget(m as PostInfoModel, widget.showDesc, widget.returnFunc)
         )
       ),
     );
@@ -37,7 +38,8 @@ class _PostSmallEmptyState extends State<PostSmallEmpty> {
 class PostSmallWidget extends StatefulWidget {
   final PostInfoModel model;
   final bool showDesc;
-  PostSmallWidget(this.model, this.showDesc, {Key? key}) : super(key: key);
+  final Function returnFunc;
+  const PostSmallWidget(this.model, this.showDesc, this.returnFunc, {Key? key}) : super(key: key);
 
   @override
   State<PostSmallWidget> createState() => _PostSmallState();
@@ -49,7 +51,7 @@ class _PostSmallState extends State<PostSmallWidget> {
     return InkWell(
       onTap: () {
         Navigator.push(context,
-        MaterialPageRoute(builder: (context) => PostScreen(widget.model)));
+        MaterialPageRoute(builder: (context) => PostScreen(widget.model))).then(widget.returnFunc());
       },
       child: DecoratedBox(
         decoration: smallPostComponent,
