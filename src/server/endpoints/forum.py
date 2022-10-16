@@ -16,7 +16,6 @@ Adds a post (POST (lol))
         - title:   string
         - content: string
         - plantIds: [str]
-        - tagIds: [str]
 '''
 @app.route("/forum/post", methods = ['POST'])
 @APICall
@@ -27,13 +26,11 @@ def add_post(session):
         title:    str = request.form['title']
         content:  str = request.form['content']
         plantIds: str = request.form['plantIds'] # encoded in JSON.
-        tags:     str = request.form['tagIds'] # encoded in JSON
 
         # verify information
-        if (not userId or not title or not content or not plantIds or not tags):
+        if (not userId or not title or not content or not plantIds):
             raise KeyError
 
-        parsedTags = json.loads(tags)
         parsedPlantIds = json.loads(plantIds)
         # this is munted, I think it's to do with json.loads
         # if not isinstance(parsedPlantIds, list):
@@ -45,12 +42,6 @@ def add_post(session):
             plant: Plant = session.query(Plant).filter(Plant.id == plantId).first()
             if not plant:
                 return f"One of the plant ids given [{plantId}] could not be found", 400
-
-        # check if all the tags exist
-        for tagId in parsedTags:
-            tag: Tag = session.query(Tag).filter(Tag.id == tagId).first()
-            if not tag:
-                return f"One of the tag ids given [{tagId}] could not be found", 400
 
         # check if user exists
         user: User = session.query(User).filter(User.id == userId).first()
@@ -75,10 +66,7 @@ def add_post(session):
         for plantId in parsedPlantIds:
             postPlant = PostPlant(plantId, newPost.id)
             session.add(postPlant)
-        # Post Tags
-        for tagId in parsedTags:
-            postTag = PostTag(newPost.id, tagId)
-            session.add(postTag)
+
         session.commit()
     except Exception as e:
         print("An unknown error occurred:", e)
@@ -101,6 +89,7 @@ def add_comment(session):
         userId:   int = request.form['userId']
         content:  str = request.form['content']
         parentId: int = request.form.get('parentId') # this will silently fail, since it's optional
+        careProfileId: int = request.form.get('careProfileId') # this will silently fail, since it's optional
         postId:   int = request.form['postId'] # encoded in JSON
 
         # check if all is good
@@ -124,14 +113,20 @@ def add_comment(session):
             parent: Comment = session.query(Comment).filter(Comment.id == parentId).first()
             if not parent:
                 return f"The parent comment does not exist with id [{parentId}]", 400
+        
+        # if the user provides a care profile, check it exists:
+        if careProfileId:
+            careProfile: PlantCareProfile = session.query(PlantCareProfile).filter(PlantCareProfile.id == careProfileId).first()
+            if not careProfile:
+                return f"There is no plant care profile with id [{careProfileId}]", 400
 
     except KeyError as e:
-        return "Invalid request. NEED to provide userId: int, postId: int, content: str. OPTIONALLY include parentId: int.", 400
+        return "Invalid request. NEED to provide userId: int, postId: int, content: str. OPTIONALLY include parentId: int, careProfileId: int.", 400
     except Exception as e:
         return f"An error occurred: {e}", 500
 
     try:
-        comment: Comment = Comment(content, userId, postId, parentId)
+        comment: Comment = Comment(content, userId, postId, parentId, careProfileId)
         session.add(comment)
         session.commit()
     except Exception as e:
