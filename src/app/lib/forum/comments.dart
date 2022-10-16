@@ -1,4 +1,5 @@
 
+import 'package:app/api/storage.dart';
 import 'package:app/forum/comment_model.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/visual_pattern.dart';
@@ -8,6 +9,7 @@ import 'package:app/screens/reply_post_screen.dart';
 class CommentManager {
   final BuildContext context;
   final int postID; // The ID of the post to get comments from
+  PlantAppStorage store = PlantAppStorage();
   Function(CommentModel) returnFunction;
   CommentManagerModel model;
 
@@ -15,7 +17,6 @@ class CommentManager {
       : model = CommentManagerModel(postID);
 
   void loadComments(List<dynamic> json) {
-    // This should be making an API call, but for now JSON is fine
     for (var comment in json) {
       model.comments.add(CommentModel.fromJSON(comment));
     }
@@ -71,7 +72,7 @@ class CommentManager {
         Row(children: [
           Expanded(
               flex: 1,
-              child: CommentVoteComponent(comment)
+              child: CommentVoteComponent(comment, store)
             ),
             Expanded(
               flex: 4,
@@ -138,7 +139,7 @@ class CommentManager {
           children: [
             Expanded(
               flex: 1,
-              child: CommentVoteComponent(comment)
+              child: CommentVoteComponent(comment, store)
             ),
             Expanded(
               flex: 4,
@@ -177,8 +178,9 @@ class CommentManager {
 class CommentVoteComponent extends StatefulWidget {
   int voted = 0;
   CommentModel comment;
+  PlantAppStorage storage;
 
-  CommentVoteComponent(this.comment, {super.key}); 
+  CommentVoteComponent(this.comment, this.storage, {super.key}); 
 
   @override 
   State<CommentVoteComponent> createState() => _CommentVoteComponentState();
@@ -186,6 +188,21 @@ class CommentVoteComponent extends StatefulWidget {
 
 class _CommentVoteComponentState extends State<CommentVoteComponent> {
   
+  loadValues() async {
+    if (await widget.storage.has(widget.comment.commentID.toString())) {
+      widget.voted = await widget.storage.get(widget.comment.commentID.toString()) as int;     
+      widget.comment.score += widget.voted;
+    }
+    return true;
+  }
+
+  @override 
+  initState() {
+    super.initState();
+
+    loadValues();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -193,7 +210,7 @@ class _CommentVoteComponentState extends State<CommentVoteComponent> {
         InkWell(
           child: 
             Icon(Icons.arrow_upward, color: (widget.voted == 1) ? accent : darkColour),
-          onTap: () {
+          onTap: () async {
             if (widget.voted != 1) {
               widget.comment.score += 1 - widget.voted;
               widget.voted = 1;
@@ -201,6 +218,7 @@ class _CommentVoteComponentState extends State<CommentVoteComponent> {
               widget.comment.score -= 1;
               widget.voted = 0;
             }
+            await widget.storage.set(widget.comment.commentID.toString(), widget.voted.toString());
             setState(() {widget.voted;}); // Rebuild self
           } 
         ),
@@ -209,7 +227,7 @@ class _CommentVoteComponentState extends State<CommentVoteComponent> {
           child: 
             Icon(Icons.arrow_downward, color: (widget.voted == -1) ? accent : darkColour
             ),
-          onTap: () {
+          onTap: () async {
             if (widget.voted != -1) {
               widget.comment.score -= 1 + widget.voted;
               widget.voted = -1;
@@ -217,7 +235,7 @@ class _CommentVoteComponentState extends State<CommentVoteComponent> {
               widget.comment.score += 1;
               widget.voted = 0;
             }
-
+            await widget.storage.set(widget.comment.commentID.toString(), widget.voted.toString());
             setState(() {widget.voted;}); // Rebuild self
           },
         )
