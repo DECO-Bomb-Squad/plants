@@ -77,7 +77,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
       titleText = "ASSIGN CARE PROFILE";
     }
 
-    if (widget.stiflePlantDropdown) {
+    if (widget.stiflePlantDropdown && !model.isNew) {
       discardText = "OK";
       titleText = "VIEW CARE PROFILE";
     }
