@@ -1,5 +1,5 @@
-
 import 'package:app/api/storage.dart';
+import 'package:app/editplantcareprofile/edit_plant_care_profile.dart';
 import 'package:app/forum/comment_model.dart';
 import 'package:app/forum/post_model.dart';
 import 'package:app/utils/colour_scheme.dart';
@@ -14,8 +14,7 @@ class CommentManager {
   Function(CommentModel) returnFunction;
   CommentManagerModel model;
 
-  CommentManager(this.context, this.postModel, this.returnFunction)
-      : model = CommentManagerModel(postModel.postID);
+  CommentManager(this.context, this.postModel, this.returnFunction) : model = CommentManagerModel(postModel.postID);
 
   void loadComments(List<dynamic> json) {
     for (var comment in json) {
@@ -29,7 +28,7 @@ class CommentManager {
 
   void addComment(CommentModel comment) {
     if (comment.parentID != null) {
-      for(CommentModel parent in model.comments) {
+      for (CommentModel parent in model.comments) {
         if (parent.commentID == comment.parentID) {
           parent.replies.add(comment);
         }
@@ -71,33 +70,27 @@ class CommentManager {
               ))
         ]),
         Row(children: [
-          Expanded(
+          Expanded(flex: 1, child: CommentVoteComponent(comment, store)),
+          Expanded(flex: 4, child: Text(comment.content))
+        ]),
+        if (comment.plantCareModel != null)
+          Row(children: [
+            const Expanded(
               flex: 1,
-              child: CommentVoteComponent(comment, store)
+              child: SizedBox(),
             ),
             Expanded(
               flex: 4,
-              child: Text(comment.content)
-            )
-          ]
-        ),
-        if(comment.plantCareModel != null)
-          Row(
-            children: [
-              const Expanded(
-                flex: 1,
-                child: SizedBox(),
-              ),
-              Expanded(
-                flex: 4,
-                child: ElevatedButton(
-                  onPressed: null,
+              child: ElevatedButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (_) => EditPlantCareProfile(profile: comment.plantCareModel, plant: null));
+                  },
                   style: buttonStyle,
-                  child: const Text("View care profile", style: buttonTextStyle)
-                ),
-              )
-            ]
-          ),
+                  child: const Text("View care profile", style: buttonTextStyle)),
+            )
+          ]),
         Row(
           children: [
             Expanded(flex: 1, child: Container()),
@@ -132,47 +125,32 @@ class CommentManager {
                   Text("${comment.username}", style: subheaderStyle),
                   Text("${comment.getReadableTimeAgo()} ago")
                 ],
-              )
-            )
-          ]
-        ),
-        Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: CommentVoteComponent(comment, store)
-            ),
-            Expanded(
-              flex: 4,
-              child: Text(comment.content)
-            )
-          ]
-        ),
+              ))
+        ]),
+        Row(children: [
+          Expanded(flex: 1, child: CommentVoteComponent(comment, store)),
+          Expanded(flex: 4, child: Text(comment.content))
+        ]),
       ],
     );
   }
 
   Widget _getReplyButton(int? parent) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 1,
-          child: Container(),
-        ),
-        Expanded(
+    return Row(children: [
+      Expanded(
+        flex: 1,
+        child: Container(),
+      ),
+      Expanded(
           flex: 4,
           child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(context,
-              MaterialPageRoute(builder: (context) => ReplyPostScreen(postModel, parent, model, returnFunction)));
-              print(model.comments);
-            },
-            style: smallButtonStyle,
-            child: const Text("Write a response...", style: smallButtonTextStyle)
-          )
-        )
-      ]
-    );
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ReplyPostScreen(postModel, parent, model, returnFunction)));
+              },
+              style: smallButtonStyle,
+              child: const Text("Write a response...", style: smallButtonTextStyle)))
+    ]);
   }
 }
 
@@ -180,9 +158,9 @@ class CommentVoteComponent extends StatefulWidget {
   final CommentModel comment;
   final PlantAppStorage storage;
 
-  CommentVoteComponent(this.comment, this.storage, {super.key}); 
+  CommentVoteComponent(this.comment, this.storage, {super.key});
 
-  @override 
+  @override
   State<CommentVoteComponent> createState() => _CommentVoteComponentState();
 }
 
@@ -191,13 +169,13 @@ class _CommentVoteComponentState extends State<CommentVoteComponent> {
 
   loadValues() async {
     if (await widget.storage.has(widget.comment.commentID.toString())) {
-      voted = await widget.storage.get(widget.comment.commentID.toString()) as int;     
+      voted = await widget.storage.get(widget.comment.commentID.toString()) as int;
       widget.comment.score += voted;
     }
     return true;
   }
 
-  @override 
+  @override
   initState() {
     super.initState();
 
@@ -209,25 +187,26 @@ class _CommentVoteComponentState extends State<CommentVoteComponent> {
     return Column(
       children: [
         InkWell(
-          child: 
-            Icon(Icons.arrow_upward, color: (voted == 1) ? accent : darkColour),
-          onTap: () async {
-            if (voted != 1) {
-              widget.comment.score += 1 - voted;
-              voted = 1;
-            } else {
-              widget.comment.score -= 1;
-              voted = 0;
-            }
-            await widget.storage.set(widget.comment.commentID.toString(), voted.toString());
-            setState(() {voted;}); // Rebuild self
-          } 
+            child: Icon(Icons.arrow_upward, color: (voted == 1) ? accent : darkColour),
+            onTap: () async {
+              if (voted != 1) {
+                widget.comment.score += 1 - voted;
+                voted = 1;
+              } else {
+                widget.comment.score -= 1;
+                voted = 0;
+              }
+              await widget.storage.set(widget.comment.commentID.toString(), voted.toString());
+              setState(() {
+                voted;
+              }); // Rebuild self
+            }),
+        Text(
+          "${widget.comment.score}",
+          style: textStyle,
         ),
-        Text("${widget.comment.score}", style: textStyle,),
         InkWell(
-          child: 
-            Icon(Icons.arrow_downward, color: (voted == -1) ? accent : darkColour
-            ),
+          child: Icon(Icons.arrow_downward, color: (voted == -1) ? accent : darkColour),
           onTap: () async {
             if (voted != -1) {
               widget.comment.score -= 1 + voted;
@@ -237,7 +216,9 @@ class _CommentVoteComponentState extends State<CommentVoteComponent> {
               voted = 0;
             }
             await widget.storage.set(widget.comment.commentID.toString(), voted.toString());
-            setState(() {voted;}); // Rebuild self
+            setState(() {
+              voted;
+            }); // Rebuild self
           },
         )
       ],

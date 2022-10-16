@@ -1,4 +1,5 @@
 import 'package:app/api/plant_api.dart';
+import 'package:app/base/user.dart';
 import 'package:app/plantinstance/plant_info_model.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/visual_pattern.dart';
@@ -10,7 +11,10 @@ import 'package:get_it/get_it.dart';
 class EditPlantCareProfile extends StatefulWidget {
   PlantCareProfile? profile;
   PlantInfoModel? plant;
-  EditPlantCareProfile({super.key, required this.profile, required this.plant});
+
+  bool stiflePlantDropdown;
+
+  EditPlantCareProfile({super.key, required this.profile, required this.plant, this.stiflePlantDropdown = false});
 
   @override
   State<EditPlantCareProfile> createState() => _EditPlantCareProfileState();
@@ -18,6 +22,10 @@ class EditPlantCareProfile extends StatefulWidget {
 
 class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
   late EditPlantCareProfileModel model;
+  late bool plantAssignable;
+
+  late User user;
+  List<PlantInfoModel> plants = [];
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -36,6 +44,13 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
     } else {
       model = EditPlantCareProfileModel.fromEmpty();
     }
+    plantAssignable = !widget.stiflePlantDropdown && model.assignedPlant == null;
+
+    PlantAPI api = GetIt.I<PlantAPI>();
+    user = api.user!;
+    for (int plantID in user.ownedPlantIDs!) {
+      api.getPlantInfo(plantID).then((PlantInfoModel plant) => plants.add(plant)).then((value) => setState(() {}));
+    }
   }
 
   @override
@@ -49,6 +64,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
   @override
   Widget build(BuildContext context) {
     String submitText = "Save";
+    String discardText = "Discard";
     String titleText = "EDIT CARE PROFILE";
     if (model.isNew) {
       submitText = "Create";
@@ -60,14 +76,18 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
       editMode = false;
       titleText = "ASSIGN CARE PROFILE";
     }
-    bool editModeInitialBool = editMode;
+
+    if (widget.stiflePlantDropdown && !model.isNew) {
+      discardText = "OK";
+      titleText = "VIEW CARE PROFILE";
+    }
 
     return Dialog(
       backgroundColor: Colors.transparent,
       child: SingleChildScrollView(
         child: Container(
           width: MediaQuery.of(context).size.width,
-          constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height / 1.5),
+          constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height / 1.2),
           decoration: dialogComponent,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -184,20 +204,27 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                         ),
                       ]),
                     ),
-                    Container(
-                      child: editModeInitialBool == false
-                          ? DropdownButton<PlantInfoModel>(
-                              value: model.assignedPlant,
-                              onChanged: (PlantInfoModel? plant) {
-                                setState(() {
-                                  model.assignedPlant = plant;
-                                });
-                                editMode = plant == null ? false : true;
-                              },
-                              items: null, // get user plants
-                            )
-                          : null,
-                    ),
+                    if (plantAssignable)
+                      Column(
+                        children: [
+                          Text("Assign to plant:", style: modalTextStyle),
+                          DropdownButton<PlantInfoModel>(
+                            value: model.assignedPlant,
+                            onChanged: (PlantInfoModel? plant) {
+                              setState(() {
+                                model.assignedPlant = plant;
+                              });
+                              editMode = plant == null ? false : true;
+                            },
+                            items: plants
+                                .map((p) => DropdownMenuItem(
+                                      child: Text(p.nickName ?? p.plantName),
+                                      value: p,
+                                    ))
+                                .toList(),
+                          ),
+                        ],
+                      ),
                   ],
                 )),
               ),
@@ -212,31 +239,30 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                       child: (TextButton(
                         style: buttonStyle,
                         onPressed: () => Navigator.of(context).pop(),
-                        child: const Text("Discard", style: buttonTextStyle),
+                        child: Text(discardText, style: buttonTextStyle),
                       )),
                     ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.10,
-                      width: MediaQuery.of(context).size.width * 0.20,
-                      child: ElevatedButton(
-                          style: buttonStyle,
-                          onPressed: editMode == false
-                              ? null
-                              : () async {
-                                  if (_formKey.currentState!.validate()) {
-                                    int? idToReturn;
-                                    if (model.isNew) {
-                                      PlantCareProfile newProfile = PlantCareProfile.newCareProfile(model);
-                                      idToReturn = await GetIt.I<PlantAPI>().createPlantCareProfile(newProfile);
-                                    } else {
-                                      await model.assignedPlant?.careProfile.updatePlantCareProfile(model);
-                                      idToReturn = model.assignedPlant?.careProfile.id;
-                                    }
-                                    Navigator.of(context).pop<int?>(idToReturn);
-                                  }
-                                },
-                          child: Text(submitText, style: buttonTextStyle)),
-                    ),
+                    if (!widget.stiflePlantDropdown || model.isNew)
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.10,
+                        width: MediaQuery.of(context).size.width * 0.20,
+                        child: ElevatedButton(
+                            style: buttonStyle,
+                            onPressed: () async {
+                              if (_formKey.currentState!.validate()) {
+                                PlantCareProfile? profileToReturn;
+                                if (model.isNew) {
+                                  PlantCareProfile newProfile = PlantCareProfile.newCareProfile(model);
+                                  profileToReturn = await GetIt.I<PlantAPI>().createPlantCareProfile(newProfile);
+                                } else {
+                                  await model.assignedPlant?.careProfile.updatePlantCareProfile(model);
+                                  profileToReturn = model.assignedPlant?.careProfile;
+                                }
+                                Navigator.of(context).pop<PlantCareProfile?>(profileToReturn);
+                              }
+                            },
+                            child: Text(submitText, style: buttonTextStyle)),
+                      ),
                   ],
                 ),
               ),
