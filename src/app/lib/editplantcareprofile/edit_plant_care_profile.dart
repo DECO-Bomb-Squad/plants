@@ -10,7 +10,10 @@ import 'package:get_it/get_it.dart';
 class EditPlantCareProfile extends StatefulWidget {
   PlantCareProfile? profile;
   PlantInfoModel? plant;
-  EditPlantCareProfile({super.key, required this.profile, required this.plant});
+
+  bool stiflePlantDropdown;
+
+  EditPlantCareProfile({super.key, required this.profile, required this.plant, this.stiflePlantDropdown = false});
 
   @override
   State<EditPlantCareProfile> createState() => _EditPlantCareProfileState();
@@ -49,10 +52,14 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
   @override
   Widget build(BuildContext context) {
     String submitText = "Save";
+    String discardText = "Discard";
     String titleText = "EDIT CARE PROFILE";
     if (model.isNew) {
       submitText = "Create";
       titleText = "CREATE CARE PROFILE";
+    } else if (widget.stiflePlantDropdown) {
+      discardText = "OK";
+      titleText = "VIEW CARE PROFILE";
     }
 
     bool editMode = true;
@@ -212,31 +219,32 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                       child: (TextButton(
                         style: buttonStyle,
                         onPressed: () => Navigator.of(context).pop(),
-                        child: const Text("Discard", style: buttonTextStyle),
+                        child: Text(discardText, style: buttonTextStyle),
                       )),
                     ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.10,
-                      width: MediaQuery.of(context).size.width * 0.20,
-                      child: ElevatedButton(
-                          style: buttonStyle,
-                          onPressed: editMode == false
-                              ? null
-                              : () async {
-                                  if (_formKey.currentState!.validate()) {
-                                    PlantCareProfile? profileToReturn;
-                                    if (model.isNew) {
-                                      PlantCareProfile newProfile = PlantCareProfile.newCareProfile(model);
-                                      profileToReturn = await GetIt.I<PlantAPI>().createPlantCareProfile(newProfile);
-                                    } else {
-                                      await model.assignedPlant?.careProfile.updatePlantCareProfile(model);
-                                      profileToReturn = model.assignedPlant?.careProfile;
+                    if (!widget.stiflePlantDropdown || model.isNew)
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.10,
+                        width: MediaQuery.of(context).size.width * 0.20,
+                        child: ElevatedButton(
+                            style: buttonStyle,
+                            onPressed: editMode == false
+                                ? null
+                                : () async {
+                                    if (_formKey.currentState!.validate()) {
+                                      PlantCareProfile? profileToReturn;
+                                      if (model.isNew) {
+                                        PlantCareProfile newProfile = PlantCareProfile.newCareProfile(model);
+                                        profileToReturn = await GetIt.I<PlantAPI>().createPlantCareProfile(newProfile);
+                                      } else {
+                                        await model.assignedPlant?.careProfile.updatePlantCareProfile(model);
+                                        profileToReturn = model.assignedPlant?.careProfile;
+                                      }
+                                      Navigator.of(context).pop<PlantCareProfile?>(profileToReturn);
                                     }
-                                    Navigator.of(context).pop<PlantCareProfile?>(profileToReturn);
-                                  }
-                                },
-                          child: Text(submitText, style: buttonTextStyle)),
-                    ),
+                                  },
+                            child: Text(submitText, style: buttonTextStyle)),
+                      ),
                   ],
                 ),
               ),

@@ -37,10 +37,13 @@ class _ReplyPostScreenState extends State<ReplyPostScreen> {
 
   void onAttachPressed() async {
     PlantCareProfile? newProfile = await showDialog<PlantCareProfile?>(
-        context: context, builder: (_) => EditPlantCareProfile(profile: attached, plant: null));
-    setState(() {
-      attached = newProfile;
-    });
+        context: context,
+        builder: (_) => EditPlantCareProfile(profile: attached, plant: null, stiflePlantDropdown: true));
+    if (newProfile != null) {
+      setState(() {
+        attached = newProfile;
+      });
+    }
   }
 
   Widget get attachPlantCareProfileSection {
