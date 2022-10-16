@@ -123,13 +123,6 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 style: buttonStyle,
                 child: const Text("Post", style: buttonTextStyle),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                style: buttonStyle,
-                child: const Text("Save as draft", style: buttonTextStyle),
-              ),
             ],
           )
         ]

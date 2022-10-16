@@ -88,7 +88,7 @@ def create_care_profile(session):
 
     # update the database
     try:
-        careProfile = PlantCareProfile(soilType, plantLocation, daysBetweenWatering, daysBetweenFertilizer, daysBetweenRepotting)
+        careProfile = PlantCareProfile(soilType, plantLocation, daysBetweenWatering, daysBetweenRepotting, daysBetweenFertilizer)
         session.add(careProfile)
         session.commit()
     except Exception as e:

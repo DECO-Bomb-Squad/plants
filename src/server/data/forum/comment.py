@@ -49,7 +49,6 @@ class Comment(DB.BASE):
         return allReplies
 
     def serialize_care_profiles(self):
-        print(self.careProfile)
         if (self.careProfile):
             return self.careProfile.serialize()
         else:
@@ -62,6 +61,7 @@ class Comment(DB.BASE):
             "content":         self.content,
             "created":         self.created.isoformat(),
             "parentId":        self.parentId,
+            "postId":          self.postId,
             "userId":          self.userId,
             "username":        self.author.username,
             "replies":         self.serialize_replies(),
