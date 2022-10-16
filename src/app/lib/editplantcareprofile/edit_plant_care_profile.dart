@@ -87,7 +87,7 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
       child: SingleChildScrollView(
         child: Container(
           width: MediaQuery.of(context).size.width,
-          constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height / 1.5),
+          constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height / 1.2),
           decoration: dialogComponent,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -204,25 +204,27 @@ class _EditPlantCareProfileState extends State<EditPlantCareProfile> {
                         ),
                       ]),
                     ),
-                    Container(
-                      child: (plantAssignable)
-                          ? DropdownButton<PlantInfoModel>(
-                              value: model.assignedPlant,
-                              onChanged: (PlantInfoModel? plant) {
-                                setState(() {
-                                  model.assignedPlant = plant;
-                                });
-                                editMode = plant == null ? false : true;
-                              },
-                              items: plants
-                                  .map((p) => DropdownMenuItem(
-                                        child: Text(p.nickName ?? p.plantName),
-                                        value: p,
-                                      ))
-                                  .toList(),
-                            )
-                          : null,
-                    ),
+                    if (plantAssignable)
+                      Column(
+                        children: [
+                          Text("Assign to plant:", style: modalTextStyle),
+                          DropdownButton<PlantInfoModel>(
+                            value: model.assignedPlant,
+                            onChanged: (PlantInfoModel? plant) {
+                              setState(() {
+                                model.assignedPlant = plant;
+                              });
+                              editMode = plant == null ? false : true;
+                            },
+                            items: plants
+                                .map((p) => DropdownMenuItem(
+                                      child: Text(p.nickName ?? p.plantName),
+                                      value: p,
+                                    ))
+                                .toList(),
+                          ),
+                        ],
+                      ),
                   ],
                 )),
               ),

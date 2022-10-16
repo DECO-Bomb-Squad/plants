@@ -34,11 +34,14 @@ class PlantAPI {
   // Change this "false" to a "true" to use prod deployment
   final _baseAddress = false ? BACKEND_URL_PROD : BACKEND_URL_LOCAL;
 
+  // Storage and caching objects
   PlantAppStorage store = PlantAppStorage();
   PlantAppCache cache = PlantAppCache();
 
+  // Firebase messaging instance, for sending and receiving notifications.
   FirebaseMessaging fbMessaging = FirebaseMessaging.instance;
 
+  // Connects a subpath with the main server uri
   Uri makePath(String subPath, {Map<String, dynamic>? queryParams}) =>
       Uri.http(_baseAddress, subPath, queryParams ?? {});
 
@@ -111,6 +114,7 @@ class PlantAPI {
     user = null;
   }
 
+  // Generic way to create a model by accessing a uri.
   Future<T> getGeneric<T>(String path, T Function(dynamic) constructor, {Map<String, dynamic>? queryParams}) async {
     http.Response response = await http.get(makePath(path, queryParams: queryParams), headers: header);
     if (response.statusCode != 200) {
@@ -119,6 +123,7 @@ class PlantAPI {
     return constructor(json.decode(response.body));
   }
 
+  // Retrieves a list of plant types
   Future<List<PlantTypeModel>> getPlantTypes() async {
     http.Response response;
     try {
@@ -139,6 +144,8 @@ class PlantAPI {
     }
   }
 
+  // Pl@ntNet api requires us to make requests in a different format to normal :(
+  // This retrieves a list of species that match the samples (images) we pass in
   Future<List<IdentifyResult>> getPlantNetResults(List<PlantIdentifyModel> samples) async {
     var dio = Dio();
     var formData = FormData();
@@ -153,6 +160,7 @@ class PlantAPI {
     return identify;
   }
 
+  // Adds a plant to the database
   Future<PlantInfoModel?> addPlant(int plantTypeId, String name, String description) async {
     http.Response response;
     try {
@@ -179,6 +187,8 @@ class PlantAPI {
     return null;
   }
 
+  // Retrieves all info about a plant
+  // This method uses caching to reduce network load - will load from local cache if possible
   Future<PlantInfoModel> getPlantInfo(int id) =>
       cache.plantInfoCache.putIfAbsent(id, () => AsyncCache(const Duration(days: 1))).fetch(() => _getPlantInfo(id));
 
@@ -187,11 +197,13 @@ class PlantAPI {
     return getGeneric(path, (result) => PlantInfoModel.fromJSON(result));
   }
 
+  // Retrieves all info about a post
   Future<PostInfoModel> getPostInfo(int id) {
     String path = "/forum/post/$id";
     return getGeneric(path, (result) => PostInfoModel.fromJSON(result));
   }
 
+  // Retrieves a list of ids of recent posts
   Future<List<int>> getRecentPosts(int num) async {
     String path = "/forum/post/list/$num";
     //return getGeneric(path, (result) => PostInfoModel.fromJSON(result));
@@ -202,6 +214,7 @@ class PlantAPI {
     return res.map((e) => e as int).toList();
   }
 
+  // Adds a post to the database
   Future<bool> addPost(PostInfoModel model) async {
     String path = "/forum/post";
 
@@ -216,6 +229,7 @@ class PlantAPI {
     return response.statusCode == 200;
   }
 
+  // Adds a comment to the database
   Future<bool> addComment(CommentModel comment) async {
     String path = "forum/comment";
 
@@ -230,6 +244,7 @@ class PlantAPI {
     return response.statusCode == 200;
   }
 
+  // Adds a plant photo to the database
   Future<bool> addPlantPhoto(String imageURL, int plantId) async {
     String path = "/plant/photos/add";
 
@@ -239,6 +254,7 @@ class PlantAPI {
     return response.statusCode == 200;
   }
 
+  // Removes a plant photo from the database
   Future<bool> removePlantPhoto(String imageURL) async {
     String path = "/plant/photos/remove";
 
@@ -247,6 +263,7 @@ class PlantAPI {
     return response.statusCode == 200;
   }
 
+  // Adds a plant activity - watering, repotting or fertilising
   Future<bool> addPlantActivity(DateTime day, ActivityTypeId type, int plantId) async {
     String path = "/activity";
 
@@ -261,6 +278,7 @@ class PlantAPI {
   Future<bool> addRepotting(DateTime day, int plantId) => addPlantActivity(day, ActivityTypeId.repotting, plantId);
   Future<bool> addFertilising(DateTime day, int plantId) => addPlantActivity(day, ActivityTypeId.fertilising, plantId);
 
+  // Gets a list of ids of plants belonging to the current user
   Future<List<int>> getUserPlants(String username) async {
     String path = "/users/$username/plants";
 
@@ -279,6 +297,7 @@ class PlantAPI {
     return response.statusCode == 200;
   }
 
+  // Updates a plant's care profile
   Future<bool> updatePlantCareProfile(PlantCareProfile profile) async {
     String path = "/careprofile/update";
     Map<String, dynamic> reqBody = {
