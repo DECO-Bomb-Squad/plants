@@ -12,3 +12,5 @@ const secondaryMutedAccent = Color(0xFFB79466);
 
 const darkHighlight = Color(0xFF49837F);
 const lightHighlight = Color(0xFF84CBCA);
+
+const negative = Color(0xFFA25557);

@@ -24,7 +24,7 @@ class PostInfoModel {
   PostInfoModel(this.authorID, this.username, this.title, this.content, this.attachedPlants)
       : postID = -1,
         score = 0,
-        created = DateTime.now(),
+        created = DateTime.now().add(const Duration(hours: 10)),
         comments = [];
 
   String getReadableTimeAgo() {

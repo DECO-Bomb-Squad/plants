@@ -43,7 +43,7 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) => Container(
         decoration: const BoxDecoration(
             color: lightHighlight,
-            boxShadow: [BoxShadow(color: Color.fromARGB(61, 48, 39, 33), blurRadius: 3, spreadRadius: 1)]),
+            boxShadow: [BoxShadow(color: Color.fromARGB(100, 73, 131, 127), blurRadius: 5, spreadRadius: 1)]),
         child: TabBar(
           indicatorColor: selected,
           controller: widget.controller,

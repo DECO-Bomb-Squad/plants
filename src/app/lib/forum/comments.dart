@@ -1,3 +1,4 @@
+import 'package:app/api/plant_api.dart';
 import 'package:app/api/storage.dart';
 import 'package:app/editplantcareprofile/edit_plant_care_profile.dart';
 import 'package:app/forum/comment_model.dart';
@@ -6,10 +7,13 @@ import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/screens/reply_post_screen.dart';
+import 'package:get_it/get_it.dart';
 
 class CommentManager {
   final BuildContext context;
   final PostInfoModel postModel; // The ID of the post to get comments from
+  final PlantAPI api = GetIt.I<PlantAPI>();
+  
   PlantAppStorage store = PlantAppStorage();
   Function(CommentModel) returnFunction;
   CommentManagerModel model;
@@ -87,15 +91,19 @@ class CommentManager {
                         context: context,
                         builder: (_) => EditPlantCareProfile(profile: comment.plantCareModel, plant: null));
                   },
-                  style: buttonStyle,
-                  child: const Text("View care profile", style: buttonTextStyle)),
+                  style: careButtonStyle,
+                  child: Flexible(
+                    flex: 1,
+                    child: const Text("View care profile", style: buttonTextStyle)
+                    )
+                  )
             )
           ]),
         Row(
           children: [
             Expanded(flex: 1, child: Container()),
             Expanded(
-                flex: 4,
+                flex: 6,
                 child: Column(
                   //children: List<Widget>.generate(Random().nextInt(5), (e) => _getCommentReply()),
                   children: List<Widget>.from(comment.replies.map((e) => _getCommentReply(e))),
@@ -127,9 +135,29 @@ class CommentManager {
                 ],
               ))
         ]),
-        Row(children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
           Expanded(flex: 1, child: CommentVoteComponent(comment, store)),
           Expanded(flex: 4, child: Text(comment.content))
+        ]),
+        if (comment.plantCareModel != null)
+        Row(children: [
+          const Expanded(
+            flex: 1,
+            child: SizedBox(),
+          ),
+          Expanded(
+            flex: 14,
+            child: ElevatedButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (_) => EditPlantCareProfile(profile: comment.plantCareModel, plant: null));
+                },
+                style: careButtonStyle,
+                child: const Text("View care profile", style: buttonTextStyle)),
+          )
         ]),
       ],
     );
@@ -148,7 +176,7 @@ class CommentManager {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => ReplyPostScreen(postModel, parent, model, returnFunction)));
               },
-              style: smallButtonStyle,
+              style: buttonStyle,
               child: const Text("Write a response...", style: smallButtonTextStyle)))
     ]);
   }
@@ -206,7 +234,7 @@ class _CommentVoteComponentState extends State<CommentVoteComponent> {
           style: textStyle,
         ),
         InkWell(
-          child: Icon(Icons.arrow_downward, color: (voted == -1) ? accent : darkColour),
+          child: Icon(Icons.arrow_downward, color: (voted == -1) ? negative : darkColour),
           onTap: () async {
             if (voted != -1) {
               widget.comment.score -= 1 + voted;

@@ -1,7 +1,7 @@
 import 'package:app/api/plant_api.dart';
 import 'package:app/base/user.dart';
 import 'package:app/screens/add_plant/add_plant_screen.dart';
-import 'package:app/screens/create_post_screen.dart';
+import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/plantinstance/plant_info.dart';
@@ -18,8 +18,20 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   User user = GetIt.I<PlantAPI>().user!;
 
+  Future<void> rebuild() {
+    GetIt.I<PlantAPI>().refreshPosts(5);
+      return Future.sync(() {
+        setState(() {
+
+        });
+      }
+    );
+  }
+
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) { 
+    rebuild();
+    return Container(
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -69,40 +81,31 @@ class _MainScreenState extends State<MainScreen> {
             width: MediaQuery.of(context).size.width * 0.9,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween, 
-              children: [
-                const Flexible(
+              children: const [
+                Flexible(
                   flex: 4,
                   fit: FlexFit.tight,
                   child: Text("HOT QUESTIONS", style: mainHeaderStyle),
-                ),
-                Flexible(
-                  flex: 1,
-                  fit: FlexFit.tight,
-                  child: IconButton(
-                    icon: const Icon(Icons.add, size: 30),
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const CreatePostScreen()));
-                    },
-                  )
                 )
               ]
             ),
           ),
           Flexible(
-            child: GridView(
-              padding: EdgeInsets.zero,
-              scrollDirection: Axis.vertical,
-              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.9,
-                  childAspectRatio: 3 / 1,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20),
-              children: GetIt.I<PlantAPI>().recentPosts!.map((id) => PostSmallEmpty(id)
-              ).toList()
+            child: RefreshIndicator(
+              color: accent,
+              onRefresh: rebuild,
+              child: ListView(
+                padding: EdgeInsets.zero,
+                scrollDirection: Axis.vertical,
+                children: GetIt.I<PlantAPI>().recentPosts!.map((id) => PostSmallEmpty(id, false, rebuild)
+                ).toList()
+              ),
             )
+            
           )
         ],
       ));
+  }
 
   SizedBox get spacer => const SizedBox(height: 10, width: 10);
 }

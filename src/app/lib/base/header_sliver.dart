@@ -8,21 +8,23 @@ List<Widget> StandardHeaderBuilder(BuildContext context, bool innerBoxIsScrolled
     {bool hasBackButton = true, bool hasLogout = false}) {
   return <Widget>[
     SliverAppBar(
+      automaticallyImplyLeading: false, // Prevents an implicit back button from rendering
       leading: hasBackButton
-          ? IconButton(icon: const Icon(Icons.arrow_back), onPressed: (() => Navigator.of(context).pop()))
-          : null,
+        ? IconButton(icon: const Icon(Icons.arrow_back), onPressed: (() => Navigator.of(context).pop()))
+        : null,
       backgroundColor: lightColour,
       shadowColor: lightColour,
-      title: hasBackButton
-          ? null
-          : const Image(
+      title: //hasBackButton
+      //     ? null
+      //     : 
+      const Image(
               image: AssetImage('assets/head.png'),
               height: 35,
             ),
       pinned: false,
       floating: true,
       forceElevated: innerBoxIsScrolled,
-      iconTheme: const IconThemeData(color: darkHighlight, size: 35),
+      iconTheme: const IconThemeData(color: accent, size: 35),
       actions: [
         if (hasLogout)
           IconButton(
@@ -31,16 +33,6 @@ List<Widget> StandardHeaderBuilder(BuildContext context, bool innerBoxIsScrolled
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
               },
               icon: const Icon(Icons.exit_to_app)),
-        IconButton(
-          icon: const Icon(Icons.person),
-          tooltip: 'Add new entry',
-          onPressed: () {/* ... */},
-        ),
-        IconButton(
-          icon: const Icon(Icons.notifications),
-          tooltip: 'Add new entry',
-          onPressed: () {/* ... */},
-        ),
       ],
     ),
   ];

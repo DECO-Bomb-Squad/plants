@@ -88,11 +88,12 @@ class _ReplyPostScreenState extends State<ReplyPostScreen> {
                       )
                     ],
                   ),
-                  attachPlantCareProfileSection,
+                  
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      attachPlantCareProfileSection,
                       ElevatedButton(
                         onPressed: () async {
                           User user = GetIt.I<PlantAPI>().user!;
@@ -105,13 +106,6 @@ class _ReplyPostScreenState extends State<ReplyPostScreen> {
                         },
                         style: buttonStyle,
                         child: const Text("Post", style: buttonTextStyle),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        style: buttonStyle,
-                        child: const Text("Save as draft", style: buttonTextStyle),
                       ),
                     ],
                   )
