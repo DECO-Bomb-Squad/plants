@@ -21,12 +21,15 @@ class PostSmallEmpty extends StatefulWidget {
 class _PostSmallEmptyState extends State<PostSmallEmpty> {
   @override 
   Widget build(BuildContext context) {
-    return Container(
-      decoration: smallPostComponent,
-      child: LoadingBuilder(
-        widget.api.getPostInfo(widget.postID),
-        (m) => PostSmallWidget(m as PostInfoModel, widget.showDesc)
-      )
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        decoration: smallPostComponent,
+        child: LoadingBuilder(
+          widget.api.getPostInfo(widget.postID),
+          (m) => PostSmallWidget(m as PostInfoModel, widget.showDesc)
+        )
+      ),
     );
   }
 }

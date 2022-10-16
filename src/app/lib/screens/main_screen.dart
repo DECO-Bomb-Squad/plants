@@ -2,6 +2,7 @@ import 'package:app/api/plant_api.dart';
 import 'package:app/base/user.dart';
 import 'package:app/screens/add_plant/add_plant_screen.dart';
 import 'package:app/screens/create_post_screen.dart';
+import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/plantinstance/plant_info.dart';
@@ -19,7 +20,12 @@ class _MainScreenState extends State<MainScreen> {
   User user = GetIt.I<PlantAPI>().user!;
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) { 
+    GetIt.I<PlantAPI>().refreshPosts(5);
+    setState(() {
+      context;
+    });
+    return Container(
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -79,20 +85,28 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
           Flexible(
-            child: GridView(
-              padding: EdgeInsets.zero,
-              scrollDirection: Axis.vertical,
-              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.9,
-                  childAspectRatio: 3 / 1,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20),
-              children: GetIt.I<PlantAPI>().recentPosts!.map((id) => PostSmallEmpty(id, false)
-              ).toList()
+            child: RefreshIndicator(
+              color: accent,
+              onRefresh: () {
+                GetIt.I<PlantAPI>().refreshPosts(5);
+                return Future.sync(() {
+                  setState(() {
+                    context;
+                  });
+                });
+              },
+              child: ListView(
+                padding: EdgeInsets.zero,
+                scrollDirection: Axis.vertical,
+                children: GetIt.I<PlantAPI>().recentPosts!.map((id) => PostSmallEmpty(id, false)
+                ).toList()
+              ),
             )
+            
           )
         ],
       ));
+  }
 
   SizedBox get spacer => const SizedBox(height: 10, width: 10);
 }

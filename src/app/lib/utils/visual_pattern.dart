@@ -68,6 +68,12 @@ const tagTextStyle = TextStyle(
   color: lightColour,
 );
 
+const commentStyle = TextStyle(
+  fontSize: 16,
+  fontWeight: FontWeight.w600,
+  color: darkHighlight,
+);
+
 const inputTitleStyle =
     TextStyle(fontSize: 24, fontWeight: FontWeight.w300, fontStyle: FontStyle.italic, color: darkColour);
 
@@ -148,4 +154,9 @@ ButtonStyle smallButtonStyle = ButtonStyle(
     shadowColor: MaterialStateProperty.all<Color>(Colors.black45),
     shape: MaterialStateProperty.all<OutlinedBorder>(
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(smallRadius))));
-// Helper functions for generating common components
+
+ButtonStyle careButtonStyle = ButtonStyle(
+    backgroundColor: MaterialStateProperty.all<Color>(accent),
+    shadowColor: MaterialStateProperty.all<Color>(Colors.black45),
+    shape: MaterialStateProperty.all<OutlinedBorder>(
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(smallRadius))));

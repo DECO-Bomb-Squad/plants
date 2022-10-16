@@ -70,7 +70,7 @@ class PlantAPI {
         Map<String, dynamic> decodedUserDetails = jsonDecode(userDetails);
         user = User.fromJSON(decodedUserDetails);
         user!.ownedPlantIDs = await getUserPlants(user!.username);
-        recentPosts = await getRecentPosts(5);
+        recentPosts = await _getRecentPosts(5);
         return true;
       } else {
         return false;
@@ -85,8 +85,12 @@ class PlantAPI {
     await store.set(user_store_name, jsonEncode(data));
     user = User.fromJSON(data);
     user!.ownedPlantIDs = await getUserPlants(user!.username);
-    recentPosts = await getRecentPosts(5);
+    recentPosts = await _getRecentPosts(5);
     return user!;
+  }
+
+  void refreshPosts(int i) async {
+    recentPosts = await _getRecentPosts(i);
   }
 
   Future<bool> login(String username) async {
@@ -204,7 +208,7 @@ class PlantAPI {
   }
 
   // Retrieves a list of ids of recent posts
-  Future<List<int>> getRecentPosts(int num) async {
+  Future<List<int>> _getRecentPosts(int num) async {
     String path = "/forum/post/list/$num";
     //return getGeneric(path, (result) => PostInfoModel.fromJSON(result));
 

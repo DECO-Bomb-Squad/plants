@@ -1,5 +1,6 @@
 import 'package:app/api/plant_api.dart';
 import 'package:app/forum/post.dart';
+import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -18,36 +19,53 @@ class _LayoutScreenState extends State<LayoutScreen> {
   _LayoutScreenState() : counter = 0;
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) {
+    GetIt.I<PlantAPI>().refreshPosts(5);
+    setState(() {
+      context;
+    });
+    return Container(
       padding: const EdgeInsets.only(left: 20, right: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-            SizedBox(
-            width: MediaQuery.of(context).size.width * 0.9,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween, 
-              children: const [
-                Flexible(
-                  flex: 4,
-                  fit: FlexFit.tight,
-                  child: Text("HOT QUESTIONS", style: mainHeaderStyle),
-                )
-              ]
+      child: RefreshIndicator(
+        color: accent,
+        onRefresh: () {
+          GetIt.I<PlantAPI>().refreshPosts(5);
+          return Future.sync(() {
+            setState(() {
+              context;
+            });
+          });
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+              SizedBox(
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+                children: const [
+                  Flexible(
+                    flex: 4,
+                    fit: FlexFit.tight,
+                    child: Text("HOT QUESTIONS", style: mainHeaderStyle),
+                  )
+                ]
+              ),
             ),
-          ),
-          Flexible(
-            child: ListView(
-              padding: EdgeInsets.all(5.0),
-              scrollDirection: Axis.vertical,
-              children: GetIt.I<PlantAPI>().recentPosts!.map((id) => PostSmallEmpty(id, true)
-              ).toList()
+            Flexible(
+              child: ListView(
+                padding: EdgeInsets.all(5.0),
+                scrollDirection: Axis.vertical,
+                children: GetIt.I<PlantAPI>().recentPosts!.map((id) => PostSmallEmpty(id, true)
+                ).toList()
+              )
             )
-          )
-        ],
-      ));
-
+          ],
+        )
+      )
+    );
+  }
   // Can use getters like these to potentially do pretty complex operations, but still call it like its a class param!
   // class functions with no arguments are often better used as getters!
   // you can also define setters

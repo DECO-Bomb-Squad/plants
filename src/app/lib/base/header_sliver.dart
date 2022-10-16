@@ -9,10 +9,9 @@ List<Widget> StandardHeaderBuilder(BuildContext context, bool innerBoxIsScrolled
   return <Widget>[
     SliverAppBar(
       automaticallyImplyLeading: false, // Prevents an implicit back button from rendering
-      leading: null, 
-          // hasBackButton
-          // ? IconButton(icon: const Icon(Icons.arrow_back), onPressed: (() => Navigator.of(context).pop()))
-          // : null,
+      leading: hasBackButton
+        ? IconButton(icon: const Icon(Icons.arrow_back), onPressed: (() => Navigator.of(context).pop()))
+        : null,
       backgroundColor: lightColour,
       shadowColor: lightColour,
       title: //hasBackButton

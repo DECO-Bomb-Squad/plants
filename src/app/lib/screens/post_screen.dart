@@ -67,7 +67,7 @@ class _PostScreenState extends State<PostScreen> {
                         //         scrollDirection: Axis.horizontal,
                         //         controller: ScrollController(),
                         //         itemBuilder: ((context, index) => tagItemBuilder(context, index)))),
-                        // PostVoteComponent(widget.model.score)
+                        PostVoteComponent(widget.model.score)
                       ]),
                   spacer,
                   Padding(

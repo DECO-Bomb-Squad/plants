@@ -118,7 +118,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 onPressed: () {
                   userPlants.removeWhere((key, value) => value == false);
                   GetIt.I<PlantAPI>().addPost(PostInfoModel(GetIt.I<PlantAPI>().user!.id, GetIt.I<PlantAPI>().user!.username, titleController.text, textController.text, userPlants.keys.toList()));
-                  Navigator.pop(context);
+                  titleController.clear();
+                  textController.clear();
                 },
                 style: buttonStyle,
                 child: const Text("Post", style: buttonTextStyle),
