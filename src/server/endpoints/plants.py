@@ -85,9 +85,11 @@ def add_personal_plant(session):
         # plantTags:    List[str] = request.form['plantTags']
 
         # verify all information is present
+        if not description:
+            description = ""
+
         if (not userId or
             not personalName or
-            not description or
             # not photoUrl or
             not plantTypeId):
             # not plantTags):
@@ -414,28 +416,3 @@ def killoff(session):
         return "All sessions closed", 200
     except Exception as e:
         return f"Something went wrong: {e}", 500
-
-
-# ==== Plant Type Management Endpoints ====
-# Consider if these endpoints are really necessary.
-# We can manually manage the data. But that also saying,
-# If a new plant type comes in we might want to verify it. Eh. dunno.
-
-'''
-Adds a Plant Type (ADMIN)
-    - Params:
-        - commonName:     string
-        - fullName:       string
-        - type:           string
-    - Process:
-        - Create new requirement/s for plant type
-        - Create new plant type w/ requirement
-
-Note: do we need one of these? We could add them manually (thinking admin and auth bleh)
-'''
-
-'''
-Deletes a Plant Type (ADMIN)
-    - Params:
-        - plantId: int
-'''

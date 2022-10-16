@@ -1,4 +1,5 @@
 import 'package:app/api/storage.dart';
+import 'package:app/editplantcareprofile/edit_plant_care_profile.dart';
 import 'package:app/forum/comment_model.dart';
 import 'package:app/forum/post_model.dart';
 import 'package:app/utils/colour_scheme.dart';
@@ -81,7 +82,13 @@ class CommentManager {
             Expanded(
               flex: 4,
               child: ElevatedButton(
-                  onPressed: null, style: buttonStyle, child: const Text("View care profile", style: buttonTextStyle)),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (_) => EditPlantCareProfile(profile: comment.plantCareModel, plant: null));
+                  },
+                  style: buttonStyle,
+                  child: const Text("View care profile", style: buttonTextStyle)),
             )
           ]),
         Row(
