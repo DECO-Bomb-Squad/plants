@@ -34,16 +34,6 @@ List<Widget> StandardHeaderBuilder(BuildContext context, bool innerBoxIsScrolled
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
               },
               icon: const Icon(Icons.exit_to_app)),
-        IconButton(
-          icon: const Icon(Icons.person),
-          tooltip: 'Add new entry',
-          onPressed: () {/* ... */},
-        ),
-        IconButton(
-          icon: const Icon(Icons.notifications),
-          tooltip: 'Add new entry',
-          onPressed: () {/* ... */},
-        ),
       ],
     ),
   ];

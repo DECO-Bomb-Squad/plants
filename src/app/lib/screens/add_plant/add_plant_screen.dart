@@ -65,18 +65,6 @@ class _PlantAddScreenState extends State<PlantAddScreen> {
                   floating: true,
                   forceElevated: innerBoxIsScrolled,
                   iconTheme: const IconThemeData(color: darkHighlight, size: 35),
-                  actions: [
-                    IconButton(
-                      icon: const Icon(Icons.person),
-                      tooltip: 'Add new entry',
-                      onPressed: () {/* ... */},
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.notifications),
-                      tooltip: 'Add new entry',
-                      onPressed: () {/* ... */},
-                    ),
-                  ],
                 ),
               ];
             },
