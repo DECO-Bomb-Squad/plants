@@ -3,6 +3,7 @@ import 'package:app/base/header_sliver.dart';
 import 'package:app/editplantcareprofile/edit_plant_care_profile.dart';
 import 'package:app/plantinstance/plant_image_gallery.dart';
 import 'package:app/screens/plant_care_screen.dart';
+import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/loading_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:app/utils/visual_pattern.dart';
@@ -208,19 +209,25 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
   void navigateToActivityScreen() => Navigator.of(context, rootNavigator: false)
       .push(MaterialPageRoute(builder: (context) => PlantCareEmpty(widget.plantID)));
 
-  Row get nameRow => Row(
+  Widget get nameWidget => DecoratedBox(
+    decoration: smallPlantComponent,
+    child: Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: [          
               Text(model.nickName ?? model.plantName, style: mainHeaderStyle),
               Text(model.scientificName, style: sectionHeaderStyle),
-            ],
+            ]
           ),
           Icon(model.condition.iconData(), size: 75)
         ],
-      );
+      ),
+    )
+  );
 
   GestureDetector get photoGalleryButton => GestureDetector(
         onTap: () => Navigator.of(context, rootNavigator: false).push(
@@ -228,11 +235,15 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
             builder: (context) => PlantGalleryScreen(widget.plantID, widget.model),
           ),
         ),
-        child: Column(
-          children: [
-            model.getCoverPhoto(150, MediaQuery.of(context).size.width * 0.8, Icons.photo, 150),
-            const Text("Photos", style: subheaderStyle),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+          child: Column(
+            children: [
+              const Text("Photos", style: subheaderStyle),
+              spacer,
+              model.getCoverPhoto(150, 150, Icons.photo, 150),
+            ],
+          ),
         ),
       );
 
@@ -240,8 +251,8 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
         onTap: navigateToActivityScreen,
         child: Column(
           children: const [
-            Icon(Icons.calendar_month, size: 150),
             Text("Activity History", style: subheaderStyle),
+            Icon(Icons.calendar_month, size: 150),
           ],
         ),
       );
@@ -285,7 +296,7 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
 
   Widget get healthHeader => Row(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: const [Text("Health", style: sectionHeaderStyle)],
+        children: const [Text("Health", style: subheaderStyle)],
       );
 
   Widget get careHeader => Row(
@@ -299,23 +310,23 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
   Column get lastCareDetails => Column(
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(ActivityTypeId.watering.iconData()),
-              spacer,
+              Icon(ActivityTypeId.watering.iconData(), color: darkHighlight),
               Text("Last watered ${model.timeSinceLastWater} days ago", style: modalTextStyle),
             ],
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(ActivityTypeId.fertilising.iconData()),
-              spacer,
+              Icon(ActivityTypeId.fertilising.iconData(), color: accent,),
               Text("Last fertilised ${model.timeSinceLastFertilise} days ago", style: modalTextStyle),
             ],
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(ActivityTypeId.repotting.iconData()),
-              spacer,
+              Icon(ActivityTypeId.repotting.iconData(), color: secondaryAccent,),
               Text("Last repotted ${model.timeSinceLastRepot} days ago", style: modalTextStyle),
             ],
           ),
@@ -325,44 +336,68 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
   Column get careProfileDetails => Column(
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Icon(ActivityTypeId.watering.iconData(), size: 50.0),
-              spacer,
-              Text("Water every ${model.waterFrequency} days", style: modalTextStyle),
-            ],
-          ),
-          Row(
-            children: [
-              Icon(ActivityTypeId.fertilising.iconData(), size: 50.0),
-              spacer,
-              Text("Fertilise every ${model.fertiliseFrequency} days", style: modalTextStyle),
-            ],
-          ),
-          Row(
-            children: [
-              Icon(ActivityTypeId.repotting.iconData(), size: 50.0),
-              spacer,
-              Text("Repot every ${model.repotFrequency} days", style: modalTextStyle),
-            ],
-          ),
-          spacer,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  Icon(model.careProfile.soilType.iconData(), size: 50.0),
-                  Text("Planted in ${model.careProfile.soilType.toHumanString()}", style: modalTextStyle),
-                ],
+              Flexible(
+                flex:1,
+                child: Icon(ActivityTypeId.watering.iconData(), size: 50.0),
               ),
-              spacer,
-              spacer,
-              Column(
-                children: [
-                  Icon(model.careProfile.location.iconData(), size: 50.0),
-                  Text("Located ${model.careProfile.location.toHumanString()}", style: modalTextStyle),
-                ],
-              )
+              Flexible(
+                flex:2,
+                child: Text("Water every ${model.waterFrequency} days", style: modalTextStyle),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Flexible(
+                flex:1,
+                child: Icon(ActivityTypeId.fertilising.iconData(), size: 50.0),
+              ),
+              Flexible(
+                flex:2,
+                child: Text("Fertilise every ${model.fertiliseFrequency} days", style: modalTextStyle),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Flexible(
+                flex:1,
+                child: Icon(ActivityTypeId.repotting.iconData(), size: 50.0),
+              ),
+              Flexible(
+                flex:2,
+                child: Text("Repot every ${model.repotFrequency} days", style: modalTextStyle),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Flexible(
+                flex:1,
+                child: Icon(model.careProfile.soilType.iconData(), size: 40.0), // This icon set is bigger for some reason
+              ),
+              Flexible(
+                flex:2,
+                child: Text("Planted in ${model.careProfile.soilType.toHumanString()}", style: modalTextStyle),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Flexible(
+                flex:1,
+                child: Icon(model.careProfile.location.iconData(), size: 50.0),
+              ),
+              Flexible(
+                flex:2,
+                child: Text("Located ${model.careProfile.location.toHumanString()}", style: modalTextStyle),
+              ),
             ],
           ),
         ],
@@ -383,12 +418,13 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: nameRow,
+                    child: nameWidget,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       photoGalleryButton,
+                      activityCalendarButton
                     ],
                   ),
                   if (model.description != null && model.description!.isNotEmpty) Padding(
@@ -401,20 +437,29 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
                       children: [
                         healthHeader,
                         lastCareDetails,
-                        model.getWaterMeterRow(200, 30),
-                        Text(model.condition.text(), style: textStyle),
+                        Column(
+                          children: [
+                            Text("Water level", style: subheaderStyle,),
+                            spacer,
+                            model.getWaterMeterRow(MediaQuery.of(context).size.width * 0.7, 25),
+                          ],
+                        ),
+                        spacer,
+                        Text(model.condition.text(), style: sectionHeaderStyle),
                       ],
                     ),
                   ),
-                  
                 
                   if (belongsToMe)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        markAsWateredButton,
-                        activityOptionsButton,
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          markAsWateredButton,
+                          activityOptionsButton,
+                        ],
+                      ),
                     ),
                   careHeader,
                   careProfileDetails,

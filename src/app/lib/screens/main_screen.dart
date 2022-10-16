@@ -69,21 +69,11 @@ class _MainScreenState extends State<MainScreen> {
             width: MediaQuery.of(context).size.width * 0.9,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween, 
-              children: [
-                const Flexible(
+              children: const [
+                Flexible(
                   flex: 4,
                   fit: FlexFit.tight,
                   child: Text("HOT QUESTIONS", style: mainHeaderStyle),
-                ),
-                Flexible(
-                  flex: 1,
-                  fit: FlexFit.tight,
-                  child: IconButton(
-                    icon: const Icon(Icons.add, size: 30),
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const CreatePostScreen()));
-                    },
-                  )
                 )
               ]
             ),

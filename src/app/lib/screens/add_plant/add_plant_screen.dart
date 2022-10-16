@@ -172,7 +172,7 @@ class _PlantAddScreenState extends State<PlantAddScreen> {
                               ),
                               spacer,
                               const Text(
-                                "with some notes",
+                                "and some notes",
                                 style: mainHeaderStyle,
                               ),
                               spacer,

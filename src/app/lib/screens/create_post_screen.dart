@@ -33,111 +33,109 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    body: NestedScrollView(
-      headerSliverBuilder: StandardHeaderBuilder,
-      body: Padding(
-        padding: EdgeInsets.all(padding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width - (padding * 2),
-              child: Padding (
-                padding: EdgeInsets.all(padding),
-                child: TextField(
-                    controller: titleController, 
-                    style: textStyle, 
-                    decoration: titleInputComponent,
-                    minLines: 1,
-                    maxLines: null,
-                    )
-              ),
+    body: Padding(
+      padding: EdgeInsets.all(padding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width - (padding * 2),
+            child: Padding (
+              padding: EdgeInsets.all(padding),
+              child: TextField(
+                  controller: titleController, 
+                  style: textStyle, 
+                  decoration: titleInputComponent,
+                  minLines: 1,
+                  maxLines: null,
+                  )
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.15,
-              width: MediaQuery.of(context).size.width - (padding * 2),
+          ),
+          // SizedBox(    --- TAGS - Disabled due to time constraints ---
+          //   height: MediaQuery.of(context).size.height * 0.15,
+          //   width: MediaQuery.of(context).size.width - (padding * 2),
+          //   child: Column(
+          //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: [ 
+          //       const Text("Tags", style: sectionHeaderStyle),
+          //       SizedBox(
+          //         height: 40,
+          //         child: ListView.builder(
+          //           itemCount: 10,
+          //           scrollDirection: Axis.horizontal,
+          //           controller: ScrollController(),
+          //           itemBuilder: ((context, index) => tagItemBuilder(context, index))            
+          //         )
+          //       )
+          //     ],
+          //   ),
+          // ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.10,
+            width: MediaQuery.of(context).size.width - (padding * 2),
+            child:  Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ElevatedButton(
+                  style: buttonStyle,
+                  onPressed: (() {
+                    showDialog(context: context, builder: (_) => SelectPlantDialog(getUserPlants, putUserPlants));
+                  }), 
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [Text("Attach plants/photos", style: buttonTextStyle)],
+                  )
+                )
+              ]
+            ) 
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.30,
+            child: Padding(
+              padding: EdgeInsets.all(padding),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [ 
-                  const Text("Tags", style: sectionHeaderStyle),
-                  SizedBox(
-                    height: 40,
-                    child: ListView.builder(
-                      itemCount: 10,
-                      scrollDirection: Axis.horizontal,
-                      controller: ScrollController(),
-                      itemBuilder: ((context, index) => tagItemBuilder(context, index))            
-                    )
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [TextField(
+                  controller: textController, 
+                  style: textStyle, 
+                  decoration: postInputComponent,
+                  minLines: 6,
+                  maxLines: null,
                   )
                 ],
               ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.10,
-              width: MediaQuery.of(context).size.width - (padding * 2),
-              child:  Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ElevatedButton(
-                    style: buttonStyle,
-                    onPressed: (() {
-                      showDialog(context: context, builder: (_) => SelectPlantDialog(getUserPlants, putUserPlants));
-                    }), 
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [Text("Attach plants/photos", style: buttonTextStyle)],
-                    )
-                  )
-                ]
-              ) 
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.30,
-              child: Padding(
-                padding: EdgeInsets.all(padding),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [TextField(
-                    controller: textController, 
-                    style: textStyle, 
-                    decoration: postInputComponent,
-                    minLines: 6,
-                    maxLines: null,
-                    )
-                  ],
-                ),
-              )
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    userPlants.removeWhere((key, value) => value == false);
-                    GetIt.I<PlantAPI>().addPost(PostInfoModel(GetIt.I<PlantAPI>().user!.id, GetIt.I<PlantAPI>().user!.username, titleController.text, textController.text, userPlants.keys.toList()));
-                    Navigator.pop(context);
-                  },
-                  style: buttonStyle,
-                  child: const Text("Post", style: buttonTextStyle),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  style: buttonStyle,
-                  child: const Text("Save as draft", style: buttonTextStyle),
-                ),
-              ],
             )
-          ]
-        )
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  userPlants.removeWhere((key, value) => value == false);
+                  GetIt.I<PlantAPI>().addPost(PostInfoModel(GetIt.I<PlantAPI>().user!.id, GetIt.I<PlantAPI>().user!.username, titleController.text, textController.text, userPlants.keys.toList()));
+                  Navigator.pop(context);
+                },
+                style: buttonStyle,
+                child: const Text("Post", style: buttonTextStyle),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                style: buttonStyle,
+                child: const Text("Save as draft", style: buttonTextStyle),
+              ),
+            ],
+          )
+        ]
       )
     )
+    
   );
 }
 
