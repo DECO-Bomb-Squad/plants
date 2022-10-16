@@ -1,6 +1,7 @@
 
 import 'package:app/api/storage.dart';
 import 'package:app/forum/comment_model.dart';
+import 'package:app/forum/post_model.dart';
 import 'package:app/utils/colour_scheme.dart';
 import 'package:app/utils/visual_pattern.dart';
 import 'package:flutter/material.dart';
@@ -8,13 +9,13 @@ import 'package:app/screens/reply_post_screen.dart';
 
 class CommentManager {
   final BuildContext context;
-  final int postID; // The ID of the post to get comments from
+  final PostInfoModel postModel; // The ID of the post to get comments from
   PlantAppStorage store = PlantAppStorage();
   Function(CommentModel) returnFunction;
   CommentManagerModel model;
 
-  CommentManager(this.context, this.postID, this.returnFunction)
-      : model = CommentManagerModel(postID);
+  CommentManager(this.context, this.postModel, this.returnFunction)
+      : model = CommentManagerModel(postModel.postID);
 
   void loadComments(List<dynamic> json) {
     for (var comment in json) {
@@ -128,7 +129,7 @@ class CommentManager {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("${comment.authorID}", style: subheaderStyle),
+                  Text("${comment.username}", style: subheaderStyle),
                   Text("${comment.getReadableTimeAgo()} ago")
                 ],
               )
@@ -163,7 +164,7 @@ class CommentManager {
           child: ElevatedButton(
             onPressed: () {
               Navigator.push(context,
-              MaterialPageRoute(builder: (context) => ReplyPostScreen(postID, parent, model, returnFunction)));
+              MaterialPageRoute(builder: (context) => ReplyPostScreen(postModel, parent, model, returnFunction)));
               print(model.comments);
             },
             style: smallButtonStyle,

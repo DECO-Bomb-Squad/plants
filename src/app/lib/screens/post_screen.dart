@@ -24,7 +24,7 @@ class PostScreen extends StatefulWidget {
 class _PostScreenState extends State<PostScreen> {
   @override
   void initState() {
-    widget.commentManager = CommentManager(context, widget.model.postID, addComment);
+    widget.commentManager = CommentManager(context, widget.model, addComment);
     widget.commentManager!.loadComments(widget.model.comments);
   }
 
@@ -100,7 +100,7 @@ class _PostScreenState extends State<PostScreen> {
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => ReplyPostScreen(widget.model.postID, null, widget.commentManager!.model, addComment)));
+                        MaterialPageRoute(builder: (context) => ReplyPostScreen(widget.model, null, widget.commentManager!.model, addComment)));
                       },
                       style: buttonStyle,
                       child: const Text("Write a response...", style: buttonTextStyle)
