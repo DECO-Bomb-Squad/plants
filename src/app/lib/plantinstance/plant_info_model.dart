@@ -319,7 +319,7 @@ extension ConditionExtension on ConditionType {
   IconData iconData() {
     switch (this) {
       case ConditionType.happy:
-        return Icons.sentiment_very_satisfied;
+        return Icons.check_circle_outlined;
       case ConditionType.needsPotting:
         return PlantCareIcons.repotting;
       case ConditionType.needsFertilising:

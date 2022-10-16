@@ -2,7 +2,7 @@ import 'package:app/utils/colour_scheme.dart';
 import 'package:flutter/material.dart';
 
 // Placed here to easily allow changing of multiple instances of each at once
-Color selected = lightColour;
+Color selected = darkColour;
 Color unselected = darkHighlight;
 
 class NavBarItem {
@@ -42,8 +42,8 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) => Container(
         decoration: const BoxDecoration(
-            color: lightHighlight,
-            boxShadow: [BoxShadow(color: Color.fromARGB(61, 48, 39, 33), blurRadius: 3, spreadRadius: 1)]),
+            color: lightColour,
+            boxShadow: [BoxShadow(color: Color.fromARGB(100, 73, 131, 127), blurRadius: 5, spreadRadius: 1)]),
         child: TabBar(
           indicatorColor: selected,
           controller: widget.controller,

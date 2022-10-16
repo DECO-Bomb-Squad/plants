@@ -209,9 +209,10 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
       .push(MaterialPageRoute(builder: (context) => PlantCareEmpty(widget.plantID)));
 
   Row get nameRow => Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(model.nickName ?? model.plantName, style: mainHeaderStyle),
               Text(model.scientificName, style: sectionHeaderStyle),
@@ -229,7 +230,7 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
         ),
         child: Column(
           children: [
-            model.getCoverPhoto(150, 150, Icons.photo, 150),
+            model.getCoverPhoto(150, MediaQuery.of(context).size.width * 0.8, Icons.photo, 150),
             const Text("Photos", style: subheaderStyle),
           ],
         ),
@@ -270,7 +271,13 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
         child: const Text("More options", style: buttonTextStyle),
       );
 
-  Widget get descriptionParagraph => Text(model.description!, style: modalTextStyle);
+  Widget get descriptionParagraph => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Description", style: sectionHeaderStyle),
+        Text(model.description!, style: textStyle)
+      ],
+    );
 
   Widget get careDetailsParagraph => Text(
       "Water every ${model.waterFrequency} days, repot every ${model.repotFrequency} days, fertilise every ${model.fertiliseFrequency} days. Planted in a ${model.careProfile.soilType.toHumanString()} located ${model.careProfile.location.toHumanString()}",
@@ -372,24 +379,35 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  nameRow,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: nameRow,
+                  ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       photoGalleryButton,
-                      spacer,
-                      activityCalendarButton,
                     ],
                   ),
-                  spacer,
-                  if (model.description != null && model.description!.isNotEmpty) descriptionParagraph,
-                  healthHeader,
-                  lastCareDetails,
-                  model.getWaterMeterRow(200, 30),
-                  Text(model.condition.text(), style: textStyle),
-                  spacer,
+                  if (model.description != null && model.description!.isNotEmpty) Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: descriptionParagraph,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        healthHeader,
+                        lastCareDetails,
+                        model.getWaterMeterRow(200, 30),
+                        Text(model.condition.text(), style: textStyle),
+                      ],
+                    ),
+                  ),
+                  
+                
                   if (belongsToMe)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

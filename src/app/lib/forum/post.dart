@@ -63,7 +63,7 @@ class _PostSmallState extends State<PostSmallWidget> {
                     Text("${widget.model.username} - ${widget.model.getReadableTimeAgo()} ago", style: modalTextStyle)
                     ],
                   )),
-              const Expanded(flex: 1, child: Icon(Icons.check_circle, size: 50))
+              const Expanded(flex: 1, child: Icon(Icons.question_answer, size: 50))
             ],
           ),
         ),
@@ -89,7 +89,10 @@ class _PostVoteComponentState extends State<PostVoteComponent> {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: DecoratedBox(
-        decoration: voteComponent,
+        decoration: BoxDecoration(
+          color: darkColour, 
+          borderRadius: BorderRadius.circular(radius)
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -114,7 +117,7 @@ class _PostVoteComponentState extends State<PostVoteComponent> {
               child: 
                 Icon(
                   Icons.arrow_downward,
-                  color: (widget.voted == -1) ? accent : lightColour,
+                  color: (widget.voted == -1) ? negative : lightColour,
                   size: 30,
                 ),
               onTap: () {

@@ -82,7 +82,8 @@ BoxDecoration smallPlantComponent = BoxDecoration(
 );
 
 BoxDecoration smallPostComponent = BoxDecoration(
-  color: lightHighlight,
+  color: mutedAccent,
+  //gradient: const LinearGradient(colors: [accent, mutedAccent], begin: Alignment.bottomCenter, end: Alignment.topRight),
   borderRadius: BorderRadius.circular(radius),
 );
 
@@ -94,11 +95,6 @@ BoxDecoration dialogComponent = BoxDecoration(
 BoxDecoration quoteComponent = BoxDecoration(
   color: lightHighlight,
   borderRadius: BorderRadius.circular(radius),
-);
-
-BoxDecoration voteComponent = BoxDecoration(
-  color: darkColour,
-  borderRadius: BorderRadius.circular(radius)
 );
 
 InputDecoration replyInputComponent = InputDecoration(

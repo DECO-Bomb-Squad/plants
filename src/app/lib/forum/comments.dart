@@ -167,7 +167,7 @@ class CommentManager {
               print(model.comments);
             },
             style: smallButtonStyle,
-            child: const Text("Write a response...", style: smallButtonTextStyle)
+            child: const Text("Write a reply...", style: smallButtonTextStyle)
           )
         )
       ]
@@ -225,7 +225,7 @@ class _CommentVoteComponentState extends State<CommentVoteComponent> {
         Text("${widget.comment.score}", style: textStyle,),
         InkWell(
           child: 
-            Icon(Icons.arrow_downward, color: (voted == -1) ? accent : darkColour
+            Icon(Icons.arrow_downward, color: (voted == -1) ? negative : darkColour
             ),
           onTap: () async {
             if (voted != -1) {

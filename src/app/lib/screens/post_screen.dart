@@ -58,15 +58,16 @@ class _PostScreenState extends State<PostScreen> {
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: 40,
-                    child: ListView.builder(
-                      itemCount: 10,
-                      scrollDirection: Axis.horizontal,
-                      controller: ScrollController(),
-                      itemBuilder: ((context, index) => tagItemBuilder(context, index))            
-                    )
-                  ),
+                  // --- TAGS COMPONENT - Disabled as not crucial for MVP ---
+                  // SizedBox(  
+                  //   height: 40,
+                  //   child: ListView.builder(
+                  //     itemCount: 10,
+                  //     scrollDirection: Axis.horizontal,
+                  //     controller: ScrollController(),
+                  //     itemBuilder: ((context, index) => tagItemBuilder(context, index))            
+                  //   )
+                  // ),
                   PostVoteComponent(widget.model.score)
                 ]
               ),
