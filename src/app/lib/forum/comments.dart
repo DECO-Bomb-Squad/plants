@@ -13,7 +13,7 @@ class CommentManager {
   final BuildContext context;
   final PostInfoModel postModel; // The ID of the post to get comments from
   final PlantAPI api = GetIt.I<PlantAPI>();
-  
+
   PlantAppStorage store = PlantAppStorage();
   Function(CommentModel) returnFunction;
   CommentManagerModel model;
@@ -74,7 +74,7 @@ class CommentManager {
               ))
         ]),
         Row(children: [
-          Expanded(flex: 1, child: CommentVoteComponent(comment, store)),
+          Expanded(flex: 1, child: CommentVoteComponent(comment)),
           Expanded(flex: 4, child: Text(comment.content))
         ]),
         if (comment.plantCareModel != null)
@@ -84,20 +84,16 @@ class CommentManager {
               child: SizedBox(),
             ),
             Expanded(
-              flex: 4,
-              child: ElevatedButton(
+                flex: 4,
+                child: ElevatedButton(
                   onPressed: () {
                     showDialog(
                         context: context,
                         builder: (_) => EditPlantCareProfile(profile: comment.plantCareModel, plant: null));
                   },
                   style: careButtonStyle,
-                  child: Flexible(
-                    flex: 1,
-                    child: const Text("View care profile", style: buttonTextStyle)
-                    )
-                  )
-            )
+                  child: const Text("View care profile", style: buttonTextStyle),
+                ))
           ]),
         Row(
           children: [
@@ -135,30 +131,28 @@ class CommentManager {
                 ],
               ))
         ]),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-          Expanded(flex: 1, child: CommentVoteComponent(comment, store)),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Expanded(flex: 1, child: CommentVoteComponent(comment)),
           Expanded(flex: 4, child: Text(comment.content))
         ]),
         if (comment.plantCareModel != null)
-        Row(children: [
-          const Expanded(
-            flex: 1,
-            child: SizedBox(),
-          ),
-          Expanded(
-            flex: 14,
-            child: ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (_) => EditPlantCareProfile(profile: comment.plantCareModel, plant: null));
-                },
-                style: careButtonStyle,
-                child: const Text("View care profile", style: buttonTextStyle)),
-          )
-        ]),
+          Row(children: [
+            const Expanded(
+              flex: 1,
+              child: SizedBox(),
+            ),
+            Expanded(
+              flex: 14,
+              child: ElevatedButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (_) => EditPlantCareProfile(profile: comment.plantCareModel, plant: null));
+                  },
+                  style: careButtonStyle,
+                  child: const Text("View care profile", style: buttonTextStyle)),
+            )
+          ]),
       ],
     );
   }
@@ -184,9 +178,8 @@ class CommentManager {
 
 class CommentVoteComponent extends StatefulWidget {
   final CommentModel comment;
-  final PlantAppStorage storage;
 
-  CommentVoteComponent(this.comment, this.storage, {super.key});
+  CommentVoteComponent(this.comment, {super.key});
 
   @override
   State<CommentVoteComponent> createState() => _CommentVoteComponentState();
@@ -194,21 +187,7 @@ class CommentVoteComponent extends StatefulWidget {
 
 class _CommentVoteComponentState extends State<CommentVoteComponent> {
   int voted = 0; // Stores the vote "offset" i.e. +1 is an upvote, -1 is a downvote
-
-  loadValues() async {
-    if (await widget.storage.has(widget.comment.commentID.toString())) {
-      voted = await widget.storage.get(widget.comment.commentID.toString()) as int;
-      widget.comment.score += voted;
-    }
-    return true;
-  }
-
-  @override
-  initState() {
-    super.initState();
-
-    loadValues();
-  }
+  PlantAPI api = GetIt.I<PlantAPI>();
 
   @override
   Widget build(BuildContext context) {
@@ -224,10 +203,12 @@ class _CommentVoteComponentState extends State<CommentVoteComponent> {
                 widget.comment.score -= 1;
                 voted = 0;
               }
-              await widget.storage.set(widget.comment.commentID.toString(), voted.toString());
-              setState(() {
-                voted;
-              }); // Rebuild self
+              bool updated = await api.updateCommentScore(widget.comment);
+              if (updated) {
+                setState(() {
+                  voted;
+                }); // Rebuild self
+              }
             }),
         Text(
           "${widget.comment.score}",
@@ -243,10 +224,12 @@ class _CommentVoteComponentState extends State<CommentVoteComponent> {
               widget.comment.score += 1;
               voted = 0;
             }
-            await widget.storage.set(widget.comment.commentID.toString(), voted.toString());
-            setState(() {
-              voted;
-            }); // Rebuild self
+            bool updated = await api.updateCommentScore(widget.comment);
+            if (updated) {
+              setState(() {
+                voted;
+              }); // Rebuild self
+            }
           },
         )
       ],

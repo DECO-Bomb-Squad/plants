@@ -235,7 +235,7 @@ class PlantAPI {
 
   // Adds a comment to the database
   Future<bool> addComment(CommentModel comment) async {
-    String path = "forum/comment";
+    String path = "/forum/comment";
 
     http.Response response = await http.post(makePath(path), headers: header, body: {
       "userId": comment.authorID.toString(),
@@ -243,6 +243,30 @@ class PlantAPI {
       if (comment.parentID != null) "parentId": comment.parentID.toString(),
       if (comment.plantCareModel != null) "careProfileId": comment.plantCareModel!.id.toString(),
       "postId": comment.postID.toString()
+    });
+
+    return response.statusCode == 200;
+  }
+
+  // Updates the score of a comment
+  Future<bool> updateCommentScore(CommentModel comment) async {
+    String path = "/forum/comment/updatescore";
+
+    http.Response response = await http.patch(makePath(path), headers: header, body: {
+      "commentId": comment.commentID.toString(),
+      "score": comment.score.toString(),
+    });
+
+    return response.statusCode == 200;
+  }
+
+  // Updates the score of a post
+  Future<bool> updatePostScore(PostInfoModel post) async {
+    String path = "/forum/post/updatescore";
+
+    http.Response response = await http.patch(makePath(path), headers: header, body: {
+      "postId": post.postID.toString(),
+      "score": post.score.toString(),
     });
 
     return response.statusCode == 200;

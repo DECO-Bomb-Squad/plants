@@ -36,7 +36,7 @@ class CommentModel {
         score = json['score'],
         content = json['content'],
         username = json['username'],
-        created = DateTime.parse(json["created"]),
+        created = DateTime.parse(json["created"]).add(const Duration(hours: 10)),
         replies = [],
         plantCareModel = (json["careProfile"] != "None") ? PlantCareProfile.fromJSON(json["careProfile"]) : null {
     if (json.containsKey("replies")) {

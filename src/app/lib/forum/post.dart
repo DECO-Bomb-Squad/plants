@@ -10,27 +10,24 @@ import 'package:get_it/get_it.dart';
 class PostSmallEmpty extends StatefulWidget {
   final int postID;
   final bool showDesc;
-  final Function returnFunc;
+  final Future<void> Function() returnFunc;
   final PlantAPI api = GetIt.I<PlantAPI>();
 
   PostSmallEmpty(this.postID, this.showDesc, this.returnFunc, {Key? key}) : super(key: key);
 
-  @override 
+  @override
   State<PostSmallEmpty> createState() => _PostSmallEmptyState();
 }
 
 class _PostSmallEmptyState extends State<PostSmallEmpty> {
-  @override 
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        decoration: smallPostComponent,
-        child: LoadingBuilder(
-          widget.api.getPostInfo(widget.postID),
-          (m) => PostSmallWidget(m as PostInfoModel, widget.showDesc, widget.returnFunc)
-        )
-      ),
+          decoration: smallPostComponent,
+          child: LoadingBuilder(widget.api.getPostInfo(widget.postID),
+              (m) => PostSmallWidget(m as PostInfoModel, widget.showDesc, widget.returnFunc))),
     );
   }
 }
@@ -38,7 +35,7 @@ class _PostSmallEmptyState extends State<PostSmallEmpty> {
 class PostSmallWidget extends StatefulWidget {
   final PostInfoModel model;
   final bool showDesc;
-  final Function returnFunc;
+  final Future<void> Function() returnFunc;
   const PostSmallWidget(this.model, this.showDesc, this.returnFunc, {Key? key}) : super(key: key);
 
   @override
@@ -50,100 +47,113 @@ class _PostSmallState extends State<PostSmallWidget> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(context,
-        MaterialPageRoute(builder: (context) => PostScreen(widget.model))).then(widget.returnFunc());
+        Navigator.push(context, MaterialPageRoute(builder: (context) => PostScreen(widget.model)))
+            .then((_) => widget.returnFunc());
       },
       child: DecoratedBox(
         decoration: smallPostComponent,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
+        child: Column(children: [
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
                     flex: 3,
-                    child: Column (
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(widget.model.title, style: sectionHeaderStyle),
-                        Text("${widget.model.username} - ${widget.model.getReadableTimeAgo()} ago", style: modalTextStyle)
-                        ],
-                      )),
-                  const Expanded(flex: 1, child: Icon(Icons.question_answer, size: 50))
-                ],
-              ),
+                        Text("${widget.model.username} - ${widget.model.getReadableTimeAgo()} ago",
+                            style: modalTextStyle)
+                      ],
+                    )),
+                const Expanded(flex: 1, child: Icon(Icons.question_answer, size: 50))
+              ],
             ),
-            if (widget.showDesc) Padding(
-              padding: EdgeInsets.all(8.0), 
-              child: Text(widget.model.content, style: modalTextStyle,),) 
-          ]
-        ),
+          ),
+          if (widget.showDesc)
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text(
+                widget.model.content,
+                style: modalTextStyle,
+              ),
+            )
+        ]),
       ),
     );
   }
 }
 
 class PostVoteComponent extends StatefulWidget {
+  PostInfoModel post;
   int voted = 0;
-  int score;
 
-  PostVoteComponent(this.score, {super.key}); 
+  PostVoteComponent(this.post, {super.key});
 
-  @override 
+  @override
   State<PostVoteComponent> createState() => _PostVoteComponentState();
 }
 
 class _PostVoteComponentState extends State<PostVoteComponent> {
-  
+  PlantAPI api = GetIt.I<PlantAPI>();
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: darkColour, 
-          borderRadius: BorderRadius.circular(radius)
-        ),
+        decoration: BoxDecoration(color: darkColour, borderRadius: BorderRadius.circular(radius)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             InkWell(
-              child: 
-                Icon(Icons.arrow_upward, 
-                color: (widget.voted == 1) ? accent : lightColour,
-                size: 30,),
-              onTap: () {
-                if (widget.voted != 1) {
-                  widget.score += 1 - widget.voted;
-                  widget.voted = 1;
-                } else {
-                  widget.score -= 1;
-                  widget.voted = 0;
-                }
-                setState(() {widget.voted;}); // Rebuild self
-              } 
-            ),
-            Text("${widget.score}", style: tagTextStyle,),
-            InkWell(
-              child: 
-                Icon(
-                  Icons.arrow_downward,
-                  color: (widget.voted == -1) ? negative : lightColour,
+                child: Icon(
+                  Icons.arrow_upward,
+                  color: (widget.voted == 1) ? accent : lightColour,
                   size: 30,
                 ),
-              onTap: () {
+                onTap: () async {
+                  if (widget.voted != 1) {
+                    widget.post.score += 1 - widget.voted;
+                    widget.voted = 1;
+                  } else {
+                    widget.post.score -= 1;
+                    widget.voted = 0;
+                  }
+                  bool updated = await api.updatePostScore(widget.post);
+                  if (updated) {
+                    setState(() {
+                      widget.voted;
+                    }); // Rebuild self
+                  }
+                }),
+            Text(
+              "${widget.post.score}",
+              style: tagTextStyle,
+            ),
+            InkWell(
+              child: Icon(
+                Icons.arrow_downward,
+                color: (widget.voted == -1) ? negative : lightColour,
+                size: 30,
+              ),
+              onTap: () async {
                 if (widget.voted != -1) {
-                  widget.score -= 1 + widget.voted;
+                  widget.post.score -= 1 + widget.voted;
                   widget.voted = -1;
                 } else {
-                  widget.score += 1;
+                  widget.post.score += 1;
                   widget.voted = 0;
                 }
-          
-                setState(() {widget.voted;}); // Rebuild self
+                bool updated = await api.updatePostScore(widget.post);
+                if (updated) {
+                  setState(() {
+                    widget.voted;
+                  }); // Rebuild self
+                }
               },
             )
           ],
