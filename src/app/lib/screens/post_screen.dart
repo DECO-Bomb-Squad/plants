@@ -67,7 +67,7 @@ class _PostScreenState extends State<PostScreen> {
                         //         scrollDirection: Axis.horizontal,
                         //         controller: ScrollController(),
                         //         itemBuilder: ((context, index) => tagItemBuilder(context, index)))),
-                        PostVoteComponent(widget.model.score)
+                        PostVoteComponent(widget.model)
                       ]),
                   spacer,
                   Padding(
@@ -76,27 +76,23 @@ class _PostScreenState extends State<PostScreen> {
                         widget.model.content,
                         style: textStyle,
                       )),
-                  SizedBox(
-                    height: 160,
-                    child: Scrollbar(
-                      thickness: 10,
-                      thumbVisibility: false,
-                      radius: const Radius.circular(10),
-                      child: widget.model.attachedPlants.isNotEmpty
-                          ? GridView(
-                              scrollDirection: Axis.horizontal,
-                              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                                  maxCrossAxisExtent: 160,
-                                  childAspectRatio: 1,
-                                  crossAxisSpacing: 20,
-                                  mainAxisSpacing: 20),
-                              children: widget.model.attachedPlants
-                                  .map((p) => PlantInfoEmpty(p["plantId"], isSmall: true))
-                                  .toList(),
-                            )
-                          : spacer,
+                  if (widget.model.attachedPlants.isNotEmpty)
+                    SizedBox(
+                      height: 160,
+                      child: Scrollbar(
+                        thickness: 10,
+                        thumbVisibility: false,
+                        radius: const Radius.circular(10),
+                        child: GridView(
+                          scrollDirection: Axis.horizontal,
+                          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                              maxCrossAxisExtent: 160, childAspectRatio: 1, crossAxisSpacing: 20, mainAxisSpacing: 20),
+                          children: widget.model.attachedPlants
+                              .map((p) => PlantInfoEmpty(p["plantId"], isSmall: true))
+                              .toList(),
+                        ),
+                      ),
                     ),
-                  ),
                   SizedBox(
                       height: MediaQuery.of(context).size.height * 0.15,
                       child: Column(

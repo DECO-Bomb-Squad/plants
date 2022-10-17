@@ -201,7 +201,7 @@ def update_score(session):
 '''
 Updates the score of a COMMENT
     Requires:
-        - postId: int
+        - commentId: int
         - score: int
 '''
 @app.route('/forum/comment/updatescore', methods=["PATCH"])

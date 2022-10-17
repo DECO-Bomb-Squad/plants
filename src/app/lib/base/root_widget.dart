@@ -6,7 +6,6 @@ import 'package:app/screens/main_screen.dart';
 import 'package:app/screens/trending_screen.dart';
 import 'package:flutter/material.dart';
 
-
 class RootWidget extends StatefulWidget {
   const RootWidget({super.key});
 
@@ -34,7 +33,7 @@ class _RootWidgetState extends State<RootWidget> with SingleTickerProviderStateM
       NavBarItem(
         text: "Trending",
         iconData: Icons.trending_up,
-        childFunc: () => const LayoutScreen("Demo time!"),
+        childFunc: () => const TrendingScreen(),
       ),
       NavBarItem(
         text: "Ask\nQuestion",

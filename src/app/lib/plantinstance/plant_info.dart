@@ -210,24 +210,20 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
       .push(MaterialPageRoute(builder: (context) => PlantCareEmpty(widget.plantID)));
 
   Widget get nameWidget => DecoratedBox(
-    decoration: smallPlantComponent,
-    child: Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [          
+      decoration: smallPlantComponent,
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(model.nickName ?? model.plantName, style: mainHeaderStyle),
               Text(model.scientificName, style: sectionHeaderStyle),
-            ]
-          ),
-          Icon(model.condition.iconData(), size: 75)
-        ],
-      ),
-    )
-  );
+            ]),
+            Icon(model.condition.iconData(), size: 75)
+          ],
+        ),
+      ));
 
   GestureDetector get photoGalleryButton => GestureDetector(
         onTap: () => Navigator.of(context, rootNavigator: false).push(
@@ -283,12 +279,9 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
       );
 
   Widget get descriptionParagraph => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("Description", style: sectionHeaderStyle),
-        Text(model.description!, style: textStyle)
-      ],
-    );
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [Text("Description", style: sectionHeaderStyle), Text(model.description!, style: textStyle)],
+      );
 
   Widget get careDetailsParagraph => Text(
       "Water every ${model.waterFrequency} days, repot every ${model.repotFrequency} days, fertilise every ${model.fertiliseFrequency} days. Planted in a ${model.careProfile.soilType.toHumanString()} located ${model.careProfile.location.toHumanString()}",
@@ -319,14 +312,20 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(ActivityTypeId.fertilising.iconData(), color: accent,),
+              Icon(
+                ActivityTypeId.fertilising.iconData(),
+                color: accent,
+              ),
               Text("Last fertilised ${model.timeSinceLastFertilise} days ago", style: modalTextStyle),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(ActivityTypeId.repotting.iconData(), color: secondaryAccent,),
+              Icon(
+                ActivityTypeId.repotting.iconData(),
+                color: secondaryAccent,
+              ),
               Text("Last repotted ${model.timeSinceLastRepot} days ago", style: modalTextStyle),
             ],
           ),
@@ -339,11 +338,11 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Flexible(
-                flex:1,
+                flex: 1,
                 child: Icon(ActivityTypeId.watering.iconData(), size: 50.0),
               ),
               Flexible(
-                flex:2,
+                flex: 2,
                 child: Text("Water every ${model.waterFrequency} days", style: modalTextStyle),
               ),
             ],
@@ -352,11 +351,11 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Flexible(
-                flex:1,
+                flex: 1,
                 child: Icon(ActivityTypeId.fertilising.iconData(), size: 50.0),
               ),
               Flexible(
-                flex:2,
+                flex: 2,
                 child: Text("Fertilise every ${model.fertiliseFrequency} days", style: modalTextStyle),
               ),
             ],
@@ -365,11 +364,11 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Flexible(
-                flex:1,
+                flex: 1,
                 child: Icon(ActivityTypeId.repotting.iconData(), size: 50.0),
               ),
               Flexible(
-                flex:2,
+                flex: 2,
                 child: Text("Repot every ${model.repotFrequency} days", style: modalTextStyle),
               ),
             ],
@@ -378,11 +377,12 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Flexible(
-                flex:1,
-                child: Icon(model.careProfile.soilType.iconData(), size: 40.0), // This icon set is bigger for some reason
+                flex: 1,
+                child:
+                    Icon(model.careProfile.soilType.iconData(), size: 40.0), // This icon set is bigger for some reason
               ),
               Flexible(
-                flex:2,
+                flex: 2,
                 child: Text("Planted in ${model.careProfile.soilType.toHumanString()}", style: modalTextStyle),
               ),
             ],
@@ -391,11 +391,11 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Flexible(
-                flex:1,
+                flex: 1,
                 child: Icon(model.careProfile.location.iconData(), size: 50.0),
               ),
               Flexible(
-                flex:2,
+                flex: 2,
                 child: Text("Located ${model.careProfile.location.toHumanString()}", style: modalTextStyle),
               ),
             ],
@@ -406,6 +406,7 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: NestedScrollView(
+          controller: ScrollController(),
           scrollDirection: Axis.vertical,
           scrollBehavior: const MaterialScrollBehavior(),
           headerSliverBuilder: StandardHeaderBuilder,
@@ -422,15 +423,13 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      photoGalleryButton,
-                      activityCalendarButton
-                    ],
+                    children: [photoGalleryButton, activityCalendarButton],
                   ),
-                  if (model.description != null && model.description!.isNotEmpty) Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: descriptionParagraph,
-                  ),
+                  if (model.description != null && model.description!.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: descriptionParagraph,
+                    ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -439,7 +438,10 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
                         lastCareDetails,
                         Column(
                           children: [
-                            Text("Water level", style: subheaderStyle,),
+                            Text(
+                              "Water level",
+                              style: subheaderStyle,
+                            ),
                             spacer,
                             model.getWaterMeterRow(MediaQuery.of(context).size.width * 0.7, 25),
                           ],
@@ -449,7 +451,6 @@ class _PlantInfoScreenState extends State<PlantInfoScreen> {
                       ],
                     ),
                   ),
-                
                   if (belongsToMe)
                     Padding(
                       padding: const EdgeInsets.all(15.0),

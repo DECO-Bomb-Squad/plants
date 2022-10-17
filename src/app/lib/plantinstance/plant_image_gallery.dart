@@ -90,6 +90,7 @@ class _PlantGalleryScreenState extends State<PlantGalleryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: NestedScrollView(
+        controller: ScrollController(),
         headerSliverBuilder: StandardHeaderBuilder,
         body: Container(
           padding: const EdgeInsets.only(left: 20, right: 20),

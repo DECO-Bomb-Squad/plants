@@ -1,10 +1,10 @@
 class PostInfoModel {
-  int postID;       // Post ID in the DB
-  int score;        // Reputation at the moment of the call
-  int authorID;    // Who wrote the post
+  int postID; // Post ID in the DB
+  int score; // Reputation at the moment of the call
+  int authorID; // Who wrote the post
   String username;
-  String title;     // Post title
-  String content;   // Post body - formatting
+  String title; // Post title
+  String content; // Post body - formatting
   DateTime created; // When the post was written
 
   List<dynamic> attachedPlants; // IDs of attached plants
@@ -17,14 +17,14 @@ class PostInfoModel {
         score = json["score"],
         title = json["title"],
         content = json["content"],
-        created = DateTime.parse(json["created"]),
+        created = DateTime.parse(json["created"]).add(const Duration(hours: 10)),
         attachedPlants = json["linkedPlants"],
         comments = json["comments"];
 
   PostInfoModel(this.authorID, this.username, this.title, this.content, this.attachedPlants)
       : postID = -1,
         score = 0,
-        created = DateTime.now().add(const Duration(hours: 10)),
+        created = DateTime.now(),
         comments = [];
 
   String getReadableTimeAgo() {
