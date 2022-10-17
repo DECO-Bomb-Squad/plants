@@ -1,7 +1,15 @@
 # Plants: Bomb Squad
 
+## APK Download and instructions
+To avoid the mess of downloading/installing dependencies, we've provided an apk:
+https://drive.google.com/file/d/1LkxOVvRNoDQaFeUHpRrggOHeBw-CUS1E/view?usp=sharing
+1. Download the apk on an android phone
+2. When downloaded, navigate to Downloads folder and tap on the apk. Tap 'yes' when prompted.
+3. Your apk will begin installing. At login, use the username 'bombsquad'. 
+
 ## Setting Up Front End
 ### Starting the Front End
+With flutter installed: 
 1. Navigate to `src/app`
 2. Run `flutter pub get` to retrieve dependencies
 3. Start up android emulator via VSCode

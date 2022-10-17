@@ -113,10 +113,6 @@ def add_personal_plant(session):
         if default is None:
             raise Exception("The default plant care profile could not be found for this plant type")
 
-        # session.add(plant)
-        # session.flush()
-        # session.refresh(plant)
-
         profile = PlantCareProfile(
             soilType=default.soilType, plantLocation=default.plantLocation,
             daysBetweenWatering=default.daysBetweenWatering, daysBetweenFertilizer=default.daysBetweenFertilizer,
@@ -130,10 +126,6 @@ def add_personal_plant(session):
         plant.plantType = plantType
 
         session.add(plant)
-        session.commit()
-
-        # Add a plant activity instance for each activity type - we assume a newly added plant is freshly watered, repotted etc
-        session.add_all([Activity(datetime.now(), 1, plant.id), Activity(datetime.now(), 2, plant.id), Activity(datetime.now(), 3, plant.id)])
         session.commit()
 
     except Exception as e:
